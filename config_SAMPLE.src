@@ -1,1 +1,3 @@
 email_password = "your_email_password"
+
+user_folder_path = "/home/your_name"
