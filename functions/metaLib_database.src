@@ -1,0 +1,89 @@
+// Converts a list of metadata and exploit information into a formatted string.
+//
+// This function processes a list where each item contains metadata about a library and its associated memory exploit details.
+// It constructs a string where each line represents a library with its version, followed by its memory-exploit mappings.
+//
+// @param {Array<Map<String, Object>>} metaLib_exploit_info_list - A list of maps, where each map contains:
+//   - "metaLib": A map with keys "lib_name" (String) and "version" (String) representing the library name and version.
+//   - "memory_exploit_map_list": A list of maps, where each map contains:
+//     - "memory": A string representing the memory address.
+//     - "exploit": A string representing the exploit associated with the memory address.
+//
+// @return {String} - A formatted string where each line represents a library and its associated memory-exploit information,
+//                    with the library name and version separated by a hyphen, and memory-exploit pairs separated by spaces.
+parse_metaLib_exploit_info_list_to_string = function(metaLib_exploit_info_list) // TODO: Test this
+    result = ""
+    for metaLib_exploit_info in metaLib_exploit_info_list
+        metaLib = metaLib_exploit_info["metaLib"]
+        result = result + metaLib.lib_name+"-"+metaLib.version + ":"
+        memory_exploit_map_list = metaLib_exploit_info["memory_exploit_map_list"]
+        for memory_exploit_map in memory_exploit_map_list
+            result = result + " " + memory_exploit_map["memory"]+","+memory_exploit_map["exploit"]
+        end for
+        result = result + char(10)
+    end for
+    return result[:-1]
+end function
+
+// Parses a formatted string into a list of meta library and exploit information maps.
+//
+// This function takes a string where each line represents a library and its associated memory-exploit mappings.
+// It converts the string into a list of maps, each containing the library string and a list of memory-exploit mappings.
+//
+// @param {String} string_data - A string formatted such that each line contains:
+//   - A library identifier in the format "lib_name-version" followed by a colon.
+//   - A list of memory-exploit mappings separated by spaces, where each mapping is in the format "memory,exploit".
+//
+// @return {Array<Map<String, Object>>} - A list of maps, where each map contains:
+//   - "metaLibString": A string representing the library name and version. e.g. "init.so-1.0.0"
+//   - "memory_exploit_map_list": A list of maps, where each map contains:
+//     - "memory": A string representing the memory address.
+//     - "exploit": A string representing the exploit associated with the memory address.
+parse_string_to_metaLibString_exploit_info_list = function(string_data) // TODO: Test this
+    metaLibString_exploit_info_list = []
+    
+    lines = string_data.split(char(10))
+    for line in lines
+        parts = line.split(":")
+        
+        metaLibString = parts[0]
+        memory_exploit_info_list = parts[1].split(" ")
+        
+        memory_exploit_map_list = []
+        for memory_exploit_info in memory_exploit_info_list
+            if memory_exploit_info == "" then continue
+            
+            memory_exploit_parts = memory_exploit_info.split(",")
+            
+            memory_exploit_map = {"memory": memory_exploit_parts[0], "exploit": memory_exploit_parts[1]}
+            memory_exploit_map_list.push(memory_exploit_map)
+        end for
+        
+        metaLibString_exploit_info = {"metaLibString": metaLibString, "memory_exploit_map_list": memory_exploit_map_list}
+        metaLibString_exploit_info_list.push(metaLibString_exploit_info)
+    end for
+    
+    return metaLibString_exploit_info_list
+end function
+
+metaLib_database_file = null
+
+// Sets up the meta library database file for the application.
+//
+// This function checks if the metaLib_database.txt file exists in the specified user folder. 
+// If the file does not exist, it creates a new empty file. 
+// It then sets the global reference to this file for further use.
+//
+// @return {void} - This function does not return a value. 
+setup_metaLib_database = function()
+    home_computer = get_shell("root", root_password).host_computer
+    globals.metaLib_database_file = home_computer.File(user_folder_path+"/metaLib_database.txt")
+    if metaLib_database_file == null then
+        home_computer.touch(user_folder_path, "metaLib_database.txt")
+        globals.metaLib_database_file = home_computer.File(user_folder_path+"/metaLib_database.txt")
+    end if
+    if metaLib_database_file == null then exit("[gfmauto] Error: Can't find "+user_folder_path+"metaLib_database.txt Even though it should")
+    get_custom_object.metaLib_database_file = metaLib_database_file
+end function
+
+setup_metaLib_database()
