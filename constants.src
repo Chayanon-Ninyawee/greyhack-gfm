@@ -1,0 +1,19 @@
+local_lib_name_list  = ["init.so",
+                        "kernel_module.so",
+                        "net.so",
+                        "aptclient.so",
+                        "metaxploit.so",
+                        "crypto.so"]
+
+remote_lib_name_list = ["libssh.so",
+                        "libftp.so",
+                        "libhttp.so",
+                        "libsql.so",
+                        "libsmtp.so",
+                        "libchat.so",
+                        "libcam.so",
+                        "librshell.so",
+                        "librepository.so",
+                        "blockchain.so"]
+
+router_lib_name_list = ["kernel_router.so"]
