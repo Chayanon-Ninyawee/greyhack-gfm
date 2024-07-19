@@ -1,0 +1,190 @@
+// Retrieves a list of MetaLib and their associated memory exploit vulnerabilities.
+//
+// This function processes a list of MetaLib to obtain their memory exploit information. It checks a local database
+// for existing exploit data and updates the database if new libs are found.
+//
+// @param {Array<MetaLib>} metaLib_list - A list of MetaLib
+//
+// @return {Array<Map<String, Object>>} - A list of maps, where each map contains:
+//   - "metaLib": The meta library object.
+//   - "memory_exploit_map_list": A list of maps, where each map contains:
+//     - "memory": A string representing the memory address.
+//     - "exploit": A string representing the exploit associated with the memory address.
+//
+// Side effects:
+// - Updates the metaLib_database_file with new exploit information if new libs are found.
+get_metaLib_memory_exploit_map_list_map_list = function(metaLib_list)
+    metaLib_memory_exploit_map_list_map_list = []
+
+    metaLibString_exploit_info_map = parse_string_to_metaLibString_exploit_info_map(metaLib_database_file.get_content)
+    for metaLib in metaLib_list
+        metaLibString_list = metaLibString_exploit_info_map.indexes
+
+        if not metaLibString_list.indexOf(metaLib.lib_name+"-"+metaLib.version) == null then
+            memory_exploit_map_list = metaLibString_exploit_info_map[metaLib.lib_name+"-"+metaLib.version]
+            metaLib_memory_exploit_map_list_map_list.push({"metaLib": metaLib, "memory_exploit_map_list": memory_exploit_map_list})
+            continue
+        end if
+
+        memory_list = metaxploit.scan(metaLib)
+        if not memory_list then continue
+
+        memory_exploit_map_list = []
+        for memory in memory_list
+            vulnerability = metaxploit.scan_address(metaLib, memory)
+            if not vulnerability then continue
+
+            segment_list = vulnerability.split("Unsafe check: ")[1:]
+            for segment in segment_list
+                labelStart = segment.indexOf("<b>")
+                labelEnd = segment.indexOf("</b>")
+                memory_exploit_map_list.push({"memory": memory, "exploit": segment[labelStart + 3: labelEnd]})
+            end for
+        end for
+
+        metaLibString_exploit_info_map[metaLib.lib_name+"-"+metaLib.version] = memory_exploit_map_list
+        metaLib_memory_exploit_map_list_map_list.push({"metaLib": metaLib, "memory_exploit_map_list": memory_exploit_map_list})
+    end for
+    metaLib_database_file.set_content(parse_metaLibString_exploit_info_map_to_string(metaLibString_exploit_info_map))
+    return metaLib_memory_exploit_map_list_map_list
+end function
+
+// Processes a list of MetaLib and categorizes the results.
+//
+// This function takes a list of MetaLib, find vulnerabilities, executes the overflow
+// exploits, and categorizes the results into different lists based on the type of result
+// returned (shell, computer, file, password, firewall). It handles router libraries separately 
+// to potentially bypass firewalls before processing other exploits.
+//
+// @param {Array<MetaLib>} metaLib_list - A list of MetaLib.
+// @param {String} [target_lan_ip=""] - Optional IP address used for router library exploits.
+// 
+// @return {Map<String, Array<Map<String, Object>>>} - A map containing categorized results, with keys 'shell', 'computer', 'file', 'password', and 'firewall'.
+//      Each key maps to a list of objects containing the exploit result and associated metadata.
+//
+// Side effects:
+// - Executes overflow exploits on the provided MetaLib.
+// - Updates the metaLib_database_file with new exploit information if new libs are found by calling
+//      get_metaLib_memory_exploit_map_list_map_list function.
+get_result_list = function(metaLib_list, target_lan_ip="")
+    shell_memory_exploit_map_list = []
+    computer_memory_exploit_map_list = []
+    file_memory_exploit_map_list = []
+    change_password_map_list = []
+    change_firewall_map_list = []
+
+    metaLib_memory_exploit_map_list_map_list = get_metaLib_memory_exploit_map_list_map_list(metaLib_list)
+
+    for metaLib_memory_exploit_map_list_map in metaLib_memory_exploit_map_list_map_list
+        metaLib = metaLib_memory_exploit_map_list_map["metaLib"]
+        if not router_lib_name_list.indexOf(metaLib.lib_name) == null then
+            for memory_exploit_map in metaLib_memory_exploit_map_list_map["memory_exploit_map_list"]
+                memory = memory_exploit_map["memory"]
+                exploit = memory_exploit_map["exploit"]
+
+                metaLib.overflow(memory, exploit) // Run to potentially get rid of firewall
+            end for
+        end if
+    end for
+
+    for metaLib_memory_exploit_map_list_map in metaLib_memory_exploit_map_list_map_list
+        metaLib = metaLib_memory_exploit_map_list_map["metaLib"]
+
+        for memory_exploit_map in metaLib_memory_exploit_map_list_map["memory_exploit_map_list"]
+            memory = memory_exploit_map["memory"]
+            exploit = memory_exploit_map["exploit"]
+
+            optArgs = ""
+            if not router_lib_name_list.indexOf(metaLib.lib_name) == null then optArgs = target_lan_ip
+
+            result = metaLib.overflow(memory, exploit, optArgs)
+
+            if typeof(result) == "shell" then
+                shell_memory_exploit_map_list.push({"shell": result, "memory_exploit_map": memory_exploit_map, "metaLib": metaLib})
+            else if typeof(result) == "computer" then
+                computer_memory_exploit_map_list.push({"computer": result, "memory_exploit_map": memory_exploit_map, "metaLib": metaLib})
+            else if typeof(result) == "file" then
+                file_memory_exploit_map_list.push({"file": result, "memory_exploit_map": memory_exploit_map, "metaLib": metaLib})
+            else if typeof(result) == "number" then
+                if router_lib_name_list.indexOf(metaLib) == null then
+                    change_password_map_list.push({"memory_exploit_map": memory_exploit_map, "metaLib": metaLib})
+                else
+                    change_firewall_map_list.push({"memory_exploit_map": memory_exploit_map, "metaLib": metaLib})
+                end if
+            end if
+
+        end for
+    end for
+
+    return {"shell": shell_memory_exploit_map_list,
+            "computer": computer_memory_exploit_map_list,
+            "file": file_memory_exploit_map_list,
+            "password": change_password_map_list,
+            "firewall": change_firewall_map_list}
+end function
+
+// Retrieves a list of MetaLib from a remote target.
+//
+// This function connects to a remote computer using the provided public IP address and optionally a LAN IP address.
+// It then retrieves a list of MetaLib from the open ports on the router.
+//
+// @param {String} target_public_ip - The public IP address of the target router.
+// @param {String} [target_lan_ip=null] - Optional LAN IP address to filter the ports.
+//
+// @return {Array<MetaLib>} - A list of MetaLib retrieved from the remote target.
+//
+// Side effects:
+// - Connects to the remote router and retrieves MetaLib from open ports.
+get_remote_metaLib_list = function(target_public_ip, target_lan_ip = null)
+    router = get_router(target_public_ip)
+
+    metaLib_list = []
+    for port in router.used_ports
+        if not target_lan_ip == null then; if not port.get_lan_ip == target_lan_ip then continue; end if
+
+        net_session = metaxploit.net_use(target_public_ip, port.port_number)
+        if not net_session then
+            print("Error: can't connect to net session")
+            return metaLib_list
+        end if
+        metaLib_list.push(net_session.dump_lib)
+    end for
+    return metaLib_list
+end function
+
+// Retrieves a list of MetaLib from a router using the target's public IP address.
+//
+// This function connects to a router specified by the public IP address and retrieves
+// MetaLib from its open ports. It also attempts to establish a network session 
+// on port 0 and retrieves router specific MetaLib from there.
+//
+// @param {String} target_public_ip - The public IP address of the target router.
+//
+// @return {Array<MetaLib>} - A list of MetaLib retrieved from the router.
+//
+// Side effects:
+// - Connects to the router and retrieves MetaLib from open ports.
+get_router_metaLib_list = function(target_public_ip)
+    router = get_router(target_public_ip)
+
+    metaLib_list = []
+    for port in router.used_ports
+        if not router.local_ip == port.get_lan_ip then continue
+
+        net_session = metaxploit.net_use(target_public_ip, port.port_number)
+        if not net_session then
+            print("Error: can't connect to net session")
+            return metaLib_list
+        end if
+
+        metaLib_list.push(net_session.dump_lib)
+    end for
+    net_session = metaxploit.net_use(target_public_ip, 0)
+    if not net_session then
+        print("Error: can't connect to net session")
+        return metaLib_list
+    end if
+
+    metaLib_list.push(net_session.dump_lib)
+    return metaLib_list
+end function
