@@ -1,0 +1,5 @@
+import_code("config.src")
+import_code("constants.src")
+import_code("functions/mail_manager.src")
+
+print_mission_list(fetch_and_classify_missions())
