@@ -1,22 +1,24 @@
-// Converts a list of metadata and exploit information into a formatted string.
+// Converts a map of metaLib exploit information into a formatted string.
 //
-// This function processes a list where each item contains metadata about a library and its associated memory exploit details.
+// This function processes a map where each key is a meta library string and its value is a list of memory exploit mappings.
 // It constructs a string where each line represents a library with its version, followed by its memory-exploit mappings.
 //
-// @param {Array<Map<String, Object>>} metaLib_exploit_info_list - A list of maps, where each map contains:
-//   - "metaLib": A map with keys "lib_name" (String) and "version" (String) representing the library name and version.
+// @param {Map<String, Array<Map<String, String>>>} metaLibString_exploit_info_map - A map containing:
+//   - "metaLibString": A string representing the meta library and its version, e.g. 'init.so-1.0.0'.
 //   - "memory_exploit_map_list": A list of maps, where each map contains:
 //     - "memory": A string representing the memory address.
 //     - "exploit": A string representing the exploit associated with the memory address.
 //
 // @return {String} - A formatted string where each line represents a library and its associated memory-exploit information,
-//                    with the library name and version separated by a hyphen, and memory-exploit pairs separated by spaces.
-parse_metaLib_exploit_info_list_to_string = function(metaLib_exploit_info_list) // TODO: Test this
+//                    with the library name and version separated by a colon, and memory-exploit pairs separated by spaces.
+//                    e.g. "metaLibString: memory1,exploit1 memory2,exploit2 ...\n..."
+parse_metaLibString_exploit_info_map_to_string = function(metaLibString_exploit_info_map)
     result = ""
-    for metaLib_exploit_info in metaLib_exploit_info_list
-        metaLib = metaLib_exploit_info["metaLib"]
-        result = result + metaLib.lib_name+"-"+metaLib.version + ":"
-        memory_exploit_map_list = metaLib_exploit_info["memory_exploit_map_list"]
+    metaLibString_list = metaLibString_exploit_info_map.indexes
+    metaLibString_list.sort
+    for metaLibString in metaLibString_list
+        result = result + metaLibString + ":"
+        memory_exploit_map_list = metaLibString_exploit_info_map[metaLibString]
         for memory_exploit_map in memory_exploit_map_list
             result = result + " " + memory_exploit_map["memory"]+","+memory_exploit_map["exploit"]
         end for
@@ -25,22 +27,23 @@ parse_metaLib_exploit_info_list_to_string = function(metaLib_exploit_info_list) 
     return result[:-1]
 end function
 
-// Parses a formatted string into a list of meta library and exploit information maps.
+// Parses a string to extract metaLib exploit information and returns a map.
 //
-// This function takes a string where each line represents a library and its associated memory-exploit mappings.
-// It converts the string into a list of maps, each containing the library string and a list of memory-exploit mappings.
+// This function takes a string containing meta library exploit information 
+// that was parse with parse_metaLib_exploit_info_list_to_string, 
+// parses it, and constructs a map where each key is a meta library string 
+// and its value is a list of memory exploit mappings.
 //
-// @param {String} string_data - A string formatted such that each line contains:
-//   - A library identifier in the format "lib_name-version" followed by a colon.
-//   - A list of memory-exploit mappings separated by spaces, where each mapping is in the format "memory,exploit".
+// @param {String} string_data - 
+//      A string containing meta library exploit information in the format:
+//      "metaLibString: memory1,exploit1 memory2,exploit2 ...\n..."
 //
-// @return {Array<Map<String, Object>>} - A list of maps, where each map contains:
-//   - "metaLibString": A string representing the library name and version. e.g. "init.so-1.0.0"
-//   - "memory_exploit_map_list": A list of maps, where each map contains:
-//     - "memory": A string representing the memory address.
-//     - "exploit": A string representing the exploit associated with the memory address.
-parse_string_to_metaLibString_exploit_info_list = function(string_data) // TODO: Test this
-    metaLibString_exploit_info_list = []
+// @return {Map<String, Array<Map<String, String>>>} - 
+//      A map where each key is a metaLib string e.g. 'init.so-1.0.0' and the value is a list of maps. 
+//      Each map contains 'memory' and 'exploit' properties.
+parse_string_to_metaLibString_exploit_info_map = function(string_data)
+    metaLibString_exploit_info_map = {}
+    if string_data == "" or string_data == null then return metaLibString_exploit_info_map
     
     lines = string_data.split(char(10))
     for line in lines
@@ -59,11 +62,10 @@ parse_string_to_metaLibString_exploit_info_list = function(string_data) // TODO:
             memory_exploit_map_list.push(memory_exploit_map)
         end for
         
-        metaLibString_exploit_info = {"metaLibString": metaLibString, "memory_exploit_map_list": memory_exploit_map_list}
-        metaLibString_exploit_info_list.push(metaLibString_exploit_info)
+        metaLibString_exploit_info_map[metaLibString] = memory_exploit_map_list
     end for
     
-    return metaLibString_exploit_info_list
+    return metaLibString_exploit_info_map
 end function
 
 metaLib_database_file = null
