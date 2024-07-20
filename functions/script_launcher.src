@@ -1,6 +1,5 @@
 // Launches a log deleter script on the target shell.
 //
-// @param {object} home_shell - Shell object representing the home shell where the script is executed.
 // @param {object} target_shell - Shell object representing the target shell where the log deleter will be deployed.
 // @param {string} target_root_password - String representing the root password of the target system.
 // 
@@ -12,14 +11,19 @@
 //
 // Side Effects:
 // Deletes everything in the /var/system.log
-launch_log_deleter = function(home_shell, target_shell, target_root_password)
+launch_log_deleter = function(target_shell, target_root_password)
     get_custom_object.target_root_password = target_root_password
     log_deleter_src = "@import_script(scripts/logdeleter.src)"
     
-    if not target_shell.host_computer.File("/home/guest/").has_permission("w") then exit("Target Shell has no write permission in /home/guest/")
+    if not target_shell.host_computer.File("/home/guest/").has_permission("w") then exit("[gfmauto] Error: Target Shell has no write permission in /home/guest/")
 
-    log_scp_result = home_shell.scp(current_path + "/empty_log/system.log", "/home/guest/", target_shell)
-    if typeof(log_scp_result) == "string" then exit("There was an error while sending file: " + log_scp_result)
+    empty_log_file = get_shell.host_computer.File(user_folder_path+"/empty_log/system.log")
+    if empty_log_file == null then exit("[gfmauto] Error: can't find "+user_folder_path+"/empty_log/system.log")
+    
+    empty_log_file.chmod("o+rw")
+    log_scp_result = get_shell.scp(current_path + "/empty_log/system.log", "/home/guest/", target_shell)
+    empty_log_file.chmod("o-rwx")
+    if typeof(log_scp_result) == "string" then exit("[gfmauto] Error: There was an error while sending file\n--- Error Info ---\n"+log_scp_result+"\n--- End Error Info ---")
 
     target_shell.host_computer.touch("/home/guest/", "logdeleter.src")
     target_shell.host_computer.File("/home/guest/logdeleter.src").set_content(log_deleter_src)
