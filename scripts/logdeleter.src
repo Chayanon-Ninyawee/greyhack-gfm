@@ -1,0 +1,52 @@
+get_custom_object.error = null
+
+root_password = get_custom_object.target_root_password
+
+root_shell = get_shell("root", root_password)
+if not root_shell then
+    hostComputer = get_shell.host_computer
+    current_script_file = hostComputer.File(current_path+"/logdeleter")
+    if not current_script_file then; get_custom_object.error = "Can't find current script file in the current folder"; exit; end if
+    if not current_script_file.has_permission("w") then; get_custom_object.error = "Don't have write permission in current script file in the current folder"; exit; end if
+    current_script_deletion_result = current_script_file.delete
+
+    get_custom_object.error = "Invalid root Username or Password!"
+    exit
+end if
+
+hostComputer = root_shell.host_computer
+
+current_script_file = hostComputer.File(current_path+"/logdeleter")
+if not current_script_file then; get_custom_object.error = "Can't find current script file in the current folder"; exit; end if
+if not current_script_file.has_permission("w") then; get_custom_object.error = "Don't have write permission in current script file in the current folder"; exit; end if
+
+empty_log_file = hostComputer.File(current_path+"/system.log")
+if not empty_log_file then; get_custom_object.error = "Can't find empty system.log file in the current folder"; exit; end if
+if not empty_log_file.has_permission("r") then; get_custom_object.error = "Don't have read permission in empty system.log file in the current folder"; exit; end if
+if not empty_log_file.has_permission("w") then; get_custom_object.error = "Don't have write permission in empty system.log file in the current folder"; exit; end if
+
+log_file = hostComputer.File("/var/system.log")
+if not log_file then; get_custom_object.error = "Can't find /var/system.log"; exit; end if
+if not log_file.has_permission("w") then
+    get_custom_object.error = "Don't have write permission in /var/system.log"
+    current_script_file.delete
+    empty_log_file.delete
+    exit
+end if
+
+log_deletion_result = log_file.delete
+if typeof(log_deletion_result) == "string" and log_deletion_result.len > 0 then
+    get_custom_object.error = "There was an error while deleting a file: " + log_deletion_result; exit
+end if
+
+current_script_deletion_result = current_script_file.delete
+if typeof(current_script_deletion_result) == "string" and current_script_deletion_result.len > 0 then
+    get_custom_object.error = "There was an error while deleting a file: " + current_script_deletion_result; exit
+end if
+
+wait(1)
+
+empty_log_move_result = empty_log_file.move("/var", "system.log")
+if typeof(empty_log_move_result) == "string" then
+    get_custom_object.error = "There was an error while moving file: " + empty_log_move_result; exit
+end if

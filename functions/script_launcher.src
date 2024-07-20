@@ -1,0 +1,32 @@
+// Launches a log deleter script on the target shell.
+//
+// @param {object} home_shell - Shell object representing the home shell where the script is executed.
+// @param {object} target_shell - Shell object representing the target shell where the log deleter will be deployed.
+// @param {string} target_root_password - String representing the root password of the target system.
+// 
+// @return {string} - A string indicating if there was an error while launching the log deleter script.
+//
+// Requirements:
+// The target shell must have write permission in the /home/guest/ directory.
+// The home shell must have a file named "empty_log/system.log" in the current path.
+//
+// Side Effects:
+// Deletes everything in the /var/system.log
+launch_log_deleter = function(home_shell, target_shell, target_root_password)
+    get_custom_object.target_root_password = target_root_password
+    log_deleter_src = "@import_script(scripts/logdeleter.src)"
+    
+    if not target_shell.host_computer.File("/home/guest/").has_permission("w") then exit("Target Shell has no write permission in /home/guest/")
+
+    log_scp_result = home_shell.scp(current_path + "/empty_log/system.log", "/home/guest/", target_shell)
+    if typeof(log_scp_result) == "string" then exit("There was an error while sending file: " + log_scp_result)
+
+    target_shell.host_computer.touch("/home/guest/", "logdeleter.src")
+    target_shell.host_computer.File("/home/guest/logdeleter.src").set_content(log_deleter_src)
+    target_shell.build("/home/guest/logdeleter.src", "/home/guest/")
+    target_shell.host_computer.File("/home/guest/logdeleter.src").delete()
+
+    get_custom_object.error = "Didn't launch /home/guest/logdeleter yet!"
+    target_shell.launch("/home/guest/logdeleter")
+    return get_custom_object.error
+end function
