@@ -41,3 +41,25 @@ find_file = function(file, folder_path, filename = null)
 
     return null
 end function
+
+// Retrieves and deciphers the password hash for a given username from the passwd file.
+//
+// @param {File} passwd_file - The file object representing the passwd file.
+// @param {string} username - The username for which to retrieve the password hash.
+// 
+// @return {string|null} - The deciphered password hash if the username is found, null otherwise.
+//
+// Requirements:
+// - The passwd file must have read permission.
+passwd_grabber = function(passwd_file, username)
+    if not passwd_file.has_permission("r") then exit("[gfmauto] Error: Can't read passwd file")
+
+    for credential_hash in passwd_file.get_content.split(char(10))
+        credential_name = credential_hash.split(":")[0]
+        if not credential_name == username then continue
+
+        password_hash = credential_hash.split(":")[1]
+        return crypto.decipher(password_hash)
+    end for
+    return null
+end function
