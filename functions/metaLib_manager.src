@@ -188,3 +188,20 @@ get_router_metaLib_list = function(target_public_ip)
     metaLib_list.push(net_session.dump_lib)
     return metaLib_list
 end function
+
+// Retrieves a list of MetaLib in the local computer or router.
+//
+// @param {Metaxploit} target_metaxploit - A Metaxploit of target.
+//
+// @return {Array<MetaLib>} - An array of MetaLib that were successfully loaded.
+get_local_metaLib_list = function(target_metaxploit)
+    metaLib_list = []
+    for lib in (local_lib_name_list+remote_lib_name_list+router_lib_name_list)
+        metaLib = target_metaxploit.load("/lib/" + lib)
+        if metaLib then metaLib_list.push(metaLib)
+    end for
+    return metaLib_list
+end function
+
+get_custom_object.get_result_list = @get_result_list
+get_custom_object.get_local_metaLib_list = @get_local_metaLib_list

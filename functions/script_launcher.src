@@ -1,16 +1,16 @@
 // Launches a log deleter script on the target shell.
 //
-// @param {object} target_shell - Shell object representing the target shell where the log deleter will be deployed.
+// @param {Shell} target_shell - Shell object representing the target shell where the log deleter will be deployed.
 // @param {string} target_root_password - String representing the root password of the target system.
 // 
 // @return {string} - A string indicating if there was an error while launching the log deleter script.
 //
 // Requirements:
-// The target shell must have write permission in the /home/guest/ directory.
-// The home shell must have a file named "empty_log/system.log" in the current path.
+// - The target shell must have write permission in the /home/guest/ directory.
+// - The home shell must have a file named "empty_log/system.log" in the current path.
 //
 // Side Effects:
-// Deletes everything in the /var/system.log
+// - Deletes everything in the /var/system.log
 launch_log_deleter = function(target_shell, target_root_password)
     get_custom_object.target_root_password = target_root_password
     log_deleter_src = "@import_script(scripts/logdeleter.src)"
@@ -20,10 +20,10 @@ launch_log_deleter = function(target_shell, target_root_password)
     empty_log_file = get_shell.host_computer.File(user_folder_path+"/empty_log/system.log")
     if empty_log_file == null then exit("[gfmauto] Error: can't find "+user_folder_path+"/empty_log/system.log")
     
-    empty_log_file.chmod("o+rw")
+    if not empty_log_file.chmod("o+rw") == "" then exit("[gfmauto] Error: can't chmod "+user_folder_path+"/empty_log/system.log")
     log_scp_result = get_shell.scp(current_path + "/empty_log/system.log", "/home/guest/", target_shell)
-    empty_log_file.chmod("o-rwx")
-    if typeof(log_scp_result) == "string" then exit("[gfmauto] Error: There was an error while sending file\n--- Error Info ---\n"+log_scp_result+"\n--- End Error Info ---")
+    if not empty_log_file.chmod("o-rwx") == "" then exit("[gfmauto] Error: can't chmod "+user_folder_path+"/empty_log/system.log")
+    if typeof(log_scp_result) == "string" then exit("[gfmauto] Error: There was an error while sending system.log\n--- Error Info ---\n"+log_scp_result+"\n--- End Error Info ---")
 
     target_shell.host_computer.touch("/home/guest/", "logdeleter.src")
     target_shell.host_computer.File("/home/guest/logdeleter.src").set_content(log_deleter_src)
@@ -33,4 +33,44 @@ launch_log_deleter = function(target_shell, target_root_password)
     get_custom_object.error = "Didn't launch /home/guest/logdeleter yet!"
     target_shell.launch("/home/guest/logdeleter")
     return get_custom_object.error
+end function
+
+// Launches a local exploiter script on the target shell.
+//
+// @param {Shell} target_shell - Shell object representing the target shell where the local exploiter will be deployed.
+// 
+// @return {string|null} - The target password hash if successful, null otherwise.
+//
+// Requirements:
+// - The target shell must have write permission in the /home/guest/ directory.
+// - The user's folder must contain the file "metaxploit.so" in the lib directory.
+//
+// Side Effects:
+// - Modifies file permissions for "metaxploit.so".
+// - Attempts to launch the "localexploiter" script on the target shell.
+launch_local_exploiter = function(target_shell)
+    get_custom_object.target_password_hash = null
+    local_exploiter_src = "@import_script(scripts/localexploiter.src)"
+    
+    if not target_shell.host_computer.File("/home/guest/").has_permission("w") then exit("Target Shell has no write permission in /home/guest/")
+
+    metaxploit_file = get_shell.host_computer.File(user_folder_path+"/lib/metaxploit.so")
+    if metaxploit_file == null then exit("[gfmauto] Error: can't find "+user_folder_path+"/lib/metaxploit.so")
+
+    if not metaxploit_file.chmod("o+rwx") == "" then exit("[gfmauto] Error: can't chmod "+user_folder_path+"/lib/metaxploit.so")
+    log_scp_result = get_shell.scp(metaxploit_file.path, "/home/guest/", target_shell)
+    if not metaxploit_file.chmod("o-rwx") == "" then exit("[gfmauto] Error: can't chmod "+user_folder_path+"/lib/metaxploit.so")
+    if typeof(log_scp_result) == "string" then exit("[gfmauto] Error: There was an error while sending metaxploit.so\n--- Error Info ---\n"+log_scp_result+"\n--- End Error Info ---")
+
+    target_shell.host_computer.touch("/home/guest/", "localexploiter.src")
+    target_shell.host_computer.File("/home/guest/localexploiter.src").set_content(local_exploiter_src)
+    target_shell.build("/home/guest/localexploiter.src", "/home/guest/")
+    target_shell.host_computer.File("/home/guest/localexploiter.src").delete()
+
+    get_custom_object.error = "Didn't launch /home/guest/localexploiter yet!"
+    target_shell.launch("/home/guest/localexploiter")
+    if not get_custom_object.error == null then; print(get_custom_object.error); return null; end if
+
+    if get_custom_object.target_password_hash == null then; print("Can't get target_password_hash"); return null; end if
+    return get_custom_object.target_password_hash
 end function
