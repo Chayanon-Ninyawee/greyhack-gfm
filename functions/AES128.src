@@ -152,6 +152,7 @@ end function
 
 aesDecrypt = function(key, block) // Expects already formatted block
 	Mult2 = Mult2 // WHYYYYYYYYYYY?!?!?!?! DON'T DELETE IT WON'T WORK IF IT'S NOT HERE
+	SBox = SBox // WHYYYYYYYYYYY?!?!?!?! DON'T DELETE IT WON'T WORK IF IT'S NOT HERE
 
 	key = key[0:]
 	State = block[0:]
