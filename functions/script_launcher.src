@@ -39,7 +39,7 @@ end function
 //
 // @param {Shell} target_shell - Shell object representing the target shell where the local exploiter will be deployed.
 // 
-// @return {string|null} - The target password hash if successful, null otherwise.
+// @return {File|null} - The target passwd file if successful, null otherwise.
 //
 // Requirements:
 // - The target shell must have write permission in the /home/guest/ directory.
@@ -49,7 +49,7 @@ end function
 // - Modifies file permissions for "metaxploit.so".
 // - Attempts to launch the "localexploiter" script on the target shell.
 launch_local_exploiter = function(target_shell)
-    get_custom_object.target_password_hash = null
+    get_custom_object.target_passwd_file = null
     local_exploiter_src = "@import_script(scripts/localexploiter.src)"
     
     if not target_shell.host_computer.File("/home/guest/").has_permission("w") then exit("[gfmauto] Error: Target Shell has no write permission in /home/guest/")
@@ -71,6 +71,6 @@ launch_local_exploiter = function(target_shell)
     target_shell.launch("/home/guest/localexploiter")
     if not get_custom_object.error == null then; print(get_custom_object.error); return null; end if
 
-    if get_custom_object.target_password_hash == null then; print("Can't get target_password_hash"); return null; end if
-    return get_custom_object.target_password_hash
+    if get_custom_object.target_passwd_file == null then; print("Can't get target_passwd_file"); return null; end if
+    return get_custom_object.target_passwd_file
 end function
