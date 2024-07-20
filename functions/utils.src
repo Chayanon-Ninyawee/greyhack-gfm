@@ -1,0 +1,43 @@
+// Finds a folder or file within a specified folder path.
+// 
+// @param {File} file - The starting file object.
+// @param {string} folder_path - The path of the folder to search for.
+// @param {string|null} [filename=null] - The name of the file to search for within the folder.
+// @return {File|null} The folder object if filename is null, or the file object if filename is specified and found. 
+//                     Returns null if the folder or file is not found.
+find_file = function(file, folder_path, filename = null)
+    if file.path == folder_path then return file
+
+    while not file.path == "/"
+        file = file.parent
+    end while
+
+    result_folder = null
+    folder_path_list = folder_path.split("/")[1:]
+    folders = file.get_folders
+    i = 0
+    while true
+        if folder_path_list.len == 0 then break
+        
+        if folders.len == 0 then return null
+        folder = folders[i]
+
+        current_folder_path_list = folder.path.split("/")
+        
+        if current_folder_path_list[current_folder_path_list.len-1] == folder_path_list[0] then
+            folders = folder.get_folders
+            i = 0
+            folder_path_list = folder_path_list[1:]
+            result_folder = folder
+            continue
+        end if
+        i = i + 1
+    end while
+
+    if filename == null then return result_folder
+    for file in result_folder.get_files
+        if file.name == filename then return file
+    end for
+
+    return null
+end function
