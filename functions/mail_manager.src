@@ -70,7 +70,7 @@ classify_mission_type = function(body_text)
     return null
 end function
 
-// Fetches and processes emails to generate a list of missions.
+// Fetches and processes emails to generate a sorted list of missions.
 // 
 // Logs into the email account, retrieves emails, and processes them to extract mission-related information.
 // It filters out emails that are not mission contracts or those indicating satisfaction with a job.
@@ -96,7 +96,8 @@ fetch_and_classify_missions = function()
 
         mission_list.push(classify_mission_type(body_text))
     end for
-
+    
+    mission_list.sort()
     return mission_list
 end function
 
