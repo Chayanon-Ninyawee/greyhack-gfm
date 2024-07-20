@@ -52,7 +52,7 @@ launch_local_exploiter = function(target_shell)
     get_custom_object.target_password_hash = null
     local_exploiter_src = "@import_script(scripts/localexploiter.src)"
     
-    if not target_shell.host_computer.File("/home/guest/").has_permission("w") then exit("Target Shell has no write permission in /home/guest/")
+    if not target_shell.host_computer.File("/home/guest/").has_permission("w") then exit("[gfmauto] Error: Target Shell has no write permission in /home/guest/")
 
     metaxploit_file = get_shell.host_computer.File(user_folder_path+"/lib/metaxploit.so")
     if metaxploit_file == null then exit("[gfmauto] Error: can't find "+user_folder_path+"/lib/metaxploit.so")
