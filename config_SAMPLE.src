@@ -4,3 +4,5 @@ root_password = "your_root_password"
 email_password = "your_email_password"
 
 user_folder_path = "/home/your_name"
+
+encryption_key = "your_16_len_key!"

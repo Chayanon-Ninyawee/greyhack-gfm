@@ -1,0 +1,47 @@
+install_secure_ssh = function(shell)
+    server_folder = shell.host_computer.File("/server")
+    if server_folder == null then exit("[gfmproxy] Error: Can't find /server in "+shell.host_computer.local_ip+" | "+ shell.host_computer.public_ip)
+    if not server_folder.has_permission("w") then exit("[gfmproxy] Error: Don't have permission to write on /server on "+shell.host_computer.local_ip+" | "+ shell.host_computer.public_ip)
+
+    orginal_encode_src_file = shell.host_computer.File("/server/encode.src")
+    if not orginal_encode_src_file == null then
+        if not orginal_encode_src_file.has_permission("w") then exit("[gfmproxy] Error: Don't have permission to write on /server/encode.src on "+shell.host_computer.local_ip+" | "+ shell.host_computer.public_ip)
+    end if
+
+    orginal_decode_bin_file = shell.host_computer.File("/server/decode.bin")
+    if not orginal_decode_bin_file == null then
+        if not orginal_decode_bin_file.has_permission("w") then exit("[gfmproxy] Error: Don't have permission to write on /server/decode.bin on "+shell.host_computer.local_ip+" | "+ shell.host_computer.public_ip)
+    end if
+
+    if not orginal_encode_src_file == null then orginal_encode_src_file.delete
+    if not orginal_decode_bin_file == null then orginal_decode_bin_file.delete
+
+    shell.host_computer.touch("/server", "encode.src")
+    encode_src_file = shell.host_computer.File("/server/encode.src")
+    encode_src_file.set_content("@import_script(scripts/encode.src)")
+
+    shell.host_computer.touch("/server", "decode.bin.src")
+    decode_src_file = shell.host_computer.File("/server/decode.bin.src")
+    decode_src_file.set_content("@import_script(scripts/decode.src)")
+    shell.build(decode_src_file.path, "/server")
+    decode_src_file.delete
+end function
+
+install_secure_ssh_command = function(shell)
+    bin_folder = shell.host_computer.File("/bin")
+    if bin_folder == null then exit("[gfmproxy] Error: Can't find /bin in "+shell.host_computer.local_ip+" | "+ shell.host_computer.public_ip)
+    if not bin_folder.has_permission("w") then exit("[gfmproxy] Error: Don't have permission to write on /bin on "+shell.host_computer.local_ip+" | "+ shell.host_computer.public_ip)
+
+    orginal_ssh_bin_file = shell.host_computer.File("/bin/ssh")
+    if not orginal_ssh_bin_file == null then
+        if not orginal_ssh_bin_file.has_permission("w") then exit("[gfmproxy] Error: Don't have permission to write on /bin/ssh on "+shell.host_computer.local_ip+" | "+ shell.host_computer.public_ip)
+    end if
+
+    if not orginal_ssh_bin_file == null then orginal_ssh_bin_file.delete
+
+    shell.host_computer.touch("/bin", "ssh.src")
+    ssh_src_file = shell.host_computer.File("/bin/ssh.src")
+    ssh_src_file.set_content("@import_script(scripts/ssh.src)")
+    shell.build(ssh_src_file.path, "/bin")
+    ssh_src_file.delete
+end function
