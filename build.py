@@ -52,8 +52,8 @@ def remove_comments_and_whitespace(content):
 
 
 main_filepath = 'main.src'
-output_filepath = 'build/gfmauto.src'
-shortened_output_filepath = 'build/gfmauto_shortened.src'
+output_filepath = 'build/gfmproxyinstaller.src'
+shortened_output_filepath = 'build/gfmproxyinstaller_shortened.src'
 
 if os.path.exists(main_filepath):
     main_content = read_file(main_filepath)
