@@ -6,16 +6,22 @@ import_code("functions/mail_manager.src")
 import_code("functions/metaLib_database.src")
 import_code("functions/metaLib_manager.src")
 import_code("functions/script_launcher.src")
+import_code("functions/script_installer.src")
 
 import_code("commands/autohack.src")
+import_code("commands/initsecureshell.src")
 
-command_list = [autohack]
+command_list = [autohack, initsecureshell]
 
 cmd_list = []
+alias_list = []
 help_info = ""
 for command in command_list
     cmd_list.push(command.cmd)
-    help_info = help_info+command.cmd
+    if command.alias == null then; alias_list.push("")
+    else; alias_list.push(command.alias); end if
+    
+     help_info = help_info+command.cmd
     if not command.args == null then help_info = help_info+" "+command.args
     if not command.desc == null then help_info = help_info+" - "+command.desc
     help_info = help_info+char(10)
@@ -23,6 +29,14 @@ end for
 
 if params.len == 0 then exit(help_info)
 
-if cmd_list.indexOf(params[0]) == null then exit(help_info)
+command_index = null
 
-command_list[cmd_list.indexOf(params[0])].run(params[1:])
+cmd_list_index = cmd_list.indexOf(params[0])
+if not cmd_list_index == null then command_index = cmd_list_index
+
+alias_list_index = alias_list.indexOf(params[0])
+if not alias_list_index == null then command_index = alias_list_index
+
+if command_index == null then exit(help_info)
+
+command_list[command_index].run(params[1:])
