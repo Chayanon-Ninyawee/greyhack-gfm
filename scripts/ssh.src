@@ -1,0 +1,48 @@
+import_code("config.src")
+
+is_ssh_encryption_enabled = function(is_enable)
+    if not (is_enable == "true" or is_enable == "false") then exit("[gfmproxy] Error: invalid parameter in is_ssh_encryption_enabled")
+
+    sshd_config_file = get_shell("root", root_password).host_computer.File("/server/conf/sshd.conf")
+    if sshd_config_file == null then exit("[gfmproxy] Error: Can't find /server/conf/sshd.conf")
+    if not sshd_config_file.has_permission("r") then exit("[gfmproxy] Error: Can't read /server/conf/sshd.conf")
+    if not sshd_config_file.has_permission("w") then exit("[gfmproxy] Error: Can't write /server/conf/sshd.conf")
+
+    sshd_config_list = sshd_config_file.get_content.split(char(10))
+    new_sshd_config_list = []
+    for sshd_config in sshd_config_list
+        if sshd_config.is_match("""encryption_enabled"":") then; new_sshd_config_list.push("  ""encryption_enabled"": "+is_enable)
+        else; new_sshd_config_list.push(sshd_config); end if
+    end for
+
+    sshd_config_file.set_content(new_sshd_config_list.join(char(10)))
+end function
+
+usage = "<b>Usage: ssh [user@password] [ip address] [(opt) port] [(opt) AES_key]</b>\nExample: ssh John@Connor 127.0.0.1\nExample: ssh John@Connor 127.0.0.1 22\nExample: ssh John@Connor 127.0.0.1 22 0123456789abcdef"
+if params.len < 2 or params.len > 4 then exit(usage)
+credentials = params[0].split("@")
+user = credentials[0]
+password = credentials[1]
+
+port = 22
+// params is a list of strings, so you have to convert it to integer, which is what connect_service accepts.
+if params.len == 3 then port = params[2].to_int
+if typeof(port) != "number" then exit("Invalid port: " + port)
+
+if params.len == 4 then
+    if not params[3].len == 16 then exit("Invalid key: AES Key must be exactly 16 characters long")
+    password = password+" "+params[3]
+    is_ssh_encryption_enabled("true")
+end if
+
+print("Connecting...")
+
+shell = get_shell.connect_service(params[1], port, user, password, "ssh")
+is_ssh_encryption_enabled("false")
+
+if typeof(shell) == "string" then exit(shell)
+if shell then 
+    shell.start_terminal
+else 
+    print("connection failed")
+end if
