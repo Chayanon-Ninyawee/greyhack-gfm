@@ -1,0 +1,35 @@
+initsecureshell = {}
+initsecureshell.cmd = "initsecureshell"
+initsecureshell.alias = "iss"
+initsecureshell.args = "[-h, -s, -p] (target_ip) (target_root_password) (target_ssh_port)"
+initsecureshell.desc = "Initialize encode.src, decode.bin, and ssh in the specify computer/server"
+
+initsecureshell.run = function(args)
+    if args.len < 1 then exit("Invalid argument!")
+    flag = args[0]
+
+    shell_list = []
+    if flag == "-h" then
+        shell_list.push(get_shell("root", root_password))
+    else if flag == "-s" then
+        if args.len < 3 then exit("Example: gfm "+initsecureshell.cmd+" -s 127.0.0.1 12345678 22")
+        target_ip = args[1]
+        root_password = args[2]
+        ssh_port = 22; if args.len >= 4 then ssh_port = args[3]
+
+        shell = get_shell.connect_service(target_ip, ssh_port, "root", root_password)
+        if shell == null then exit("Can't connect to that server/computer! Maybe secure shell is already setup?")
+
+        shell_list.push(shell)
+    else if flag == "-p" then
+        exit("Didn't implement yet!") // TODO
+    else
+        exit("Invalid argument!")
+    end if
+
+    for shell in shell_list
+        install_secure_ssh(shell)
+        install_secure_ssh_command(shell)
+        is_ssh_encryption_enabled(shell, "true")
+    end for
+end function
