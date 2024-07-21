@@ -1,0 +1,7 @@
+import_code("functions/AES128.src")
+
+Encode = function(password)
+    password_split = password.split(" ")
+    if not password_split.len == 2 then exit("[gfmproxy] Error: Can't encoded SSH password!")
+    return(str(AES128_encrypt(password_split[1], password_split[0])))
+end function
