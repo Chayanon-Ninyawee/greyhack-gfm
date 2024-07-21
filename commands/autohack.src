@@ -2,7 +2,7 @@ autohack = {}
 autohack.cmd = "autohack"
 autohack.alias = null
 autohack.args = null
-autohack.desc = "This will hack the target specify in the mail."
+autohack.desc = "Hack the target specify in the mail."
 
 autohack.run = function(args)
     mission_list = fetch_and_classify_missions()
