@@ -1,7 +1,7 @@
-is_ssh_encryption_enabled = function(is_enable)
+is_ssh_encryption_enabled = function(shell, is_enable)
     if not (is_enable == "true" or is_enable == "false") then exit("[gfmproxy] Error: invalid parameter in is_ssh_encryption_enabled")
 
-    sshd_config_file = get_shell("root", root_password).host_computer.File("/server/conf/sshd.conf")
+    sshd_config_file = shell.host_computer.File("/server/conf/sshd.conf")
     if sshd_config_file == null then exit("[gfmproxy] Error: Can't find /server/conf/sshd.conf")
     if not sshd_config_file.has_permission("r") then exit("[gfmproxy] Error: Don't have permission to read /server/conf/sshd.conf")
     if not sshd_config_file.has_permission("w") then exit("[gfmproxy] Error: Don't have permission to write /server/conf/sshd.conf")
