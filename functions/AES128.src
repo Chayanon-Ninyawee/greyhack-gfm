@@ -438,7 +438,7 @@ end function
 // Requirements:
 // - The key must be exactly 16 characters long.
 AES128_encrypt = function(key, message)
-    if key.len != 16 then exit("[gfmproxy] Error: Key must be 16 characters long.")
+    if key.len != 16 then exit("[gfm] Error: Key must be 16 characters long.")
     return AES128("encrypt", key, message)
 end function
 
@@ -452,6 +452,6 @@ end function
 // Requirements:
 // - The key must be exactly 16 characters long.
 AES128_decrypt = function(key, encrypted_message)
-    if key.len != 16 then exit("[gfmproxy] Error: Key must be 16 characters long.")
+    if key.len != 16 then exit("[gfm] Error: Key must be 16 characters long.")
     return AES128("decrypt", key, encrypted_message)
 end function

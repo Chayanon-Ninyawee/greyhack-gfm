@@ -15,15 +15,15 @@ launch_log_deleter = function(target_shell, target_root_password)
     get_custom_object.target_root_password = target_root_password
     log_deleter_src = "@import_script(scripts/logdeleter.src)"
     
-    if not target_shell.host_computer.File("/home/guest/").has_permission("w") then exit("[gfmauto] Error: Target Shell has no write permission in /home/guest/")
+    if not target_shell.host_computer.File("/home/guest/").has_permission("w") then exit("[gfm] Error: Target Shell has no write permission in /home/guest/")
 
     empty_log_file = get_shell.host_computer.File(user_folder_path+"/empty_log/system.log")
-    if empty_log_file == null then exit("[gfmauto] Error: can't find "+user_folder_path+"/empty_log/system.log")
+    if empty_log_file == null then exit("[gfm] Error: can't find "+user_folder_path+"/empty_log/system.log")
     
-    if not empty_log_file.chmod("o+rw") == "" then exit("[gfmauto] Error: can't chmod "+user_folder_path+"/empty_log/system.log")
+    if not empty_log_file.chmod("o+rw") == "" then exit("[gfm] Error: can't chmod "+user_folder_path+"/empty_log/system.log")
     log_scp_result = get_shell.scp(current_path + "/empty_log/system.log", "/home/guest/", target_shell)
-    if not empty_log_file.chmod("o-rwx") == "" then exit("[gfmauto] Error: can't chmod "+user_folder_path+"/empty_log/system.log")
-    if typeof(log_scp_result) == "string" then exit("[gfmauto] Error: There was an error while sending system.log\n--- Error Info ---\n"+log_scp_result+"\n--- End Error Info ---")
+    if not empty_log_file.chmod("o-rwx") == "" then exit("[gfm] Error: can't chmod "+user_folder_path+"/empty_log/system.log")
+    if typeof(log_scp_result) == "string" then exit("[gfm] Error: There was an error while sending system.log\n--- Error Info ---\n"+log_scp_result+"\n--- End Error Info ---")
 
     target_shell.host_computer.touch("/home/guest/", "logdeleter.src")
     target_shell.host_computer.File("/home/guest/logdeleter.src").set_content(log_deleter_src)
@@ -52,15 +52,15 @@ launch_local_exploiter = function(target_shell)
     get_custom_object.target_passwd_file = null
     local_exploiter_src = "@import_script(scripts/localexploiter.src)"
     
-    if not target_shell.host_computer.File("/home/guest/").has_permission("w") then exit("[gfmauto] Error: Target Shell has no write permission in /home/guest/")
+    if not target_shell.host_computer.File("/home/guest/").has_permission("w") then exit("[gfm] Error: Target Shell has no write permission in /home/guest/")
 
     metaxploit_file = get_shell.host_computer.File(user_folder_path+"/lib/metaxploit.so")
-    if metaxploit_file == null then exit("[gfmauto] Error: can't find "+user_folder_path+"/lib/metaxploit.so")
+    if metaxploit_file == null then exit("[gfm] Error: can't find "+user_folder_path+"/lib/metaxploit.so")
 
-    if not metaxploit_file.chmod("o+rwx") == "" then exit("[gfmauto] Error: can't chmod "+user_folder_path+"/lib/metaxploit.so")
+    if not metaxploit_file.chmod("o+rwx") == "" then exit("[gfm] Error: can't chmod "+user_folder_path+"/lib/metaxploit.so")
     log_scp_result = get_shell.scp(metaxploit_file.path, "/home/guest/", target_shell)
-    if not metaxploit_file.chmod("o-rwx") == "" then exit("[gfmauto] Error: can't chmod "+user_folder_path+"/lib/metaxploit.so")
-    if typeof(log_scp_result) == "string" then exit("[gfmauto] Error: There was an error while sending metaxploit.so\n--- Error Info ---\n"+log_scp_result+"\n--- End Error Info ---")
+    if not metaxploit_file.chmod("o-rwx") == "" then exit("[gfm] Error: can't chmod "+user_folder_path+"/lib/metaxploit.so")
+    if typeof(log_scp_result) == "string" then exit("[gfm] Error: There was an error while sending metaxploit.so\n--- Error Info ---\n"+log_scp_result+"\n--- End Error Info ---")
 
     target_shell.host_computer.touch("/home/guest/", "localexploiter.src")
     target_shell.host_computer.File("/home/guest/localexploiter.src").set_content(local_exploiter_src)

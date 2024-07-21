@@ -52,7 +52,7 @@ end function
 // Requirements:
 // - The passwd file must have read permission.
 passwd_grabber = function(passwd_file, username)
-    if not passwd_file.has_permission("r") then exit("[gfmauto] Error: Can't read passwd file")
+    if not passwd_file.has_permission("r") then exit("[gfm] Error: Can't read passwd file")
 
     for credential_hash in passwd_file.get_content.split(char(10))
         credential_name = credential_hash.split(":")[0]
@@ -66,12 +66,12 @@ end function
 
 
 is_ssh_encryption_enabled = function(shell, is_enable)
-    if not (is_enable == "true" or is_enable == "false") then exit("[gfmproxy] Error: invalid parameter in is_ssh_encryption_enabled")
+    if not (is_enable == "true" or is_enable == "false") then exit("[gfm] Error: invalid parameter in is_ssh_encryption_enabled")
 
     sshd_config_file = shell.host_computer.File("/server/conf/sshd.conf")
-    if sshd_config_file == null then exit("[gfmproxy] Error: Can't find /server/conf/sshd.conf")
-    if not sshd_config_file.has_permission("r") then exit("[gfmproxy] Error: Don't have permission to read /server/conf/sshd.conf")
-    if not sshd_config_file.has_permission("w") then exit("[gfmproxy] Error: Don't have permission to write /server/conf/sshd.conf")
+    if sshd_config_file == null then exit("[gfm] Error: Can't find /server/conf/sshd.conf")
+    if not sshd_config_file.has_permission("r") then exit("[gfm] Error: Don't have permission to read /server/conf/sshd.conf")
+    if not sshd_config_file.has_permission("w") then exit("[gfm] Error: Don't have permission to write /server/conf/sshd.conf")
 
     sshd_config_list = sshd_config_file.get_content.split(char(10))
     new_sshd_config_list = []

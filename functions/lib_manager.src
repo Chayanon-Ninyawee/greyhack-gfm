@@ -9,17 +9,17 @@ aptClient = include_lib(LibManager.aptClient_path)
 if aptClient == null then
     home_computer = get_shell("root", root_password).host_computer
     aptClient_file = home_computer.File("/lib/aptclient.so")
-    if aptClient_file == null then exit("[gfmauto] Error: Can't find aptclient.so in /lib or "+LibManager.lib_path)
+    if aptClient_file == null then exit("[gfm] Error: Can't find aptclient.so in /lib or "+LibManager.lib_path)
 
     lib_file = home_computer.File(LibManager.lib_path)
     if lib_file == null then home_computer.create_folder(user_folder_path, "lib")
 
     copy_result = aptClient_file.copy(LibManager.lib_path, "aptclient.so")
-    if not copy_result == 1 then exit("[gfmauto] Error: Can't copy aptclient.so in /lib to "+LibManager.lib_path)
+    if not copy_result == 1 then exit("[gfm] Error: Can't copy aptclient.so in /lib to "+LibManager.lib_path)
 
     aptClient = include_lib(LibManager.aptClient_path)
 end if
-if aptClient == null then exit("[gfmauto] Error: Can't find aptclient.so in "+LibManager.lib_path+" Even though it should")
+if aptClient == null then exit("[gfm] Error: Can't find aptclient.so in "+LibManager.lib_path+" Even though it should")
 
 metaxploit = null
 crypto = null
@@ -42,37 +42,37 @@ crypto = null
 update_lib = function()
     aptClient.add_repo(hackShop_ip)
     update_result = aptClient.update()
-    if not update_result == "" then exit("[gfmauto] Error: Can't update apt-get repo!\n--- Error Info ---\n"+update_result+"\n--- End Error Info ---")
+    if not update_result == "" then exit("[gfm] Error: Can't update apt-get repo!\n--- Error Info ---\n"+update_result+"\n--- End Error Info ---")
     
     home_computer = get_shell("root", root_password).host_computer
     if home_computer.File(LibManager.metaxploit_path) == null then aptClient.install("metaxploit.so", LibManager.lib_path)
     if home_computer.File(LibManager.crypto_path) == null then aptClient.install("crypto.so", LibManager.lib_path)
 
     aptClient_upgrade_result = aptClient.check_upgrade(LibManager.aptClient_path)
-    if typeof(aptClient_upgrade_result) == "string" then; print("[gfmauto] Error: Can't upgrade aptclient.so\n--- Error Info ---\n"+aptClient_upgrade_result+"\n--- End Error Info ---");
-    else if aptClient_upgrade_result == null then; print("[gfmauto] Error: Can't upgrade aptclient.so. aptClient.check_upgrade(LibManager.aptClient_path) return null");
+    if typeof(aptClient_upgrade_result) == "string" then; print("[gfm] Error: Can't upgrade aptclient.so\n--- Error Info ---\n"+aptClient_upgrade_result+"\n--- End Error Info ---");
+    else if aptClient_upgrade_result == null then; print("[gfm] Error: Can't upgrade aptclient.so. aptClient.check_upgrade(LibManager.aptClient_path) return null");
     else if aptClient_upgrade_result == 1 then; aptClient.install("aptclient.so", LibManager.lib_path); end if
     globals.aptClient = include_lib(LibManager.aptClient_path)
 
     metaxploit_upgrade_result = aptClient.check_upgrade(LibManager.metaxploit_path)
-    if typeof(metaxploit_upgrade_result) == "string" then; print("[gfmauto] Error: Can't upgrade metaxploit.so\n--- Error Info ---\n"+metaxploit_upgrade_result+"\n--- End Error Info ---");
-    else if metaxploit_upgrade_result == null then; print("[gfmauto] Error: Can't upgrade metaxploit.so. aptClient.check_upgrade(LibManager.metaxploit_path) return null");
+    if typeof(metaxploit_upgrade_result) == "string" then; print("[gfm] Error: Can't upgrade metaxploit.so\n--- Error Info ---\n"+metaxploit_upgrade_result+"\n--- End Error Info ---");
+    else if metaxploit_upgrade_result == null then; print("[gfm] Error: Can't upgrade metaxploit.so. aptClient.check_upgrade(LibManager.metaxploit_path) return null");
     else if metaxploit_upgrade_result == 1 then; aptClient.install("metaxploit.so", LibManager.lib_path); end if
     globals.metaxploit = include_lib(LibManager.metaxploit_path)
 
     crypto_upgrade_result = aptClient.check_upgrade(LibManager.crypto_path)
-    if typeof(crypto_upgrade_result) == "string" then; print("[gfmauto] Error: Can't upgrade crypto.so\n--- Error Info ---\n"+crypto_upgrade_result+"\n--- End Error Info ---");
-    else if crypto_upgrade_result == null then; print("[gfmauto] Error: Can't upgrade crypto.so. aptClient.check_upgrade(LibManager.crypto_path) return null");
+    if typeof(crypto_upgrade_result) == "string" then; print("[gfm] Error: Can't upgrade crypto.so\n--- Error Info ---\n"+crypto_upgrade_result+"\n--- End Error Info ---");
+    else if crypto_upgrade_result == null then; print("[gfm] Error: Can't upgrade crypto.so. aptClient.check_upgrade(LibManager.crypto_path) return null");
     else if crypto_upgrade_result == 1 then; aptClient.install("crypto.so", LibManager.lib_path); end if
     globals.crypto = include_lib(LibManager.crypto_path)
 end function
 
 metaxploit = include_lib(LibManager.metaxploit_path)
 if metaxploit == null then update_lib()
-if metaxploit == null then exit("[gfmauto] Error: Can't find metaxploit.so in "+LibManager.lib_path+" Even though it should")
+if metaxploit == null then exit("[gfm] Error: Can't find metaxploit.so in "+LibManager.lib_path+" Even though it should")
 get_custom_object.home_metaxploit = metaxploit
 
 crypto = include_lib(LibManager.crypto_path)
 if crypto == null then update_lib()
-if crypto == null then exit("[gfmauto] Error: Can't find crypto.so in "+LibManager.lib_path+" Even though it should")
+if crypto == null then exit("[gfm] Error: Can't find crypto.so in "+LibManager.lib_path+" Even though it should")
 get_custom_object.home_crypto = crypto

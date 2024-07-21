@@ -84,7 +84,7 @@ setup_metaLib_database = function()
         home_computer.touch(user_folder_path, "metaLib_database.txt")
         globals.metaLib_database_file = home_computer.File(user_folder_path+"/metaLib_database.txt")
     end if
-    if metaLib_database_file == null then exit("[gfmauto] Error: Can't find "+user_folder_path+"metaLib_database.txt Even though it should")
+    if metaLib_database_file == null then exit("[gfm] Error: Can't find "+user_folder_path+"metaLib_database.txt Even though it should")
     get_custom_object.metaLib_database_file = metaLib_database_file
 end function
 
