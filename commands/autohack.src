@@ -1,0 +1,268 @@
+autohack = {}
+autohack.cmd = "autohack"
+autohack.alias = null
+autohack.args = null
+autohack.desc = "This will hack the target specify in the mail."
+
+autohack.run = function(args)
+    mission_list = fetch_and_classify_missions()
+
+    result_list = []
+    for mission in mission_list
+        if not ["a_get_any_credentials", "b_get_specific_credentials"].indexOf(mission["type"]) == null then
+            target_public_ip = mission["public_ip"]
+            target_lan_ip = mission["lan_ip"]
+
+            metaLib_list = get_remote_metaLib_list(target_public_ip, target_lan_ip)
+            result = get_result_list(metaLib_list)
+
+            shell_memory_exploit_map_list = result["shell"]
+            computer_memory_exploit_map_list = result["computer"]
+            file_memory_exploit_map_list = result["file"]
+            change_password_map_list = result["password"]
+            change_firewall_map_list = result["firewall"]
+
+
+            router_metaLib_list = get_router_metaLib_list(target_public_ip)
+            router_result = get_result_list(router_metaLib_list, target_lan_ip)
+
+            router_shell_memory_exploit_map_list = router_result["shell"]
+            router_computer_memory_exploit_map_list = router_result["computer"]
+            router_file_memory_exploit_map_list = router_result["file"]
+            router_change_password_map_list = router_result["password"]
+            router_change_firewall_map_list = router_result["firewall"]
+
+
+            root_password = null
+            user_password = null
+
+            router_root_password = null
+
+            for shell_memory_exploit_map in shell_memory_exploit_map_list
+                if mission["type"] == "b_get_specific_credentials" and not user_password == null and not root_password == null then break
+                if not root_password == null then break
+                
+                shell = shell_memory_exploit_map["shell"]
+
+                passwd_file = shell.host_computer.File("/etc/passwd")
+                if not passwd_file.has_permission("r") then continue
+
+                root_password = passwd_grabber(passwd_file, "root")
+
+                if mission["type"] == "a_get_any_credentials" then break
+
+                user_password = passwd_grabber(passwd_file, mission["user"])
+                if user_password == null then print("Can't find user password in /var/passwd")
+                break
+            end for
+
+            for computer_memory_exploit_map in computer_memory_exploit_map_list
+                if mission["type"] == "b_get_specific_credentials" and not user_password == null and not root_password == null then break
+                if not root_password == null then break
+                
+                computer = computer_memory_exploit_map["computer"]
+
+                passwd_file = computer.File("/etc/passwd")
+                if not passwd_file.has_permission("r") then continue
+
+                root_password = passwd_grabber(passwd_file, "root")
+
+                if mission["type"] == "a_get_any_credentials" then break
+                
+                user_password = passwd_grabber(passwd_file, mission["user"])
+                if user_password == null then print("Can't find user password in /var/passwd")
+                break
+            end for
+
+            for file_memory_exploit_map in file_memory_exploit_map_list
+                if mission["type"] == "b_get_specific_credentials" and not user_password == null and not root_password == null then break
+                if not root_password == null then break
+                
+                file = file_memory_exploit_map["file"]
+
+                passwd_file = find_file(file, "/etc", "passwd")
+                if not passwd_file.has_permission("r") then continue
+
+                root_password = passwd_grabber(passwd_file, "root")
+
+                if mission["type"] == "a_get_any_credentials" then break
+                
+                user_password = passwd_grabber(passwd_file, mission["user"])
+                if user_password == null then print("Can't find user password in /var/passwd")
+                break
+            end for
+
+            for router_computer_memory_exploit_map in router_computer_memory_exploit_map_list
+                if mission["type"] == "b_get_specific_credentials" and not user_password == null and not root_password == null then break
+                if not root_password == null then break
+                
+                computer = computer_memory_exploit_map["computer"]
+                if not computer.local_ip == target_lan_ip then continue
+
+                passwd_file = computer.File("/etc/passwd")
+                if not passwd_file.has_permission("r") then continue
+
+                root_password = passwd_grabber(passwd_file, "root")
+
+                if mission["type"] == "a_get_any_credentials" then break
+                
+                user_password = passwd_grabber(passwd_file, mission["user"])
+                if user_password == null then print("Can't find user password in /var/passwd")
+                break
+            end for
+
+            for shell_memory_exploit_map in shell_memory_exploit_map_list
+                if mission["type"] == "b_get_specific_credentials" and not user_password == null and not root_password == null then break
+                if not root_password == null then break
+                
+                shell = shell_memory_exploit_map["shell"]
+
+                guest_folder = shell.host_computer.File("/home/guest/")
+                if not guest_folder.has_permission("w") then continue
+
+                local_exploiter_result = launch_local_exploiter(shell)
+                if not local_exploiter_result == null then root_password = passwd_grabber(local_exploiter_result, "root")
+
+                if root_password == null then continue
+
+                if mission["type"] == "a_get_any_credentials" then break
+
+                user_password = passwd_grabber(local_exploiter_result, mission["user"])
+                if user_password == null then print("Can't find user password in /var/passwd")
+                break
+            end for
+
+
+            for router_shell_memory_exploit_map in router_shell_memory_exploit_map_list
+                if not router_root_password == null then break
+
+                router_shell = router_shell_memory_exploit_map["shell"]
+
+                router_passwd_file = router_shell.host_computer.File("/etc/passwd")
+                if not router_passwd_file.has_permission("r") then continue
+
+                router_root_password = passwd_grabber(router_passwd_file, "root")
+                break
+            end for
+
+            for router_computer_memory_exploit_map in router_computer_memory_exploit_map_list
+                if not router_root_password == null then break
+
+                router_computer = router_computer_memory_exploit_map["computer"]
+
+                router_passwd_file = router_computer.File("/etc/passwd")
+                if not router_passwd_file.has_permission("r") then continue
+
+                router_root_password = passwd_grabber(router_passwd_file, "root")
+                break
+            end for
+
+            for router_file_memory_exploit_map in router_file_memory_exploit_map_list
+                if not router_root_password == null then break
+
+                router_file = router_file_memory_exploit_map["file"]
+
+                router_passwd_file = get_file(router_file, "/etc", "passwd")
+                if not router_passwd_file.has_permission("r") then continue
+
+                router_root_password = passwd_grabber(router_passwd_file, "root")
+                break
+            end for
+
+            for router_shell_memory_exploit_map in router_shell_memory_exploit_map_list
+                if not router_root_password == null then break
+
+                router_shell = router_shell_memory_exploit_map["shell"]
+
+                guest_folder = router_shell.host_computer.File("/home/guest/")
+                if not guest_folder.has_permission("w") then continue
+
+                local_exploiter_result = launch_local_exploiter(router_shell)
+                if not local_exploiter_result == null then router_root_password = passwd_grabber(local_exploiter_result, "root")
+                if router_root_password == null then continue
+                break
+            end for
+
+
+            is_log_deleted = false
+            for shell_memory_exploit_map in shell_memory_exploit_map_list
+                if root_password == null then break
+
+                shell = shell_memory_exploit_map["shell"]
+
+                guest_folder = shell.host_computer.File("/home/guest/")
+                if not guest_folder.has_permission("w") then continue
+
+                error = launch_log_deleter(shell, root_password)
+                if not error == null then; print(error); break; end if
+                is_log_deleted = true
+                break
+            end for
+            for port in get_router(target_public_ip).used_ports
+                if root_password == null or is_log_deleted then break
+
+                if not port.get_lan_ip == target_lan_ip then continue
+                if port.is_closed then continue
+                if not get_router(target_public_ip).port_info(port).split(" ")[0] == "ssh" then continue
+
+                shell = get_shell.connect_service(target_public_ip, port.port_number, "root", root_password)
+
+                guest_folder = shell.host_computer.File("/home/guest/")
+                if not guest_folder.has_permission("w") then break
+
+                error = launch_log_deleter(shell, root_password)
+                if not error == null then; print(error); break; end if
+                is_log_deleted = true
+                break
+            end for
+
+            is_router_log_deleted = false
+            for router_shell_memory_exploit_map in router_shell_memory_exploit_map_list
+                if router_root_password == null then break
+
+                router_shell = router_shell_memory_exploit_map["shell"]
+
+                guest_folder = router_shell.host_computer.File("/home/guest/")
+                if not guest_folder.has_permission("w") then continue
+
+                if not router_root_password == null then
+                    error = launch_log_deleter(router_shell, router_root_password)
+                    if not error == null then; print(error); break; end if
+                    is_router_log_deleted = true
+                    break
+                end if
+                break
+            end for
+
+
+            result = ""
+            if mission["type"] == "a_get_any_credentials" then
+                if root_password == null then
+                    result = "Can't get root password! - "+target_public_ip+" | "+target_lan_ip
+                else
+                    result = root_password+" - "+target_public_ip+" | "+target_lan_ip
+                end if
+            else if mission["type"] == "b_get_specific_credentials" then
+                if user_password == null then
+                    result = "Can't get user password! - "+target_public_ip+" | "+target_lan_ip
+                else
+                    result = user_password+" - "+target_public_ip+" | "+target_lan_ip
+                end if
+            else
+                result = "How did we get here?"
+            end if
+            if not is_log_deleted then result = result+" - Can't delete log!"
+            if not is_router_log_deleted then result = result+" - Can't delete router log!"
+            result = result+" - "+root_password+" - "+router_root_password
+
+            result_list.push(result)
+            print(result)
+        end if
+    end for
+
+    print("\n\n\n\n")
+
+    for result in result_list
+        print(result)
+    end for
+end function
