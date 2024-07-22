@@ -1,0 +1,18 @@
+conproxy = {}
+conproxy.cmd = "conproxy"
+conproxy.alias = null
+conproxy.args = "(--noCorruptLog)"
+conproxy.desc = "Connect to proxy server"
+
+conproxy.run = function(args)
+    is_noCorruptLog = false
+    if args.len >= 1 then; if args[0] == "--noCorruptLog" then is_noCorruptLog = true; end if
+
+    shell = get_shell
+    for proxy_server in get_proxy_server_list
+    if proxy_server.key == null then; print("Proxy server: "+proxy_server+" Doesn't have key! Is it initialize?"); continue; end if
+        shell = shell.connect_service(proxy_server.ip, proxy_server.ssh_port, "root", proxy_server.password+" "+proxy_server.key)
+        if not is_noCorruptLog then launch_log_corrupter(shell, proxy_server.password)
+    end for
+    shell.start_terminal
+end function

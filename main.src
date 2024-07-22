@@ -12,11 +12,12 @@ import_code("functions/script_launcher.src")
 import_code("functions/script_installer.src")
 
 import_code("commands/autohack.src")
+import_code("commands/corruptlog.src")
 import_code("commands/initsecureshell.src")
 import_code("commands/modproxy.src")
-import_code("commands/corruptlog.src")
+import_code("commands/conproxy.src")
 
-command_list = [autohack, initsecureshell, modproxy, corruptlog]
+command_list = [autohack, corruptlog, initsecureshell, conproxy]
 
 cmd_list = []
 alias_list = []
