@@ -1,0 +1,70 @@
+corruptlog = {}
+corruptlog.cmd = "corruptlog"
+corruptlog.alias = null
+corruptlog.args = "(--full) [-h, -s, -p] (target_ip) (target_root_password) (target_ssh_port) (target_AES_key)"
+corruptlog.desc = "Corrupt or empty the system.log in the specify computer/server"
+
+corruptlog.run = function(args)
+    if args.len < 1 then exit("Invalid argument!")
+    is_full = false
+
+    args1 = args
+    if args1[0] == "--full" then
+        args1 = args[1:]
+        is_full = true
+    end if
+
+    flag = args1[0]
+
+    shell_password_list = []
+    if flag == "-h" then
+        shell_password = {}
+        shell_password.shell = get_shell("root", root_password)
+        shell_password.password = root_password
+        shell_password_list.push(shell_password)
+    else if flag == "-s" then
+        if args1.len < 4 then exit("Example: gfm "+initsecureshell.cmd+" -s 127.0.0.1 12345678 22")
+        target_ip = args1[1]
+        root_password = args1[2]
+        ssh_port = 22; if args1.len >= 4 then ssh_port = args1[3]
+
+        if args1.len >= 5 then
+            if not args1[4].len == 16 then exit("Key must be exactly 16 character long!")
+            root_password = root_password+" "+args1[4]
+        end if
+
+        shell = get_shell.connect_service(target_ip, ssh_port, "root", root_password)
+        if shell == null then exit("Can't connect to that server/computer!")
+
+        shell_password = {}
+        shell_password.shell = shell
+        shell_password.password = root_password
+        shell_password_list.push(shell_password)
+    else if flag == "-p" then
+        for proxy_server in get_proxy_server_list
+            password = proxy_server.password
+            if not proxy_server.key == null then password = password+" "+proxy_server.key
+
+            shell = get_shell.connect_service(proxy_server.ip, proxy_server.ssh_port, "root", password)
+            if shell == null then exit("[gfm] Error: Can't connect to proxy server: "+proxy_server)
+
+            shell_password = {}
+            shell_password.shell = shell
+            shell_password.password = proxy_server.password
+            shell_password_list.push(shell_password)
+        end for
+    else
+        exit("Invalid argument!")
+    end if
+
+    for shell_password in shell_password_list
+        shell = shell_password.shell
+        password = shell_password.password
+
+        if not is_full then
+            launch_log_corrupter(shell, password)
+        else
+            launch_log_deleter(shell, password)
+        end if
+    end for
+end function
