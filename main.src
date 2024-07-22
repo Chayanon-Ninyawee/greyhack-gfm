@@ -1,7 +1,10 @@
 import_code("config.src")
 import_code("constants.src")
 import_code("functions/utils.src")
+import_code("functions/AES128.src")
+
 import_code("functions/lib_manager.src")
+import_code("functions/config_manager.src")
 import_code("functions/mail_manager.src")
 import_code("functions/metaLib_database.src")
 import_code("functions/metaLib_manager.src")
@@ -10,8 +13,9 @@ import_code("functions/script_installer.src")
 
 import_code("commands/autohack.src")
 import_code("commands/initsecureshell.src")
+import_code("commands/modproxy.src")
 
-command_list = [autohack, initsecureshell]
+command_list = [autohack, initsecureshell, modproxy]
 
 cmd_list = []
 alias_list = []

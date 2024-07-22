@@ -1,0 +1,76 @@
+modproxy = {}
+modproxy.cmd = "modproxy"
+modproxy.alias = null
+modproxy.args = ""
+modproxy.desc = "Modify proxy server in the list"
+
+modproxy.run = function(args)
+    while true
+        proxy_server_list = get_proxy_server_list
+
+        if not proxy_server_list.len == 0 then
+            for i in range(0, proxy_server_list.len-1)
+                proxy_server = proxy_server_list[i]
+                proxy_server_info_string = proxy_server.ip+" "+proxy_server.ssh_port+" "+proxy_server.password
+                if not proxy_server.key == null then proxy_server_info_string = proxy_server_info_string+" "+proxy_server.key
+                print("["+i+"]: "+proxy_server_info_string)
+            end for
+        end if
+        print("["+proxy_server_list.len+"]: Add new proxy server")
+
+        selected_index = user_input("Select proxy server: ").to_int
+        if typeof(selected_index) == "string" then; print("Invalid index!"); continue; end if
+        if selected_index < 0 or selected_index > proxy_server_list.len then; print("Invalid index!"); continue; end if
+
+        if selected_index == proxy_server_list.len then
+            server = {}
+            server.ip = user_input("Proxy server IP: ")
+            server.ssh_port = user_input("Proxy server SSH port: ")
+            server.password = user_input("Proxy server password: ")
+            server.key = user_input("Proxy server AES key (if not setup yet just press enter): ")
+
+            if server.ip == "" then; print("Invalid IP!"); continue; end if
+            if server.ssh_port == "" then; print("Invalid SSH port!"); continue; end if
+            if server.password == "" then; print("Invalid password!"); continue; end if
+            if not server.key.len == 16 then server.key = null
+
+            proxy_server_list.push(server)
+            set_proxy_server_list(proxy_server_list)
+            continue
+        end if
+
+        proxy_server = proxy_server_list[selected_index]
+        proxy_server_info_string = proxy_server.ip+" "+proxy_server.ssh_port+" "+proxy_server.password
+        if not proxy_server.key == null then proxy_server_info_string = proxy_server_info_string+" "+proxy_server.key
+        print("Selected proxy server: "+proxy_server_info_string)
+        print("[0]: Modify")
+        print("[1]: Delete")
+        option = user_input("Select option: ").to_int
+        if typeof(option) == "string" then; print("Invalid index!"); continue; end if
+        if option < 0 or option > 1 then; print("Invalid index!"); continue; end if
+
+        if option == 0 then
+            server = {}
+            server.ip = user_input("Proxy server IP (press enter to skip): ")
+            server.ssh_port = user_input("Proxy server SSH port (press enter to skip): ")
+            server.password = user_input("Proxy server password (press enter to skip): ")
+            server.key = user_input("Proxy server AES key (press enter to skip or type 'clear' to clear the key): ")
+
+            if server.ip == "" then server.ip = proxy_server.ip
+            if server.ssh_port == "" then server.ssh_port = proxy_server.ssh_port
+            if server.password == "" then server.password = proxy_server.password
+            
+            if server.key == "" then; server.key = proxy_server.key
+            else if server.key == "clear" then; server.key = null
+            else if not server.key.len == 16 then; server.key = null; end if
+
+            proxy_server_list[selected_index] = server
+            set_proxy_server_list(proxy_server_list)
+            print("Modified proxy server ["+selected_index+"]")
+        else if option == 1 then
+            proxy_server_list.remove(selected_index)
+            set_proxy_server_list(proxy_server_list)
+            print("Deleted proxy server ["+selected_index+"]")
+        end if
+    end while
+end function
