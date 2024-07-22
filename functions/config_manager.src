@@ -46,7 +46,7 @@ get_proxy_server_list = function()
             server.ip = server_info[0]
             server.ssh_port = server_info[1].to_int
             server.password = server_info[2]
-            server.key = null; if server_info.len >= 4 then server_key = server_info[3]
+            server.key = null; if server_info.len >= 4 then server.key = server_info[3]
 
             server_list.push(server)
         end for
