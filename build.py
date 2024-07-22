@@ -33,6 +33,7 @@ def replace_import_script(content, base_path):
             imported_content = replace_import_script(imported_content, base_path)
             imported_content = remove_comments_and_whitespace(imported_content)
             imported_content = imported_content.replace('"', '""')
+            imported_content = imported_content.replace('\n', ';')
             imported_content = f'"{imported_content}"'
             content = content.replace(match.group(0), imported_content)
         else:
