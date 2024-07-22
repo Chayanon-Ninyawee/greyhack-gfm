@@ -1,16 +1,16 @@
-// Launches a log deleter script on the target shell.
+// Launches a logdeleter script on the target shell.
 //
-// @param {Shell} target_shell - Shell object representing the target shell where the log deleter will be deployed.
+// @param {Shell} target_shell - Shell object representing the target shell where the logdeleter will be deployed.
 // @param {string} target_root_password - String representing the root password of the target system.
 // 
-// @return {string} - A string indicating if there was an error while launching the log deleter script.
+// @return {string} - A string indicating if there was an error while launching the logdeleter script.
 //
 // Requirements:
 // - The target shell must have write permission in the /home/guest/ directory.
 // - The home shell must have a file named "empty_log/system.log" in the current path.
 //
 // Side Effects:
-// - Deletes everything in the /var/system.log
+// - Deletes /var/system.log
 launch_log_deleter = function(target_shell, target_root_password)
     get_custom_object.target_root_password = target_root_password
     log_deleter_src = "@import_script(scripts/logdeleter.src)"
@@ -32,6 +32,34 @@ launch_log_deleter = function(target_shell, target_root_password)
 
     get_custom_object.error = "Didn't launch /home/guest/logdeleter yet!"
     target_shell.launch("/home/guest/logdeleter")
+    return get_custom_object.error
+end function
+
+// Launches a logcorrupter script on the target shell.
+//
+// @param {Shell} target_shell - Shell object representing the target shell where the logcorrupter will be deployed.
+// @param {string} target_root_password - String representing the root password of the target system.
+// 
+// @return {string} - A string indicating if there was an error while launching the logcorrupter script.
+//
+// Requirements:
+// - The target shell must have write permission in the /home/guest/ directory.
+//
+// Side Effects:
+// - Corrupts /var/system.log
+launch_log_corrupter = function(target_shell, target_root_password)
+    get_custom_object.target_root_password = target_root_password
+    log_deleter_src = "@import_script(scripts/logcorrupter.src)"
+    
+    if not target_shell.host_computer.File("/home/guest/").has_permission("w") then exit("[gfm] Error: Target Shell has no write permission in /home/guest/")
+
+    target_shell.host_computer.touch("/home/guest/", "logcorrupter.src")
+    target_shell.host_computer.File("/home/guest/logcorrupter.src").set_content(log_deleter_src)
+    target_shell.build("/home/guest/logcorrupter.src", "/home/guest/")
+    target_shell.host_computer.File("/home/guest/logcorrupter.src").delete()
+
+    get_custom_object.error = "Didn't launch /home/guest/logcorrupter yet!"
+    target_shell.launch("/home/guest/logcorrupter")
     return get_custom_object.error
 end function
 
