@@ -1,0 +1,79 @@
+get_gfm_file = function()
+    gfm_file = get_shell("root", root_password).host_computer.File(user_folder_path+"/Config/gfm.txt")
+    if gfm_file == null then
+        get_shell("root", root_password).host_computer.touch(user_folder_path+"/Config", "gfm.txt")
+        gfm_file = get_shell("root", root_password).host_computer.File(user_folder_path+"/Config/gfm.txt")
+    end if
+    if gfm_file == null then exit("[gfm] Error: Can't create "+user_folder_path+"/Config/gfm.txt")
+
+    return gfm_file
+end function
+
+get_config_list = function()
+    gfm_file_content = get_gfm_file.get_content
+    if gfm_file_content == "" then return []
+    return AES128_decrypt(encryption_key, gfm_file_content).split("-")
+end function
+
+set_config_list = function(config_list)
+    get_gfm_file.set_content(AES128_encrypt(encryption_key, config_list.join("-")))
+end function
+
+
+parse_proxy_server_list_to_string = function(proxy_server_list)
+    server_string_list = []
+    for proxy_server in proxy_server_list
+        server_string = proxy_server.ip+" "+proxy_server.ssh_port+" "+proxy_server.password
+        if not proxy_server.key == null then server_string = server_string+" "+proxy_server.key
+        server_string_list.push(server_string)
+    end for
+    if server_string_list.len == 0 then return ""
+    return char(10)+server_string_list.join(char(10))
+end function
+
+get_proxy_server_list = function()
+    config_list = get_config_list()
+    for config in config_list
+        if not config.is_match("proxy") then continue
+        if not config.matches("proxy").indexes[0] == 0 then continue
+
+        server_list = []
+        server_string_list = config.split(char(10))[1:]
+        for server_string in server_string_list
+            server_info = server_string.split(" ")
+            if server_info.len < 3 then exit("[gfm] Error: server_info has len < 3\nserver_info:\n"+server_info+"\nEnd server_info")
+            server = {}
+            server.ip = server_info[0]
+            server.ssh_port = server_info[1].to_int
+            server.password = server_info[2]
+            server.key = null; if server_info.len >= 4 then server_key = server_info[3]
+
+            server_list.push(server)
+        end for
+        return server_list
+    end for
+
+    config_list.push("proxy")
+    set_config_list(config_list)
+    return []
+end function
+
+set_proxy_server_list = function(proxy_server_list)
+    proxy_server_list_string = parse_proxy_server_list_to_string(proxy_server_list)
+
+    config_list = get_config_list()
+    if not config_list.len == 0 then
+        for i in range(0,config_list.len-1)
+            config = config_list[i]
+            if not config.is_match("proxy") then continue
+            if not config.matches("proxy").indexes[0] == 0 then continue
+
+            config_list[i] = "proxy"+proxy_server_list_string
+            set_config_list(config_list)
+            return
+        end for
+    end if
+
+    config_list.push("proxy"+proxy_server_list_string)
+    set_config_list(config_list)
+end function
