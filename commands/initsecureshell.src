@@ -1,10 +1,10 @@
-initsecureshell = {}
-initsecureshell.cmd = "initsecureshell"
-initsecureshell.alias = "iss"
-initsecureshell.args = "(--noCorruptLog) [-h, -s, -p] (target_ip) (target_root_password) (target_ssh_port)"
-initsecureshell.desc = "Initialize encode.src, decode.bin, and ssh in the specify computer/server"
+initSecureShell = {}
+initSecureShell.cmd = "initSecureShell"
+initSecureShell.alias = "iss"
+initSecureShell.args = "(--noCorruptLog) [-h, -s, -p] (target_ip) (target_root_password) (target_ssh_port)"
+initSecureShell.desc = "Initialize encode.src, decode.bin, and ssh in the specify computer/server"
 
-initsecureshell.run = function(args)
+initSecureShell.run = function(args)
     if args.len < 1 then exit("Invalid argument!")
     is_noCorruptLog = false
 
@@ -23,7 +23,7 @@ initsecureshell.run = function(args)
         shell_password.password = root_password
         shell_password_list.push(shell_password)
     else if flag == "-s" then
-        if args1.len < 3 then exit("Example: gfm "+initsecureshell.cmd+" -s 127.0.0.1 12345678 22")
+        if args1.len < 3 then exit("Example: gfm "+initSecureShell.cmd+" -s 127.0.0.1 12345678 22")
         target_ip = args1[1]
         root_password = args1[2]
         ssh_port = 22; if args1.len >= 4 then ssh_port = args1[3]

@@ -11,13 +11,13 @@ import_code("functions/metaLib_manager.src")
 import_code("functions/script_launcher.src")
 import_code("functions/script_installer.src")
 
-import_code("commands/autohack.src")
-import_code("commands/corruptlog.src")
-import_code("commands/initsecureshell.src")
-import_code("commands/modproxy.src")
-import_code("commands/conproxy.src")
+import_code("commands/autoHack.src")
+import_code("commands/corruptLog.src")
+import_code("commands/initSecureShell.src")
+import_code("commands/modifyProxy.src")
+import_code("commands/connectProxy.src")
 
-command_list = [autohack, corruptlog, initsecureshell, conproxy]
+command_list = [autoHack, corruptLog, initSecureShell, modifyProxy, connectProxy]
 
 cmd_list = []
 alias_list = []

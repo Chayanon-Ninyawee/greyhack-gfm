@@ -1,10 +1,10 @@
-corruptlog = {}
-corruptlog.cmd = "corruptlog"
-corruptlog.alias = null
-corruptlog.args = "(--full) [-h, -s, -p] (target_ip) (target_root_password) (target_ssh_port) (target_AES_key)"
-corruptlog.desc = "Corrupt or empty the system.log in the specify computer/server"
+corruptLog = {}
+corruptLog.cmd = "corruptLog"
+corruptLog.alias = "clog"
+corruptLog.args = "(--full) [-h, -s, -p] (target_ip) (target_root_password) (target_ssh_port) (target_AES_key)"
+corruptLog.desc = "Corrupt or empty the system.log in the specify computer/server"
 
-corruptlog.run = function(args)
+corruptLog.run = function(args)
     if args.len < 1 then exit("Invalid argument!")
     is_full = false
 
@@ -23,7 +23,7 @@ corruptlog.run = function(args)
         shell_password.password = root_password
         shell_password_list.push(shell_password)
     else if flag == "-s" then
-        if args1.len < 4 then exit("Example: gfm "+initsecureshell.cmd+" -s 127.0.0.1 12345678 22")
+        if args1.len < 4 then exit("Example: gfm "+corruptLog.cmd+" -s 127.0.0.1 12345678 22")
         target_ip = args1[1]
         root_password = args1[2]
         ssh_port = 22; if args1.len >= 4 then ssh_port = args1[3]

@@ -1,10 +1,10 @@
-conproxy = {}
-conproxy.cmd = "conproxy"
-conproxy.alias = null
-conproxy.args = "(--noCorruptLog)"
-conproxy.desc = "Connect to proxy server"
+connectProxy = {}
+connectProxy.cmd = "connectProxy"
+connectProxy.alias = "conproxy"
+connectProxy.args = "(--noCorruptLog)"
+connectProxy.desc = "Connect to proxy server"
 
-conproxy.run = function(args)
+connectProxy.run = function(args)
     is_noCorruptLog = false
     if args.len >= 1 then; if args[0] == "--noCorruptLog" then is_noCorruptLog = true; end if
 

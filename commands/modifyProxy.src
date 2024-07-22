@@ -1,10 +1,10 @@
-modproxy = {}
-modproxy.cmd = "modproxy"
-modproxy.alias = null
-modproxy.args = ""
-modproxy.desc = "Modify proxy server in the list"
+modifyProxy = {}
+modifyProxy.cmd = "modifyProxy"
+modifyProxy.alias = "modproxy"
+modifyProxy.args = ""
+modifyProxy.desc = "Modify proxy server in the list"
 
-modproxy.run = function(args)
+modifyProxy.run = function(args)
     while true
         proxy_server_list = get_proxy_server_list
 

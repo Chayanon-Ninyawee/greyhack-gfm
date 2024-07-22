@@ -1,10 +1,10 @@
-autohack = {}
-autohack.cmd = "autohack"
-autohack.alias = null
-autohack.args = null
-autohack.desc = "Hack the target specify in the mail."
+autoHack = {}
+autoHack.cmd = "autoHack"
+autoHack.alias = "autohack"
+autoHack.args = null
+autoHack.desc = "Hack the target specify in the mail."
 
-autohack.run = function(args)
+autoHack.run = function(args)
     mission_list = fetch_and_classify_missions()
 
     result_list = []
