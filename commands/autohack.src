@@ -96,7 +96,7 @@ autoHack.run = function(args)
                 if mission["type"] == "b_get_specific_credentials" and not user_password == null and not root_password == null then break
                 if not root_password == null then break
                 
-                computer = computer_memory_exploit_map["computer"]
+                computer = router_computer_memory_exploit_map["computer"]
                 if not computer.local_ip == target_lan_ip then continue
 
                 passwd_file = computer.File("/etc/passwd")
@@ -162,7 +162,7 @@ autoHack.run = function(args)
 
                 router_file = router_file_memory_exploit_map["file"]
 
-                router_passwd_file = get_file(router_file, "/etc", "passwd")
+                router_passwd_file = find_file(router_file, "/etc", "passwd")
                 if not router_passwd_file.has_permission("r") then continue
 
                 router_root_password = passwd_grabber(router_passwd_file, "root")

@@ -21,7 +21,7 @@ launch_log_deleter = function(target_shell, target_root_password)
     if empty_log_file == null then exit("[gfm] Error: can't find "+user_folder_path+"/empty_log/system.log")
     
     if not empty_log_file.chmod("o+rw") == "" then exit("[gfm] Error: can't chmod "+user_folder_path+"/empty_log/system.log")
-    log_scp_result = get_shell.scp(current_path + "/empty_log/system.log", "/home/guest/", target_shell)
+    log_scp_result = get_shell.scp(user_folder_path + "/empty_log/system.log", "/home/guest/", target_shell)
     if not empty_log_file.chmod("o-rwx") == "" then exit("[gfm] Error: can't chmod "+user_folder_path+"/empty_log/system.log")
     if typeof(log_scp_result) == "string" then exit("[gfm] Error: There was an error while sending system.log\n--- Error Info ---\n"+log_scp_result+"\n--- End Error Info ---")
 

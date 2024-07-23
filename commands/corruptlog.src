@@ -26,7 +26,8 @@ corruptLog.run = function(args)
         if args1.len < 4 then exit("Example: gfm "+corruptLog.cmd+" -s 127.0.0.1 12345678 22")
         target_ip = args1[1]
         root_password = args1[2]
-        ssh_port = 22; if args1.len >= 4 then ssh_port = args1[3]
+        ssh_port = 22; if args1.len >= 4 then ssh_port = args1[3].to_int
+        if typeof(ssh_port) == "string" then exit("Invalid port!")
 
         if args1.len >= 5 then
             if not args1[4].len == 16 then exit("Key must be exactly 16 character long!")
