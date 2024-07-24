@@ -36,6 +36,9 @@ corruptLog.run = function(args)
 
         shell = get_shell.connect_service(target_ip, ssh_port, "root", root_password)
         if shell == null then exit("Can't connect to that server/computer!")
+        if typeof(shell) == "string" then exit("Can't connect to that server/computer! Reason: "+shell)
+
+        print(shell)
 
         shell_password = {}
         shell_password.shell = shell
@@ -48,6 +51,7 @@ corruptLog.run = function(args)
 
             shell = get_shell.connect_service(proxy_server.ip, proxy_server.ssh_port, "root", password)
             if shell == null then exit("[gfm] Error: Can't connect to proxy server: "+proxy_server)
+            if typeof(shell) == "string" then exit("[gfm] Error: Can't connect to proxy server: "+proxy_server+" Reason: "+shell)
 
             shell_password = {}
             shell_password.shell = shell

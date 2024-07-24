@@ -26,10 +26,12 @@ initSecureShell.run = function(args)
         if args1.len < 3 then exit("Example: gfm "+initSecureShell.cmd+" -s 127.0.0.1 12345678 22")
         target_ip = args1[1]
         root_password = args1[2]
-        ssh_port = 22; if args1.len >= 4 then ssh_port = args1[3]
+        ssh_port = 22; if args1.len >= 4 then ssh_port = args1[3].to_int
+        if typeof(ssh_port) == "string" then exit("Invalid port!")
 
         shell = get_shell.connect_service(target_ip, ssh_port, "root", root_password)
         if shell == null then exit("Can't connect to that server/computer! Maybe secure shell is already setup?")
+        if typeof(shell) == "string" then exit("Can't connect to that server/computer! Reason: "+shell)
 
         shell_password = {}
         shell_password.shell = shell
@@ -45,6 +47,7 @@ initSecureShell.run = function(args)
 
                 shell = get_shell.connect_service(proxy_server.ip, proxy_server.ssh_port, "root", proxy_server.password)
                 if shell == null then exit("[gfm] Error: Can't connect to proxy server: "+proxy_server)
+                if typeof(shell) == "string" then exit("[gfm] Error: Can't connect to proxy server: "+proxy_server+" Reason: "+shell)
 
                 shell_password = {}
                 shell_password.shell = shell
