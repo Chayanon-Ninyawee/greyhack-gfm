@@ -1,7 +1,7 @@
 initSecureShell = {}
 initSecureShell.cmd = "initSecureShell"
 initSecureShell.alias = "iss"
-initSecureShell.args = "(--noCorruptLog) [-h, -s, -p] (target_ip) (target_root_password) (target_ssh_port)"
+initSecureShell.args = "(--noCorruptLog) [-h, -s] (target_ip) (target_root_password) (target_ssh_port)"
 initSecureShell.desc = "Initialize encode.src, decode.bin, and ssh in the specify computer/server"
 
 initSecureShell.run = function(args)
@@ -37,28 +37,6 @@ initSecureShell.run = function(args)
         shell_password.shell = shell
         shell_password.password = root_password
         shell_password_list.push(shell_password)
-    else if flag == "-p" then
-        proxy_server_list = get_proxy_server_list
-
-        if not proxy_server_list.len == 0 then
-            for i in range(0, proxy_server_list.len-1)
-                proxy_server = proxy_server_list[i]
-                if not proxy_server.key == null then continue
-
-                shell = get_shell.connect_service(proxy_server.ip, proxy_server.ssh_port, "root", proxy_server.password)
-                if shell == null then exit("[gfm] Error: Can't connect to proxy server: "+proxy_server)
-                if typeof(shell) == "string" then exit("[gfm] Error: Can't connect to proxy server: "+proxy_server+" Reason: "+shell)
-
-                shell_password = {}
-                shell_password.shell = shell
-                shell_password.password = proxy_server.password
-                shell_password_list.push(shell_password)
-
-                proxy_server.key = encryption_key
-                proxy_server_list[i] = proxy_server
-            end for
-        end if
-        set_proxy_server_list(proxy_server_list)
     else
         exit("Invalid argument!")
     end if

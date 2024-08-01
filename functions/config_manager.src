@@ -70,6 +70,7 @@ get_proxy_server_list = function()
                 server.key = null
             else if ips.len == 1 then
                 if server.ssh_port == null or server.password == null then exit("[gfm] Error: server_info ssh_port and password is null")
+                server.lan_ip = null
             else
                 exit("[gfm] Error: How did we get here? (config_manager.src)")
             end if

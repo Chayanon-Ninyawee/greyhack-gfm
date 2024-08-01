@@ -15,9 +15,10 @@ import_code("commands/autoHack.src")
 import_code("commands/corruptLog.src")
 import_code("commands/initSecureShell.src")
 import_code("commands/modifyProxy.src")
+import_code("commands/initProxy.src")
 import_code("commands/connectProxy.src")
 
-command_list = [autoHack, corruptLog, initSecureShell, modifyProxy, connectProxy]
+command_list = [autoHack, corruptLog, initSecureShell, modifyProxy, initProxy, connectProxy]
 
 cmd_list = []
 alias_list = []

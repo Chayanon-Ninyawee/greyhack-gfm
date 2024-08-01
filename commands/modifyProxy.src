@@ -148,7 +148,7 @@ end function
 
 modifyProxy.get_proxy_server_info_string = function(proxy_server, is_show_hidden)
     proxy_server_info_string = "* "
-    if not proxy_server.key == null then proxy_server_info_string = "  "
+    if not proxy_server.key == null or not proxy_server.lan_ip == null then proxy_server_info_string = "  "
 
     proxy_server_info_string = proxy_server_info_string+proxy_server.ip
     if not proxy_server.ssh_port == null then; proxy_server_info_string = proxy_server_info_string+":"+proxy_server.ssh_port
