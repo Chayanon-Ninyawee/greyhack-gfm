@@ -24,6 +24,7 @@ parse_proxy_server_list_to_string = function(proxy_server_list)
     server_string_list = []
     for proxy_server in proxy_server_list
         server_string = proxy_server.ip
+        if not proxy_server.lan_ip == null then server_string = server_string+":"+proxy_server.lan_ip
         if not proxy_server.ssh_port == null then server_string = server_string+" "+proxy_server.ssh_port
         if not proxy_server.password == null then server_string = server_string+" "+proxy_server.password
         if not proxy_server.key == null then server_string = server_string+" "+proxy_server.key
@@ -58,6 +59,20 @@ get_proxy_server_list = function()
             end if
 
             if server_info.len >= 4 then server.key = server_info[3]
+
+            ips = server.ip.split(":")
+            if ips.len == 2 then
+                if not (server.ssh_port == null or server.password == null) then exit("[gfm] Error: server_info ssh_port and password is not null")
+                server.ip = ips[0]
+                server.lan_ip = ips[1]
+                server.ssh_port = null
+                server.password = null
+                server.key = null
+            else if ips.len == 1 then
+                if server.ssh_port == null or server.password == null then exit("[gfm] Error: server_info ssh_port and password is null")
+            else
+                exit("[gfm] Error: How did we get here? (config_manager.src)")
+            end if
 
             server_list.push(server)
         end for

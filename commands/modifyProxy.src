@@ -43,6 +43,7 @@ modifyProxy.run = function(args)
         if selected_index == 0 then
             server = {}
             server.ip = user_input("NPC IP: ")
+            server.lan_ip = user_input("NPC LAN IP: ")
             server.ssh_port = null
             server.password = null
             server.key = null
@@ -53,6 +54,7 @@ modifyProxy.run = function(args)
         else if selected_index == 1 then
             server = {}
             server.ip = user_input("Proxy server IP: ")
+            server.lan_ip = null
             server.ssh_port = user_input("Proxy server SSH port: ")
             server.password = user_input("Proxy server password: ", not is_show_hidden)
             server.key = user_input("Proxy server AES key (if not setup yet just press enter): ", not is_show_hidden)
@@ -104,16 +106,20 @@ modifyProxy.run = function(args)
             if proxy_server.ssh_port == null or proxy_server.password == null then
                 server = {}
                 server.ip = user_input("Proxy server IP (press enter to skip): ")
+                server.lan_ip = user_input("Proxy server LAN IP (press enter to skip): ")
                 server.ssh_port = null
                 server.password = null
                 server.key = null
 
                 if server.ip == "" then server.ip = proxy_server.ip
+                if server.lan_ip == "" then server.lan_ip = proxy_server.lan_ip
+
                 proxy_server_list[selected_index] = server
                 set_proxy_server_list(proxy_server_list)
             else
                 server = {}
                 server.ip = user_input("Proxy server IP (press enter to skip): ")
+                server.lan_ip = null
                 server.ssh_port = user_input("Proxy server SSH port (press enter to skip): ")
                 server.password = user_input("Proxy server password (press enter to skip)", not is_show_hidden)
                 server.key = user_input("Proxy server AES key (press enter to skip or type 'clear' to clear the key): ", not is_show_hidden)
@@ -141,11 +147,12 @@ modifyProxy.run = function(args)
 end function
 
 modifyProxy.get_proxy_server_info_string = function(proxy_server, is_show_hidden)
-    proxy_server_info_string = "  "
-    if not proxy_server.key == null then proxy_server_info_string = "* "
+    proxy_server_info_string = "* "
+    if not proxy_server.key == null then proxy_server_info_string = "  "
 
     proxy_server_info_string = proxy_server_info_string+proxy_server.ip
-    if not proxy_server.ssh_port == null then proxy_server_info_string = proxy_server_info_string+":"+proxy_server.ssh_port
+    if not proxy_server.ssh_port == null then; proxy_server_info_string = proxy_server_info_string+":"+proxy_server.ssh_port
+    else if not proxy_server.lan_ip == null then; proxy_server_info_string = proxy_server_info_string+" "+proxy_server.lan_ip; end if
     
     if is_show_hidden then
         proxy_server_info_string = proxy_server_info_string+" "+proxy_server.password
