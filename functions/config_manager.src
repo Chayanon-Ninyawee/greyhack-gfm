@@ -23,7 +23,9 @@ end function
 parse_proxy_server_list_to_string = function(proxy_server_list)
     server_string_list = []
     for proxy_server in proxy_server_list
-        server_string = proxy_server.ip+" "+proxy_server.ssh_port+" "+proxy_server.password
+        server_string = proxy_server.ip
+        if not proxy_server.ssh_port == null then server_string = server_string+" "+proxy_server.ssh_port
+        if not proxy_server.password == null then server_string = server_string+" "+proxy_server.password
         if not proxy_server.key == null then server_string = server_string+" "+proxy_server.key
         server_string_list.push(server_string)
     end for
@@ -41,12 +43,21 @@ get_proxy_server_list = function()
         server_string_list = config.split(char(10))[1:]
         for server_string in server_string_list
             server_info = server_string.split(" ")
-            if server_info.len < 3 then exit("[gfm] Error: server_info has len < 3\nserver_info:\n"+server_info+"\nEnd server_info")
+
+            valid_len = [1, 3, 4]
+            if valid_len.indexOf(server_info.len) == null then exit("[gfm] Error: server_info has invalid len\nserver_info.len:\n"+server_info.len+"\nEnd server_info")
             server = {}
             server.ip = server_info[0]
-            server.ssh_port = server_info[1].to_int
-            server.password = server_info[2]
-            server.key = null; if server_info.len >= 4 then server.key = server_info[3]
+            server.ssh_port = null
+            server.password = null
+            server.key = null
+
+            if server_info.len >= 3 then
+                server.ssh_port = server_info[1].to_int
+                server.password = server_info[2]
+            end if
+
+            if server_info.len >= 4 then server.key = server_info[3]
 
             server_list.push(server)
         end for
