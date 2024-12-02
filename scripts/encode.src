@@ -1,4 +1,4 @@
-import_code("functions/AES128.src")
+import_code("/functions/AES128.src")
 
 Encode = function(password)
     password_split = password.split(" ")

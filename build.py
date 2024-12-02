@@ -5,19 +5,37 @@ def read_file(filepath):
     with open(filepath, 'r') as file:
         return file.read()
 
-def replace_import_code(content, base_path):
+def replace_import_code(content, base_path, seen_imports=None):
+    if seen_imports is None:
+        seen_imports = set()
+
     pattern = r'import_code\("([^"]+)"\)'
     matches = re.finditer(pattern, content)
 
     for match in matches:
-        import_path = os.path.join(base_path, match.group(1))
+        import_path_raw = match.group(1)
+        
+        # Remove leading slash if present
+        if import_path_raw.startswith('/'):
+            import_path_raw = import_path_raw[1:]
+
+        import_path = os.path.join(base_path, import_path_raw)
+        normalized_path = os.path.normpath(import_path)
+
+        if normalized_path in seen_imports:
+            # Skip already imported files
+            content = content.replace(match.group(0), "")
+            # print(f'Info: Skipped "{normalized_path}" since it already imported.')
+            continue
+
         if os.path.exists(import_path):
+            seen_imports.add(normalized_path)
             imported_content = read_file(import_path)
-            imported_content = replace_import_code(imported_content, base_path)
+            imported_content = replace_import_code(imported_content, base_path, seen_imports)
             imported_content = replace_import_script(imported_content, base_path)
             content = content.replace(match.group(0), imported_content)
         else:
-            print(f"Warning: {import_path} does not exist.")
+            print(f'Warning: "{import_path}" does not exist.')
 
     return content
 

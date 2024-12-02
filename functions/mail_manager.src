@@ -1,3 +1,5 @@
+import_code("/config.src")
+
 // Processes a list of mail results and extracts the subject and body from each email.
 //
 // @param {Array<String>} mail_result_list - A list of strings, where each string represents a complete email.

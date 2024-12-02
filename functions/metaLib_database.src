@@ -1,3 +1,5 @@
+import_code("/config.src")
+
 // Converts a map of metaLib exploit information into a formatted string.
 //
 // This function processes a map where each key is a meta library string and its value is a list of memory exploit mappings.

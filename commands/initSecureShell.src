@@ -1,3 +1,5 @@
+import_code("/config.src")
+
 initSecureShell = {}
 initSecureShell.cmd = "initSecureShell"
 initSecureShell.alias = "iss"
