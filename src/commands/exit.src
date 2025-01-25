@@ -3,6 +3,7 @@ CommandExit.cmd = "exit"
 CommandExit.alias = ""
 CommandExit.args = ""
 CommandExit.desc = "Exit GFM Tools"
+CommandExit.man = "No manual entry for exit"
 
 CommandExit.exec = function(args)
     exit("Exiting GFM Tools...")

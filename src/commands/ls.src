@@ -3,8 +3,14 @@ import_code("/src/shell.src")
 CommandLs = {}
 CommandLs.cmd = "ls"
 CommandLs.alias = ""
-CommandLs.args = "[-l] [-a] [-h]"
+CommandLs.args = "[-l|-a|-h] [directory]"
 CommandLs.desc = "Shows the list of files in the current folder"
+CommandLs.man = "
+    -l: Display detailed information about files, such as permissions, owner, group, size, and modification time.
+    -a: Include hidden files (those that start with a dot) in the listing.
+    -h: Display file sizes in a human-readable format (e.g., KB, MB, GB).
+    [directory]: Optionally, specify a directory to list. If no directory is provided, it lists the current directory.
+"
 
 CommandLs.exec = function(args)
     showAll = false  // `-a`: Include hidden files
@@ -49,7 +55,22 @@ CommandLs.exec = function(args)
     longestGroup = 0
     longestFileSize = 0
 
-    for file in (GfmShell.context.currentFolder.get_files + GfmShell.context.currentFolder.get_folders)
+    files = GfmShell.context.currentFolder.get_files + GfmShell.context.currentFolder.get_folders
+    if args.len != 0 then
+        if args[-1][0] != "-" then
+            targetPath = args[-1]
+            targetFolder = resolveFolderPath(targetPath, GfmShell.context.currentFolder)
+
+            if targetFolder == null then
+                GfmShell.println("ls: cannot access '"+targetPath+"': No such directory")
+                return
+            end if
+
+            files = targetFolder.get_files + targetFolder.get_folders
+        end if
+    end if
+
+    for file in files
         if not showAll and file.name[0] == "." then continue  // Skip hidden files unless -a is set
 
         if humanReadable then

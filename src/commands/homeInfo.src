@@ -5,6 +5,7 @@ CommandHomeInfo.cmd = "homeinfo"
 CommandHomeInfo.alias = ""
 CommandHomeInfo.args = ""
 CommandHomeInfo.desc = "Displays the hostname and IP address of the computer running the script"
+CommandHomeInfo.man = "No manual entry for homeinfo"
 
 CommandHomeInfo.exec = function(args)
     hostname = get_shell.host_computer.get_name
