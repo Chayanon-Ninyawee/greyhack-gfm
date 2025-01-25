@@ -8,6 +8,6 @@ CommandPs.desc = "Shows the active processes of the operating system"
 CommandPs.man = "No manual entry for ps"
 
 CommandPs.exec = function(args)
-    output = get_shell.host_computer.show_procs
+    output = GfmShell.context.currentComputer.show_procs
     GfmShell.println(format_columns(output))
 end function
