@@ -1,0 +1,10 @@
+import_code("/src/config.src")
+
+import_code("/src/encryption/AES128.src")
+import_code("/src/database.src")
+
+Database.setPassword(user_input("Password: ", true))
+
+
+encrypted_test_string = AES128_encrypt(Database.getKey, DATABASE_TEST_STRING)
+print(encrypted_test_string)

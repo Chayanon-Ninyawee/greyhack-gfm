@@ -1,0 +1,48 @@
+// `Pure Function` — Converts a hexadecimal string to a decimal number.
+//
+// @param {string} hexString - The hexadecimal string to convert to a number.
+// @description *@param* `string` — hexString - The hexadecimal string to convert to a number.
+//
+// @return {int} The decimal value represented by the hexadecimal string.
+// @description *@return* `int` — The decimal value represented by the hexadecimal string.
+// @description Returns -1 if the string is empty or contains invalid characters.
+hexToNumber = function(hexString)
+    value = 0
+    for i in range(0, hexString.len-1)
+        hexDigit = hexString[i]
+        if hexDigit >= "0" and hexDigit <= "9" then
+            digitValue = hexDigit.to_int()  // Convert '0'-'9' to 0-9
+        else if hexDigit >= "A" and hexDigit <= "F" then
+            digitValue = 10 + (hexDigit.code - "A".code)  // Convert 'A'-'F' to 10-15
+        else if hexDigit >= "a" and hexDigit <= "f" then
+            digitValue = 10 + (hexDigit.code - "a".code)  // Convert 'a'-'f' to 10-15
+        else
+            return -1;
+        end if
+        value = value * 16 + digitValue  // Accumulate the value (base-16)
+    end for
+    return value
+end function
+
+// `Pure Function` — Converts a hexadecimal string to a byte string.
+//
+// @param {string} hexString - The hexadecimal string to convert to bytes.
+// @description *@param* `string` — hexString - The hexadecimal string to convert to bytes.
+// 
+// @return {string} The byte string represented by the hexadecimal string.
+// @description *@return* `string` — The byte string represented by the hexadecimal string.
+//
+// @description *@throws* — Error if the input contains invalid hexadecimal characters or has odd length.
+hexToBytes = function(hexString)
+    if hexString.len % 2 == 1 then exit("Error in [hexToBytes]: The input string is odd.")
+    bytes = ""
+    i = 0
+    while i < hexString.len
+        hexPair = hexString[i] + hexString[i+1]  // Take two characters at a time
+        byte = hexToNumber(hexPair)
+        if byte == -1 then exit("Error in [hexToBytes]: Invalid hexadecimal character in input string.")
+        bytes = bytes + char(byte)  // Convert to character and append
+        i = i + 2
+    end while
+    return bytes
+end function

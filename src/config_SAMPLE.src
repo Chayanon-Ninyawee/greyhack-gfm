@@ -1,0 +1,5 @@
+DATABASE_PASSWORD_SALT = "This is an example for salt!"
+DATABASE_TEST_STRING = "This is test string for database, which is encrypted using AES128 algorithm!"
+// The password for this DATABASE_ENCRYPTED_TEST_STRING is: 12345678
+// Note: the generateEncryptedString.src running using greybel doesn't behave like the game
+DATABASE_ENCRYPTED_TEST_STRING = "ySSV2OJ9LxnL5XMtBXo8rtTDq4q/lBBkWn09QOlWoRzSNSWUKFi4E3GRJOmzI61YJoUdVU8dJNMh115NTw+u5QVEFzby2EiUAqJluCHj7bU"

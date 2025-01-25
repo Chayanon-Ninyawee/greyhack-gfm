@@ -70,28 +70,28 @@ def remove_comments_and_whitespace(content):
     return '\n'.join(lines)
 
 
-main_filepath = 'main.src'
-output_filepath = 'build/gfm.src'
-shortened_output_filepath = 'build/gfm_shortened.src'
+def process_file(main_filepath, output_filepath, shortened_output_filepath):
+    if os.path.exists(main_filepath):
+        main_content = read_file(main_filepath)
+        new_content = replace_import_code(main_content, "")
 
-if os.path.exists(main_filepath):
-    main_content = read_file(main_filepath)
-    base_path = os.path.dirname(main_filepath)
-    new_content = replace_import_code(main_content, base_path)
+        # Ensure the output directory exists
+        os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
 
-    # Ensure the output directory exists
-    os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
+        # Write the full version of the file
+        with open(output_filepath, 'w') as output_file:
+            output_file.write(new_content)
 
-    # Write the full version of the file
-    with open(output_filepath, 'w') as output_file:
-        output_file.write(new_content)
+        # Generate and write the shortened version of the file
+        shortened_content = remove_comments_and_whitespace(new_content)
+        with open(shortened_output_filepath, 'w') as shortened_output_file:
+            shortened_output_file.write(shortened_content)
 
-    # Generate and write the shortened version of the file
-    shortened_content = remove_comments_and_whitespace(new_content)
-    with open(shortened_output_filepath, 'w') as shortened_output_file:
-        shortened_output_file.write(shortened_content)
+        print(f"Output written to {output_filepath}")
+        print(f"Shortened output written to {shortened_output_filepath}")
+    else:
+        print(f"Error: {main_filepath} does not exist.")
 
-    print(f"Output written to {output_filepath}")
-    print(f"Shortened output written to {shortened_output_filepath}")
-else:
-    print(f"Error: {main_filepath} does not exist.")
+
+process_file('src/main.src', 'build/gfmTools.src', 'build/gfmTools_shortened.src')
+process_file('generateEncryptedString.src', 'build/generateEncryptedString.src', 'build/generateEncryptedString_shortened.src')

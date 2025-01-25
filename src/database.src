@@ -1,0 +1,35 @@
+import_code("/src/utils.src")
+
+import_code("/src/encryption/SHA256.src")
+
+// @type Database
+// @property {string} __key - The 16-byte database key derived from the provided password and salt.
+Database = {}
+Database.__key = ""
+
+// `Function` — Sets a hashed password in the database.
+//
+// @param {string} password - The plaintext password entered by the user.
+// @description *@param* `string` — password - The plaintext password entered by the user.
+//
+// @return {void}
+//
+// @description The function securely hashes the user's input password using SHA-256 combined with a predefined salt (`DATABASE_PASSWORD_SALT`). 
+// The resulting hash is then converted to a byte array, and the first 16 bytes are used as the database key. 
+// The function updates the `Database.__key` property with this derived key.
+Database.setPassword = function(password)
+    passwordHash = SHA256(password + DATABASE_PASSWORD_SALT)
+    Database.__key = hexToBytes(passwordHash)[0:16]
+end function
+
+
+// `Getter Function` — Retrieves the current database key.
+//
+// @return {string} The 16-byte database key.
+// @description *@return* `string` — The 16-byte database key.
+//
+// @description This function returns the current database key that was derived and stored during a previous call to `Database.setPassword`. 
+// It does not perform any validation or re-computation of the key based on the provided password.
+Database.getKey = function()
+    return Database.__key
+end function

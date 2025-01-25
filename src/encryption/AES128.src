@@ -7,7 +7,7 @@
 // No padding is used for the base64
 // Plaintext can be any length < 1,000,000
 
-// Two choices: "encrypt" or "decrypt"
+// `Private Pure Function` — Two choices: "encrypt" or "decrypt"
 AES128 = function(choice, key, text) // Returns null if any error (could mean undecryptable ciphertext)
 
 if typeof(key) != "string" then return null
@@ -428,30 +428,38 @@ end if
 return null
 end function
 
-// Encrypts a message using AES-128 encryption.
+// `Pure Function` — Encrypts a message using AES-128 encryption.
 //
 // @param {string} key - A 16-character string to be used as the encryption key.
+// @description *@param* `string` — key - A 16-character string to be used as the encryption key.
+//
 // @param {string} message - The message to be encrypted.
+// @description *@param* `string` — message - The message to be encrypted.
 //
 // @return {string} - The encrypted message.
+// @description *@return* `string` — The encrypted message.
 //
-// Requirements:
-// - The key must be exactly 16 characters long.
+// @description **Requirements:**
+// @description - The key must be exactly 16 characters long.
 AES128_encrypt = function(key, message)
-    if key.len != 16 then exit("[gfm] Error: Key must be 16 characters long.")
+    if key.len != 16 then exit("Error in [AES128_encrypt]: Key must be 16 characters long.")
     return AES128("encrypt", key, message)
 end function
 
-// Decrypts a cipher text using AES-128 decryption.
+// `Pure Function` — Decrypts a cipher text using AES-128 decryption.
 //
 // @param {string} key - A 16-character string to be used as the decryption key.
+// @description *@param* `string` — key - A 16-character string to be used as the decryption key.
+//
 // @param {string} encrypted_message - The encrypted message to be decrypted.
+// @description *@param* `string` — encrypted_message - The encrypted message to be decrypted.
 //
 // @return {string} - The decrypted message.
+// @description *@return* `string` — The decrypted message.
 //
-// Requirements:
-// - The key must be exactly 16 characters long.
+// @description **Requirements:**
+// @description - The key must be exactly 16 characters long.
 AES128_decrypt = function(key, encrypted_message)
-    if key.len != 16 then exit("[gfm] Error: Key must be 16 characters long.")
+    if key.len != 16 then exit("Error in [AES128_decrypt]: Key must be 16 characters long.")
     return AES128("decrypt", key, encrypted_message)
 end function

@@ -1,0 +1,28 @@
+import_code("/src/config.src")
+
+import_code("/src/encryption/AES128.src")
+import_code("/src/database.src")
+
+clear_screen()
+Database.setPassword(user_input("Password: ", true))
+clear_screen()
+
+// To prevent brute force attack
+// plus it look cool
+print(".", true)
+wait(0.2)
+print("..", true)
+wait(0.2)
+print("...", true)
+wait(0.2)
+print("....", true)
+wait(0.2)
+print(".....", true)
+wait(0.2)
+
+if AES128_decrypt(Database.getKey, DATABASE_ENCRYPTED_TEST_STRING) != DATABASE_TEST_STRING then
+    clear_screen()
+    exit("Invalid Password!")
+end if
+
+print("GFM Tools Initialized!", true)

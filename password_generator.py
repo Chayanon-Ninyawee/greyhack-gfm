@@ -1,7 +1,7 @@
 import random
 import string
 
-def generate_password(length=12, use_uppercase=True, use_lowercase=True, use_numbers=True, use_special=True):
+def generate_password(length=16, use_uppercase=True, use_lowercase=True, use_numbers=True, use_special=True):
     if length == 0:
         raise ValueError("Password length should be at least 1 character long.")
     

@@ -1,6 +1,0 @@
-import_code("/config.src")
-import_code("/functions/AES128.src")
-
-Decode = function(password)
-	return str(AES128_decrypt(encryption_key, password))
-end function
