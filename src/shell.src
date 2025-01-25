@@ -1,9 +1,11 @@
 // @type GfmShell
 // @property {string} __printedText - Stores the accumulated text that has been printed or queued for printing.
+// @property {string} __stashedPrintedText - Temporarily stores text that has been stashed for restoration.
 // @property {list<any>} commandList - A list of commands that can be run.
 // @property {map<string,any>} context - Current context of the shell.
 GfmShell = {}
 GfmShell.__printedText = ""
+GfmShell.__stashedPrintedText = ""
 GfmShell.commandList = []
 
 // @type context
@@ -63,8 +65,37 @@ GfmShell.clearScreen = function()
     clear_screen()
 end function
 
+// `Function` — Stashes the current screen.
+//
+// @return {void}
+//
+// @description This function saves the current accumulated printed text from
+// `__printedText` into `__stashedPrintedText`. It then clears the `__printedText`
+// property and the screen, effectively resetting the visible output while
+// preserving the stashed text for later use.
+GfmShell.stashScreen = function()
+    GfmShell.__stashedPrintedText = GfmShell.__printedText
+    GfmShell.__printedText = ""
+    clear_screen()
+end function
 
-GfmShell.start = function(args)
+// `Function` — Restores the stashed screen text.
+//
+// @return {void}
+//
+// @description This function retrieves the text stored in `__stashedPrintedText`
+// and restores it to `__printedText`. The `__stashedPrintedText` property is then
+// cleared. Finally, the restored text is printed to the screen.
+GfmShell.unStashScreen = function()
+    GfmShell.__printedText = GfmShell.__stashedPrintedText
+    GfmShell.__stashedPrintedText = ""
+    print(GfmShell.__printedText, true)
+end function
+
+// `Function` — Starts the interactive shell session.
+//
+// @return {void}
+GfmShell.start = function()
     while true
         currentUser = GfmShell.context.currentUser
         currentHost = GfmShell.context.currentComputer.get_name

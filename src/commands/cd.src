@@ -1,0 +1,86 @@
+import_code("/src/shell.src")
+
+CommandCd = {}
+CommandCd.cmd = "cd"
+CommandCd.alias = ""
+CommandCd.args = "[path]"
+CommandCd.desc = "Move through directories"
+
+CommandCd.exec = function(args)
+    if args.len == 0 then
+        GfmShell.println("Usage: cd [path]")
+        return
+    end if
+
+    targetPath = args[0]
+
+    // Resolve the target path
+    if targetPath == ".." then
+        // Move up one level
+        if GfmShell.context.currentFolder.parent != null then
+            GfmShell.context.currentFolder = GfmShell.context.currentFolder.parent
+        else
+            GfmShell.println("Already at the root directory.")
+        end if
+        return
+    end if
+    
+    if targetPath == "." then
+        // Stay in the current directory
+        return
+    end if
+
+
+    // Check if the target path exists and is a folder
+    resolvePath = function(targetPath)
+        if targetPath[0] == "/" then
+            // Absolute path: Start from the root
+            current = GfmShell.context.currentFolder
+            while not current.name == "/"
+                current = current.parent
+            end while
+        else
+            // Relative path: Start from the current folder
+            current = GfmShell.context.currentFolder
+        end if
+
+        for part in targetPath.split("/")
+            if part == "" or part == "." then continue
+
+            if part == ".." then
+                // Move up to the parent directory
+                if current.parent != null then
+                    current = current.parent
+                else
+                    return null  // Can't go above the root
+                end if
+            else
+                // Move into the specified child folder
+                child = null
+                for childFolder in current.get_folders
+                    if childFolder.name != part then continue
+
+                    child = childFolder
+                    break
+                end for
+                
+                if child == null then
+                    return null  // Invalid path or not a folder
+                end if
+                current = child
+            end if
+        end for
+
+        return current
+    end function
+
+    targetFolder = resolvePath(targetPath)
+
+    if targetFolder == null then
+        GfmShell.println("cd: "+targetPath+": No such directory")
+        return
+    end if
+
+    // Change to the target directory
+    GfmShell.context.currentFolder = targetFolder
+end function
