@@ -1,0 +1,11 @@
+import_code("/src/shell.src")
+
+CommandClear = {}
+CommandClear.cmd = "clear"
+CommandClear.alias = ""
+CommandClear.args = ""
+CommandClear.desc = "Clear the Terminal"
+
+CommandClear.exec = function(args)
+    GfmShell.clearScreen()
+end function

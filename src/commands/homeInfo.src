@@ -1,0 +1,17 @@
+import_code("/src/shell.src")
+
+CommandHomeInfo = {}
+CommandHomeInfo.cmd = "homeinfo"
+CommandHomeInfo.alias = ""
+CommandHomeInfo.args = ""
+CommandHomeInfo.desc = "Displays the hostname and IP address of the computer running the script"
+
+CommandHomeInfo.exec = function(args)
+    hostname = get_shell.host_computer.get_name
+    ipAddress = get_shell.host_computer.public_ip
+    lanIpAddress = get_shell.host_computer.local_ip
+
+    GfmShell.println("Hostname: " + hostname)
+    GfmShell.println("IP Address: " + ipAddress)
+    GfmShell.println("LAN IP Address: " + lanIpAddress)
+end function

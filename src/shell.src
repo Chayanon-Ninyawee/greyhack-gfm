@@ -1,0 +1,90 @@
+// @type GfmShell
+// @property {string} __printedText - Stores the accumulated text that has been printed or queued for printing.
+// @property {list<any>} commandList - A list of commands that can be run.
+// @property {map<string,any>} context - Current context of the shell.
+GfmShell = {}
+GfmShell.__printedText = ""
+GfmShell.commandList = []
+
+// @type context
+// @property {string} currentPrivilege - Can be "shell", "computer", or "file"
+// @property {string|null} currentUser
+// @property {shell|null} currentShell
+// @property {computer|null} currentComputer
+// @property {file|null} currentFolder
+GfmShell.context = {}
+GfmShell.context.currentPrivilege = "shell"
+GfmShell.context.currentUser = "HomeUser"
+GfmShell.context.currentShell = get_shell
+GfmShell.context.currentComputer = get_shell.host_computer
+GfmShell.context.currentFolder = get_shell.host_computer.File("/")
+
+// `Function` — Prints a line of text to the Terminal with an automatic newline.
+//
+// @param {string} value - The text to be printed. Defaults to an empty string.
+// @description *@param* `string` — value - The text to be printed. Defaults to an empty string.
+//
+// @return {void}
+GfmShell.println = function(value = "")
+    GfmShell.__printedText = GfmShell.__printedText + value + char(10)
+
+    if GfmShell.__printedText.len > 0 then
+        if GfmShell.__printedText[-1] != char(10) then
+            print(GfmShell.__printedText, true)
+            return
+        end if
+    end if
+
+    print(value)
+end function
+
+// `Function` — Prints text to the Terminal without automatically appending a newline.
+//
+// @param {string} value - The text to be printed. Defaults to an empty string.
+// @description *@param* `string` — value - The text to be printed. Defaults to an empty string.
+//
+// @param {boolean} confirmed - If `true`, the text will be printed immediately. Defaults to `false`.
+// @description *@param* `boolean` — confirmed - If `true`, the text will be printed immediately. Defaults to `false`.
+//
+// @return {void}
+GfmShell.print = function(value = "", confirmed = false)
+    GfmShell.__printedText = GfmShell.__printedText + value
+
+    if confirmed then
+        print(GfmShell.__printedText, true)
+    end if
+end function
+
+// `Function` — Clears the screen and resets the printed text buffer.
+//
+// @return {void}
+GfmShell.clearScreen = function()
+    GfmShell.__printedText = ""
+    clear_screen()
+end function
+
+
+GfmShell.start = function(args)
+    while true
+        currentUser = GfmShell.context.currentUser
+        currentHost = GfmShell.context.currentComputer.get_name
+        currentPath = GfmShell.context.currentFolder.path
+
+        shellPrefix = "<color=#4EE672FF>"+currentUser+"@"+currentHost+"</color><color=#FFFFFFFF>:</color><color=#b893f8>"+currentPath+"</color><color=#FFFFFFFF>$</color> "
+        input = user_input(shellPrefix)
+        GfmShell.__printedText = GfmShell.__printedText + shellPrefix + input + char(10)
+
+        if input.len == 0 then continue
+
+        input_chunks = input.split(" ")
+        cmd = input_chunks[0]
+        args = input_chunks[1:]
+
+        for command in GfmShell.commandList
+            if cmd == command.cmd or cmd == command.alias then
+                command.exec(args)
+                break
+            end if
+        end for
+    end while
+end function

@@ -1,0 +1,9 @@
+CommandExit = {}
+CommandExit.cmd = "exit"
+CommandExit.alias = ""
+CommandExit.args = ""
+CommandExit.desc = "Exit GFM Tools"
+
+CommandExit.exec = function(args)
+    exit("Exiting GFM Tools...")
+end function

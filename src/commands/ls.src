@@ -1,0 +1,97 @@
+import_code("/src/shell.src")
+
+CommandLs = {}
+CommandLs.cmd = "ls"
+CommandLs.alias = ""
+CommandLs.args = "[-l] [-a] [-h]"
+CommandLs.desc = "Shows the list of files in the current folder"
+
+CommandLs.exec = function(args)
+    showAll = false  // `-a`: Include hidden files
+    showDetails = false  // `-l`: Show detailed info
+    humanReadable = false  // `-h`: Show human-readable sizes
+
+    for arg in args
+        if arg[0] == "-" then
+            for flag in arg[1:]  // Start at index 1 to skip the '-'
+                if flag == "l" then; showDetails = true;
+                else if flag == "a" then; showAll = true;
+                else if flag == "h" then; humanReadable = true;
+                end if
+            end for
+        end if
+    end for
+
+    // Function to format size in human-readable form
+    formatSize = function(size)
+        if (size / (1024 * 1024)) >= 1000 then 
+            sizeStr = (size / (1024 * 1024 * 1024)) + ""
+            sizeStr = sizeStr[0:3]
+            if sizeStr[-1] == "." then sizeStr = sizeStr[0:2]
+            return sizeStr + "G"
+        else if (size / 1024) >= 1000 then 
+            sizeStr = (size / (1024 * 1024)) + ""
+            sizeStr = sizeStr[0:3]
+            if sizeStr[-1] == "." then sizeStr = sizeStr[0:2]
+            return sizeStr + "M"
+        else if size >= 1000 then 
+            sizeStr = (size / 1024) + ""
+            sizeStr = sizeStr[0:3]
+            if sizeStr[-1] == "." then sizeStr = sizeStr[0:2]
+            return sizeStr + "K"
+        else 
+            return size + "B"
+        end if
+    end function
+
+    files_info = []
+    longestOwner = 0
+    longestGroup = 0
+    longestFileSize = 0
+
+    for file in (GfmShell.context.currentFolder.get_files + GfmShell.context.currentFolder.get_folders)
+        if not showAll and file.name[0] == "." then continue  // Skip hidden files unless -a is set
+
+        if humanReadable then
+            fileSize = formatSize(file.size.to_int)
+        else
+            fileSize = file.size + ""
+        end if
+        
+        if longestOwner < file.owner.len then longestOwner = file.owner.len
+        if longestGroup < file.group.len then longestGroup = file.group.len
+        if longestFileSize < fileSize.len then longestFileSize = fileSize.len
+        files_info.push({"file": file, "size": fileSize})
+    end for
+
+    // Display files
+    for entry in files_info
+        file = entry.file
+        fileSize = entry.size
+
+        fileNameWithColor = ""
+        if file.is_folder then
+            fileNameWithColor = fileNameWithColor + "<color=#8a7fed>" + file.name + "</color>"
+        // else if file.is_symlink then
+        //     fileNameWithColor = fileNameWithColor + "<color=#47a1f1>" + file.name + "</color>"
+        else if file.has_permission("x") then
+            fileNameWithColor = fileNameWithColor + "<color=#4EE672FF>" + file.name + "</color>"
+        else
+            fileNameWithColor = fileNameWithColor + "<color=#FFFFFF>" + file.name + "</color>"
+        end if
+
+        if showDetails then
+            paddedOwner = file.owner + " "*(longestOwner-file.owner.len)
+            paddedGroup = file.group + " "*(longestGroup-file.group.len)
+            paddedSize = " "*(longestFileSize-fileSize.len) + fileSize
+            GfmShell.println(
+                file.permissions + " " +
+                paddedOwner + " " +
+                paddedGroup + " " +
+                paddedSize + " " +
+                fileNameWithColor)
+        else
+            GfmShell.println(fileNameWithColor)
+        end if
+    end for
+end function
