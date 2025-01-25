@@ -12,6 +12,7 @@ import_code("/src/commands/homeInfo.src")
 import_code("/src/commands/ls.src")
 import_code("/src/commands/cd.src")
 import_code("/src/commands/ps.src")
+import_code("/src/commands/kill.src")
 
 
 // clear_screen()
@@ -40,6 +41,6 @@ clear_screen()
 GfmShell.println("GFM Tools Initialized!")
 
 GfmShell.commandList = [CommandHelp, CommandMan, CommandExit, CommandClear, CommandHomeInfo, CommandLs,
-    CommandCd, CommandPs]
+    CommandCd, CommandPs, CommandKill]
 
 GfmShell.start()

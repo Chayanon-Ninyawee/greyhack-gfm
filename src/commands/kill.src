@@ -1,0 +1,31 @@
+import_code("/src/shell.src")
+
+CommandKill = {}
+CommandKill.cmd = "kill"
+CommandKill.alias = ""
+CommandKill.args = ""
+CommandKill.desc = "Kill the active process of the operating system"
+CommandKill.man = "No manual entry for kill"
+
+CommandKill.exec = function(args)
+    if args.len != 1 then return
+
+    pid = args[0].to_int
+    if typeof(pid) != "number" then
+        GfmShell.println("The PID must be a number")
+        return
+    end if
+
+    output = GfmShell.context.currentComputer.close_program(pid)
+    if typeof(output) == "string" then 
+        GfmShell.println(output)
+        return
+    end if
+
+    if output then
+        GfmShell.println("Process " + pid + " closed")
+        return
+    end if
+    
+    GfmShell.println("Process " + pid + " not found")
+end function
