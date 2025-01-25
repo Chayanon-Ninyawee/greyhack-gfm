@@ -10,6 +10,7 @@ import_code("/src/commands/homeInfo.src")
 import_code("/src/commands/ls.src")
 import_code("/src/commands/cd.src")
 import_code("/src/commands/man.src")
+import_code("/src/commands/help.src")
 
 // clear_screen()
 // Database.setPassword(user_input("Password: ", true))
@@ -36,6 +37,6 @@ import_code("/src/commands/man.src")
 clear_screen()
 GfmShell.println("GFM Tools Initialized!")
 
-GfmShell.commandList = [CommandExit, CommandClear, CommandHomeInfo, CommandLs, CommandCd, CommandMan]
+GfmShell.commandList = [CommandExit, CommandClear, CommandHomeInfo, CommandLs, CommandCd, CommandMan, CommandHelp]
 
 GfmShell.start()

@@ -1,0 +1,23 @@
+import_code("/src/shell.src")
+
+CommandHelp = {}
+CommandHelp.cmd = "help"
+CommandHelp.alias = ""
+CommandHelp.args = ""
+CommandHelp.desc = "List all of the commands"
+CommandHelp.man = "No manual entry for help"
+
+CommandHelp.exec = function(args)
+    longestUsage = 0
+    for command in GfmShell.commandList
+        usage = command.cmd + " " + command.args
+        if longestUsage < usage.len then longestUsage = usage.len
+    end for
+
+    for command in GfmShell.commandList
+        usage = command.cmd + " " + command.args
+        paddedDesc = " "*(longestUsage-usage.len) + "   - " + command.desc
+
+        GfmShell.println(usage + paddedDesc)
+    end for
+end function
