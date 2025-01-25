@@ -4,13 +4,15 @@ import_code("/src/encryption/AES128.src")
 import_code("/src/database.src")
 import_code("/src/shell.src")
 
+import_code("/src/commands/help.src")
+import_code("/src/commands/man.src")
 import_code("/src/commands/exit.src")
 import_code("/src/commands/clear.src")
 import_code("/src/commands/homeInfo.src")
 import_code("/src/commands/ls.src")
 import_code("/src/commands/cd.src")
-import_code("/src/commands/man.src")
-import_code("/src/commands/help.src")
+import_code("/src/commands/ps.src")
+
 
 // clear_screen()
 // Database.setPassword(user_input("Password: ", true))
@@ -37,6 +39,7 @@ import_code("/src/commands/help.src")
 clear_screen()
 GfmShell.println("GFM Tools Initialized!")
 
-GfmShell.commandList = [CommandExit, CommandClear, CommandHomeInfo, CommandLs, CommandCd, CommandMan, CommandHelp]
+GfmShell.commandList = [CommandHelp, CommandMan, CommandExit, CommandClear, CommandHomeInfo, CommandLs,
+    CommandCd, CommandPs]
 
 GfmShell.start()
