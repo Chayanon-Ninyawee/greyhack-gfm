@@ -1,0 +1,20 @@
+import_code("/src/shell.src")
+
+CommandMan = {}
+CommandMan.cmd = "man"
+CommandMan.alias = ""
+CommandMan.args = "[command]"
+CommandMan.desc = "Show the manual of the command"
+CommandMan.man = "No manual entry for man"
+
+CommandMan.exec = function(args)
+    if args.len != 1 then return
+
+    for command in GfmShell.commandList
+        if command.cmd == args[0] or command.alias == args[0] then
+            GfmShell.println(command.man)
+            return
+        end if
+    end for
+    GfmShell.println("No manual entry for " + args[0])
+end function

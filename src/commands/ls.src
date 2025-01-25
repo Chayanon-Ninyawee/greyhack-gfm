@@ -5,12 +5,10 @@ CommandLs.cmd = "ls"
 CommandLs.alias = ""
 CommandLs.args = "[-l|-a|-h] [directory]"
 CommandLs.desc = "Shows the list of files in the current folder"
-CommandLs.man = "
-    -l: Display detailed information about files, such as permissions, owner, group, size, and modification time.
-    -a: Include hidden files (those that start with a dot) in the listing.
-    -h: Display file sizes in a human-readable format (e.g., KB, MB, GB).
-    [directory]: Optionally, specify a directory to list. If no directory is provided, it lists the current directory.
-"
+CommandLs.man = "-l: Display detailed information about files, such as permissions, owner, group, size, and modification time.
+-a: Include hidden files (those that start with a dot) in the listing.
+-h: Display file sizes in a human-readable format (e.g., KB, MB, GB).
+[directory]: Optionally, specify a directory to list. If no directory is provided, it lists the current directory."
 
 CommandLs.exec = function(args)
     showAll = false  // `-a`: Include hidden files
