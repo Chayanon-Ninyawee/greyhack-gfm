@@ -1,0 +1,36 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandCat = {}
+CommandCat.cmd = "cat"
+CommandCat.alias = ""
+CommandCat.args = "[file]"
+CommandCat.desc = "Shows the contents of a text file"
+CommandCat.man = "No manual entry for cat"
+
+CommandCat.exec = function(args)
+    if args.len != 1 then
+        // TODO: Print Usage
+        return
+    end if
+
+    pathFile = args[0]
+    file = resolveFilePath(pathFile, GfmShell.context.currentFolder)
+
+    if file == null then
+        GfmShell.println("cat: file not found: "+pathFile)
+        return
+    end if
+
+    if file.is_binary then
+        GfmShell.println("cat: can't open " + file.path + ". Binary file")
+        return
+    end if
+
+    if not file.has_permission("r") then
+        GfmShell.println("cat: permission denied")
+        return
+    end if
+
+    GfmShell.println(file.get_content)
+end function
