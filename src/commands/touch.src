@@ -30,6 +30,11 @@ CommandTouch.exec = function(args)
         folder = GfmShell.context.currentFolder
     end if
 
+    if resolveFilePath(pathFile, GfmShell.context.currentFolder) != null or resolveFolderPath(pathFile, GfmShell.context.currentFolder) != null then
+        GfmShell.println("touch: cannot create file '"+pathFile+"': File exists")
+        return
+    end if
+
     if not folder.has_permission("w") then
         GfmShell.println("touch: permission denied")
         return
