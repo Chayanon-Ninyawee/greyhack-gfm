@@ -1,0 +1,40 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandTouch = {}
+CommandTouch.cmd = "touch"
+CommandTouch.alias = ""
+CommandTouch.args = "[file]"
+CommandTouch.desc = "Create an empty file"
+CommandTouch.man = "No manual entry for touch"
+
+CommandTouch.exec = function(args)
+    //command: touch
+    if args.len != 1 then
+        // TODO: Print Usage
+        return
+    end if
+
+    pathFile = args[0]
+
+    fileName = pathFile.split("/")[-1]
+    pathFolder = pathFile.split("/")[:-1].join("/")
+
+    folder = resolveFolderPath(pathFolder, GfmShell.context.currentFolder)
+    if folder == null then
+        if pathFile.indexOf("/") != null then
+            GfmShell.println("touch: cannot touch '"+pathFile+"': No such file or directory")
+            return
+        end if
+
+        folder = GfmShell.context.currentFolder
+    end if
+
+    if not folder.has_permission("w") then
+        GfmShell.println("touch: permission denied")
+        return
+    end if
+
+    output = GfmShell.context.currentComputer.touch(folder.path, fileName)
+    if output and output != 1 then GfmShell.println(output)
+end function
