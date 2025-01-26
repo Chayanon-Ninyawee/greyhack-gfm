@@ -50,6 +50,8 @@ end function
 
 // Check if the target path exists and is a folder
 resolveFolderPath = function(targetPath, currentFolder)
+    if targetPath.len == 0 then return null // Invalid path
+    
     if targetPath[0] == "/" then
         // Absolute path: Start from the root
         current = currentFolder
@@ -94,7 +96,9 @@ end function
 
 // Check if the target path exists and is a file
 resolveFilePath = function(targetPath, currentFolder)
-    targetFilename = targetPath.split("/")[-1]
+    if targetPath.len == 0 then return null // Invalid path
+
+    targetFileName = targetPath.split("/")[-1]
     targetFolderPath = targetPath.split("/")[:-1].join("/")
 
     if targetFolderPath.len == 0 then
@@ -107,7 +111,7 @@ resolveFilePath = function(targetPath, currentFolder)
 
     child = null
     for childFile in folder.get_files()
-        if childFile.name != targetFilename then continue
+        if childFile.name != targetFileName then continue
 
         child = childFile
         break
