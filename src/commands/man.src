@@ -8,7 +8,10 @@ CommandMan.desc = "Show the manual of the command"
 CommandMan.man = "No manual entry for man"
 
 CommandMan.exec = function(args)
-    if args.len != 1 then return
+    if args.len != 1 then
+        // TODO: Print Usage
+        return
+    end if
 
     for command in GfmShell.commandList
         if command.cmd == args[0] or command.alias == args[0] then

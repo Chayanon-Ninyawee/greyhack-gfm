@@ -13,8 +13,11 @@ CommandSu.exec = function(args)
     // Check if a username is provided
     if args.len == 0 then
         targetUser = "root"  // Default to root if no user specified
-    else
+    else if args.len == 1 then
         targetUser = args[0]
+    else
+        // TODO: Print Usage
+        return
     end if
 
     // TODO: Make it work when in other shell than the home shell as well

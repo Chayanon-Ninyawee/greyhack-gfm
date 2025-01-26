@@ -8,7 +8,10 @@ CommandKill.desc = "Kill the active process of the operating system"
 CommandKill.man = "No manual entry for kill"
 
 CommandKill.exec = function(args)
-    if args.len != 1 then return
+    if args.len != 1 then
+        // TODO: Print Usage
+        return
+    end if
 
     pid = args[0].to_int
     if typeof(pid) != "number" then

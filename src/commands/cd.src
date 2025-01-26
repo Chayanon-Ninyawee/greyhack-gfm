@@ -9,7 +9,7 @@ CommandCd.desc = "Move through directories"
 CommandCd.man = "No manual entry for cd"
 
 CommandCd.exec = function(args)
-    if args.len == 0 then
+    if args.len != 1 then
         GfmShell.println("Usage: cd [path]")
         return
     end if
