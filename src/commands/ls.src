@@ -5,10 +5,14 @@ CommandLs.cmd = "ls"
 CommandLs.alias = ""
 CommandLs.args = "[-l|-a|-h] [directory]"
 CommandLs.desc = "Shows the list of files in the current folder"
-CommandLs.man = "-l: Display detailed information about files, such as permissions, owner, group, size, and modification time.
--a: Include hidden files (those that start with a dot) in the listing.
--h: Display file sizes in a human-readable format (e.g., KB, MB, GB).
-[directory]: Optionally, specify a directory to list. If no directory is provided, it lists the current directory."
+CommandLs.man = "Usage:" + char(10) +
+                "  ls [-l|-a|-h] [directory]  - Shows the list of files in the current folder." + char(10) + char(10) +
+                "Options:" + char(10) +
+                "  -l: Display detailed information about files, such as permissions, owner, group, size, and modification time." + char(10) +
+                "  -a: Include hidden files (those that start with a dot) in the listing." + char(10) +
+                "  -h: Display file sizes in a human-readable format (e.g., KB, MB, GB)." + char(10) +
+                "Arguments:" + char(10) +
+                "  [directory]: Optionally, specify a directory to list. If no directory is provided, it lists the current directory."
 
 CommandLs.exec = function(args)
     showAll = false  // `-a`: Include hidden files
@@ -110,7 +114,7 @@ CommandLs.exec = function(args)
                 paddedSize + " " +
                 fileNameWithColor)
         else
-            GfmShell.println(fileNameWithColor)
+            GfmShell.println(" "+fileNameWithColor)
         end if
     end for
 end function
