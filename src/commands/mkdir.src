@@ -6,10 +6,11 @@ CommandMkdir.alias = ""
 CommandMkdir.args = "[directory]"
 CommandMkdir.desc = "Create a new directory"
 CommandMkdir.man = "No manual entry for mkdir"
+CommandMkdir.usage = "Usage: "+CommandMkdir.cmd+" "+CommandMkdir.args
 
 CommandMkdir.exec = function(args)
     if args.len != 1 then
-        // TODO: Print Usage
+        GfmShell.println(CommandMkdir.usage)
         return
     end if
 

@@ -13,6 +13,7 @@ CommandLs.man = "Usage:" + char(10) +
                 "  -h: Display file sizes in a human-readable format (e.g., KB, MB, GB)." + char(10) +
                 "Arguments:" + char(10) +
                 "  [directory]: Optionally, specify a directory to list. If no directory is provided, it lists the current directory."
+CommandLs.usage = "Usage: "+CommandLs.cmd+" "+CommandLs.args
 
 CommandLs.exec = function(args)
     showAll = false  // `-a`: Include hidden files
@@ -35,7 +36,7 @@ CommandLs.exec = function(args)
                     folderArgIndex = argIndex
                     break
                 else
-                    // TODO: Print Usage
+                    GfmShell.println(CommandLs.usage)
                     return
                 end if
             end if

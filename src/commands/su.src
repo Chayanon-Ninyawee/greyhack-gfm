@@ -8,6 +8,7 @@ CommandSu.desc = "Switch to another user"
 CommandSu.man = "Usage:" + char(10) +
                 "  su [user]  - Switch to the specified user." + char(10) + char(10) +
                 "If no user is provided, the command will attempt to switch to the root user."
+CommandSu.usage = "Usage: "+CommandSu.cmd+" "+CommandSu.args
 
 CommandSu.exec = function(args)
     // Check if a username is provided
@@ -16,7 +17,7 @@ CommandSu.exec = function(args)
     else if args.len == 1 then
         targetUser = args[0]
     else
-        // TODO: Print Usage
+        GfmShell.println(CommandSu.usage)
         return
     end if
 

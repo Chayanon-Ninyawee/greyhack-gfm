@@ -7,10 +7,11 @@ CommandCd.alias = ""
 CommandCd.args = "[path]"
 CommandCd.desc = "Move through directories"
 CommandCd.man = "No manual entry for cd"
+CommandCd.usage = "Usage: "+CommandCd.cmd+" "+CommandCd.args
 
 CommandCd.exec = function(args)
     if args.len != 1 then
-        GfmShell.println("Usage: cd [path]")
+        GfmShell.println(CommandCd.usage)
         return
     end if
 

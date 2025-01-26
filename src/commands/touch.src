@@ -7,11 +7,12 @@ CommandTouch.alias = ""
 CommandTouch.args = "[file]"
 CommandTouch.desc = "Create an empty file"
 CommandTouch.man = "No manual entry for touch"
+CommandTouch.usage = "Usage: "+CommandTouch.cmd+" "+CommandTouch.args
 
 CommandTouch.exec = function(args)
     //command: touch
     if args.len != 1 then
-        // TODO: Print Usage
+        GfmShell.println(CommandTouch.usage)
         return
     end if
 

@@ -7,10 +7,11 @@ CommandCat.alias = ""
 CommandCat.args = "[file]"
 CommandCat.desc = "Shows the contents of a text file"
 CommandCat.man = "No manual entry for cat"
+CommandCat.usage = "Usage: "+CommandCat.cmd+" "+CommandCat.args
 
 CommandCat.exec = function(args)
     if args.len != 1 then
-        // TODO: Print Usage
+        GfmShell.println(CommandCat.usage)
         return
     end if
 
