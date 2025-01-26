@@ -1,0 +1,37 @@
+import_code("/src/shell.src")
+
+CommandSu = {}
+CommandSu.cmd = "su"
+CommandSu.alias = ""
+CommandSu.args = "[user]"
+CommandSu.desc = "Switch to another user"
+CommandSu.man = "Usage:" + char(10) +
+                "  su [user]  - Switch to the specified user." + char(10) + char(10) +
+                "If no user is provided, the command will attempt to switch to the root user."
+
+CommandSu.exec = function(args)
+    // Check if a username is provided
+    if args.len == 0 then
+        targetUser = "root"  // Default to root if no user specified
+    else
+        targetUser = args[0]
+    end if
+
+    // TODO: Make it work when in other shell than the home shell as well
+    if GfmShell.context.currentShell != get_shell then
+        GfmShell.println("Currently not supporting su in other shell except home.")
+        return
+    end if
+
+    newShell = get_shell(targetUser, user_input("Password: ", true))
+    if newShell == null then
+        GfmShell.println("su: incorrect username or password")
+        return
+    end if
+
+    GfmShell.context.currentPrivilege = "shell"
+    GfmShell.context.currentUser = targetUser
+    GfmShell.context.currentShell = newShell
+    GfmShell.context.currentComputer = newShell.host_computer
+    GfmShell.context.currentFolder = newShell.host_computer.File(GfmShell.context.currentFolder.path)
+end function
