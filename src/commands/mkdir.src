@@ -1,0 +1,44 @@
+import_code("/src/shell.src")
+
+CommandMkdir = {}
+CommandMkdir.cmd = "mkdir"
+CommandMkdir.alias = ""
+CommandMkdir.args = "[directory]"
+CommandMkdir.desc = "Create a new directory"
+CommandMkdir.man = "No manual entry for mkdir"
+
+CommandMkdir.exec = function(args)
+    if args.len != 1 then
+        // TODO: Print Usage
+        return
+    end if
+
+        
+    pathFile = args[0]
+
+    folderName = pathFile.split("/")[-1]
+    pathFolder = pathFile.split("/")[:-1].join("/")
+
+    folder = resolveFolderPath(pathFolder, GfmShell.context.currentFolder)
+    if folder == null then
+        if pathFile.indexOf("/") != null then
+            GfmShell.println("mkdir: cannot create directory '"+pathFile+"': No such file or directory")
+            return
+        end if
+
+        folder = GfmShell.context.currentFolder
+    end if
+
+    if resolveFolderPath(pathFile, GfmShell.context.currentFolder) != null or resolveFilePath(pathFile, GfmShell.context.currentFolder) != null then
+        GfmShell.println("mkdir: cannot create directory '"+pathFile+"': File exists")
+        return
+    end if
+
+    if not folder.has_permission("w") then
+        GfmShell.println("mkdir: permission denied")
+        return
+    end if
+
+    output = GfmShell.context.currentComputer.create_folder(folder.path, folderName)
+    if output and output != 1 then GfmShell.println(output)
+end function
