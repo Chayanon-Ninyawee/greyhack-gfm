@@ -64,7 +64,7 @@ resolveFolderPath = function(targetPath, currentFolder)
     end if
 
     for part in targetPath.split("/")
-        if part == "" or part == "." then continue
+        if part == "" then continue
 
         if part == ".." then
             // Move up to the parent directory

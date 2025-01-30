@@ -27,11 +27,6 @@ CommandCd.exec = function(args)
         end if
         return
     end if
-    
-    if targetPath == "." then
-        // Stay in the current directory
-        return
-    end if
 
 
     targetFolder = resolveFolderPath(targetPath, GfmShell.context.currentFolder)
