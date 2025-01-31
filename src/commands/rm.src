@@ -4,7 +4,7 @@ import_code("/src/shell.src")
 CommandRm = {}
 CommandRm.cmd = "rm"
 CommandRm.alias = ""
-CommandRm.args = "[-r] [file/directory]"
+CommandRm.args = "[opt:-r] [file/directory]"
 CommandRm.desc = "Remove files or directories"
 CommandRm.man = "No manual entry for rm"
 CommandRm.usage = "Usage: "+CommandRm.cmd+" "+CommandRm.args

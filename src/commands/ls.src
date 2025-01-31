@@ -4,7 +4,7 @@ import_code("/src/shell.src")
 CommandLs = {}
 CommandLs.cmd = "ls"
 CommandLs.alias = ""
-CommandLs.args = "[-l|-a|-h] [directory]"
+CommandLs.args = "[opt:-l|-a|-h] [directory]"
 CommandLs.desc = "Shows the list of files in the current folder"
 CommandLs.man = "Usage:" + char(10) +
                 "  ls [-l|-a|-h] [directory]  - Shows the list of files in the current folder." + char(10) + char(10) +
