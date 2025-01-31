@@ -17,7 +17,7 @@ CommandRm.exec = function(args)
 
     recursive = false  // `-r`: Delete directory
 
-    fileArgIndex = -1
+    fileArgIndex = null
     for argIndex in range(0, args.len-1)
         arg = args[argIndex]
         if arg[0] == "-" then
@@ -25,16 +25,19 @@ CommandRm.exec = function(args)
                 if flag == "r" then; recursive = true;
                 end if
             end for
+        else if argIndex == args.len-1 then
+            fileArgIndex = argIndex
+            break
         else
-            if argIndex == args.len-1 then
-                fileArgIndex = argIndex
-                break
-            else
-                GfmShell.println(CommandRm.usage)
-                return
-            end if
+            GfmShell.println(CommandRm.usage)
+            return
         end if
     end for
+
+    if fileArgIndex == null then
+        GfmShell.println(CommandRm.usage)
+        return
+    end if
 
         
     pathFile = args[fileArgIndex]
