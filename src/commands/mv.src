@@ -4,7 +4,7 @@ import_code("/src/shell.src")
 CommandMv = {}
 CommandMv.cmd = "mv"
 CommandMv.alias = ""
-CommandMv.args = "[source] [destination]"
+CommandMv.args = "[source] [destination]" // TODO: Add -n option
 CommandMv.desc = "Move or rename files and directories"
 CommandMv.man = "No manual entry for mv"
 CommandMv.usage = "Usage: "+CommandMv.cmd+" "+CommandMv.args
