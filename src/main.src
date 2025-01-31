@@ -19,6 +19,7 @@ import_code("/src/commands/touch.src")
 import_code("/src/commands/mkdir.src")
 import_code("/src/commands/rm.src")
 import_code("/src/commands/mv.src")
+import_code("/src/commands/cp.src")
 
 
 // clear_screen()
@@ -48,6 +49,6 @@ GfmShell.println("GFM Tools Initialized!")
 
 GfmShell.commandList = [CommandHelp, CommandMan, CommandExit, CommandClear, CommandHomeInfo, CommandLs,
     CommandCd, CommandPs, CommandKill, CommandSu, CommandCat, CommandTouch, CommandMkdir, CommandRm,
-    CommandMv]
+    CommandMv, CommandCp]
 
 GfmShell.start()

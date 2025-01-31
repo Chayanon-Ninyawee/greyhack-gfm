@@ -1,0 +1,67 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandCp = {}
+CommandCp.cmd = "cp"
+CommandCp.alias = ""
+CommandCp.args = "[source] [destination]" // TODO: Add -r and -n option
+CommandCp.desc = "Copy files or directories"
+CommandCp.man = "No manual entry for cp"
+CommandCp.usage = "Usage: "+CommandCp.cmd+" "+CommandCp.args
+
+CommandCp.exec = function(args)
+    if args.len != 2 then
+        GfmShell.println(CommandCp.usage)
+        return
+    end if
+
+    origFileName = args[0]
+    destFileName = args[1]
+
+    origFile = resolveFilePath(origFileName, GfmShell.context.currentFolder)
+    if origFile == null then origFile = resolveFolderPath(origFileName, GfmShell.context.currentFolder)
+
+    if origFile == null then
+        GfmShell.println("cp: cannot stat '"+origFileName+"': No such file or directory")
+        return
+    end if
+
+    destFile = resolveFilePath(destFileName, GfmShell.context.currentFolder)
+    if destFile == null then destFile = resolveFolderPath(destFileName, GfmShell.context.currentFolder)
+
+    if destFile == null then
+        destNewName = destFileName.split("/")[-1]
+        destFileNameParent = destFileName.split("/")[:-1].join("/")
+        destFileParent = resolveFolderPath(destFileNameParent, GfmShell.context.currentFolder)
+
+        if destFileParent == null then
+            GfmShell.println("cp: cannot copy '"+origFileName+"' to '"+destFileName+"': No such file or directory")
+            return
+        end if
+    else
+        if destFile.is_folder then
+            destNewName = origFileName.split("/")[-1] // Have this to print error message
+            destFileNameParent = destFileName
+            destFileParent = destFile
+        else
+            destNewName = destFileName.split("/")[-1]
+            destFileNameParent = destFileName.split("/")[:-1].join("/") // Have this to print error message
+            destFileParent = destFile.parent
+        end if
+    end if
+
+    existingDestFile = resolveFilePath(destNewName, destFileParent)
+    if origFile.is_folder and existingDestFile != null then
+        GfmShell.println("cp: cannot overwrite non-directory '"+destFileNameParent+"/"+destNewName+"' with directory '"+origFileName+"'")
+        return
+    end if
+
+    existingDestFolder = resolveFolderPath(destNewName, destFileParent)
+    if (not origFile.is_folder) and existingDestFolder != null then
+        GfmShell.println("cp: cannot overwrite directory '"+destFileNameParent+"/"+destNewName+"' with non-directory '"+origFileName+"'")
+        return
+    end if
+    
+    output = origFile.copy(destFileParent.path, destNewName)
+    if output and output != 1 then GfmShell.println(output)
+end function
