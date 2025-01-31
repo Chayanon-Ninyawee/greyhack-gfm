@@ -50,7 +50,7 @@ end function
 
 // Check if the target path exists and is a folder
 resolveFolderPath = function(targetPath, currentFolder)
-    if targetPath.len == 0 then return null // Invalid path
+    if targetPath.len == 0 then return currentFolder
     
     if targetPath[0] == "/" then
         // Absolute path: Start from the root
