@@ -46,6 +46,7 @@ import_code("/src/commands/cp.src")
 
 clear_screen()
 GfmShell.println("GFM Tools Initialized!")
+if GfmShell._is_running_as_root then GfmShell.println("<color=#ff0000>Running GFM Tools as root! Which is not recommended.</color>")
 
 GfmShell.commandList = [CommandHelp, CommandMan, CommandExit, CommandClear, CommandHomeInfo, CommandLs,
     CommandCd, CommandPs, CommandKill, CommandSu, CommandCat, CommandTouch, CommandMkdir, CommandRm,

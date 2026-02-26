@@ -8,6 +8,8 @@ GfmShell.__printedText = ""
 GfmShell.__stashedPrintedText = ""
 GfmShell.commandList = []
 
+GfmShell._is_running_as_root = home_dir == "/root"
+
 // @type context
 // @property {string} currentPrivilege - Can be "shell", "computer", or "file"
 // @property {string|null} currentUser
@@ -16,7 +18,11 @@ GfmShell.commandList = []
 // @property {file|null} currentFolder
 GfmShell.context = {}
 GfmShell.context.currentPrivilege = "shell"
-GfmShell.context.currentUser = home_dir[6:]
+if GfmShell._is_running_as_root then
+    GfmShell.context.currentUser = "root"
+else
+    GfmShell.context.currentUser = home_dir[6:]
+end if
 GfmShell.context.currentShell = get_shell
 GfmShell.context.currentComputer = get_shell.host_computer
 GfmShell.context.currentFolder = get_shell.host_computer.File(home_dir)
