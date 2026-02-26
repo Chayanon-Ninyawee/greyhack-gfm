@@ -115,7 +115,13 @@ GfmShell.start = function()
 
         input_chunks = input.split(" ")
         cmd = input_chunks[0]
-        args = input_chunks[1:]
+        raw_args = input_chunks[1:]
+        
+        args = []
+        for raw_arg in raw_args
+            if raw_arg == "" then continue
+            args.push(raw_arg) 
+        end for
 
         isCommandFound = false
         for command in GfmShell.commandList
