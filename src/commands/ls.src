@@ -103,28 +103,49 @@ CommandLs.exec = function(args)
         fileSize = entry.size
 
         fileNameWithColor = ""
-        if file.is_folder then
+        if file.is_symlink then
+            if file.is_folder then
+                fileNameWithColor = fileNameWithColor + "<color=#0d56b5>" + file.name + "</color>"
+            else if file.is_binary() then
+                fileNameWithColor = fileNameWithColor + "<color=#a6d42a>" + file.name + "</color>"
+            else
+                fileNameWithColor = fileNameWithColor + "<color=#47a1f1>" + file.name + "</color>"
+            end if
+        else if file.is_folder then
             fileNameWithColor = fileNameWithColor + "<color=#8a7fed>" + file.name + "</color>"
-        // else if file.is_symlink then
-        //     fileNameWithColor = fileNameWithColor + "<color=#47a1f1>" + file.name + "</color>"
         else if file.is_binary() then
-            fileNameWithColor = fileNameWithColor + "<color=#4EE672FF>" + file.name + "</color>"
+            fileNameWithColor = fileNameWithColor + "<color=#4EE672>" + file.name + "</color>"
         else
             fileNameWithColor = fileNameWithColor + "<color=#FFFFFF>" + file.name + "</color>"
         end if
 
         if showDetails then
+            file_type = "-"
+            if file.is_symlink then
+                file_type = "l"
+            else if file.is_folder then
+                file_type = "d"
+            else
+                file_type = "-"
+            end if
+
+            permissions_string = file_type + file.permissions[1:-1]
+
             paddedOwner = file.owner + " "*(longestOwner-file.owner.len)
             paddedGroup = file.group + " "*(longestGroup-file.group.len)
             paddedSize = " "*(longestFileSize-fileSize.len) + fileSize
+
             GfmShell.println(
-                file.permissions + " " +
+                permissions_string + " " +
                 paddedOwner + " " +
                 paddedGroup + " " +
                 paddedSize + " " +
                 fileNameWithColor)
         else
-            GfmShell.println(" "+fileNameWithColor)
+            GfmShell.print(fileNameWithColor+"  ")
         end if
     end for
+    if not showDetails then
+        GfmShell.print("", true)
+    end if
 end function
