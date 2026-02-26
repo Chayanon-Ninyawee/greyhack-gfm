@@ -1,0 +1,12 @@
+import_code("/src/shell.src")
+
+CommandPwd = {}
+CommandPwd.cmd = "pwd"
+CommandPwd.alias = ""
+CommandPwd.args = ""
+CommandPwd.desc = "Prints current working directory"
+CommandPwd.man = "No manual entry for pwd"
+
+CommandPwd.exec = function(args)
+    GfmShell.println(GfmShell.context.currentFolder.path)
+end function
