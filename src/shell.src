@@ -102,7 +102,7 @@ GfmShell.start = function()
         currentPath = GfmShell.context.currentFolder.path
 
         shellPrefix = "<color=#4EE672FF>"+currentUser+"@"+currentHost+"</color><color=#FFFFFFFF>:</color><color=#b893f8>"+currentPath+"</color><color=#FFFFFFFF>$</color> "
-        input = user_input(shellPrefix)
+        input = user_input(shellPrefix, 0, 0, 1)
         GfmShell.__printedText = GfmShell.__printedText + shellPrefix + input + char(10)
 
         if input.len == 0 then continue
