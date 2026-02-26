@@ -21,6 +21,7 @@ import_code("/src/commands/rm.src")
 import_code("/src/commands/mv.src")
 import_code("/src/commands/cp.src")
 import_code("/src/commands/pwd.src")
+import_code("/src/commands/chmod.src")
 
 
 // clear_screen()
@@ -51,6 +52,6 @@ if GfmShell._is_running_as_root then GfmShell.println("<color=#ff0000>Running GF
 
 GfmShell.commandList = [CommandHelp, CommandMan, CommandExit, CommandClear, CommandHomeInfo, CommandLs,
     CommandCd, CommandPs, CommandKill, CommandSu, CommandCat, CommandTouch, CommandMkdir, CommandRm,
-    CommandMv, CommandCp, CommandPwd]
+    CommandMv, CommandCp, CommandPwd, CommandChmod]
 
 GfmShell.start()

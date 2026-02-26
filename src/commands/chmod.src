@@ -1,0 +1,200 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandChmod = {}
+CommandChmod.cmd = "chmod"
+CommandChmod.alias = ""
+CommandChmod.args = "[opt:-R] [mode] [file/directory]"
+CommandChmod.desc = "Remove files or directories"
+CommandChmod.man = "No manual entry for chmod"
+CommandChmod.usage = "Usage: "+CommandChmod.cmd+" "+CommandChmod.args
+
+CommandChmod.exec = function(args)
+    if args.len < 1 then
+        GfmShell.println(CommandChmod.usage)
+        return
+    end if
+
+    recursive = false  // `-R`: Recursive
+
+    args_after_flag = 2
+    fileArgIndex = null
+    for argIndex in range(0, args.len-1)
+        arg = args[argIndex]
+        if arg[0] == "-" then
+            for flag in arg[1:]  // Start at index 1 to skip the '-'
+                if flag == "R" then; recursive = true;
+                end if
+            end for
+        else if argIndex == args.len-args_after_flag then
+            fileArgIndex = argIndex
+            break
+        else
+            GfmShell.println(CommandChmod.usage)
+            return
+        end if
+    end for
+
+    if fileArgIndex == null then
+        GfmShell.println(CommandChmod.usage)
+        return
+    end if
+
+        
+    mode = args[fileArgIndex+0]
+    pathFile = args[fileArgIndex+1]
+
+    if not CommandChmod._isValidMode(mode) then 
+        GfmShell.println(CommandChmod.usage)
+        return
+    end if
+
+    permissions = CommandChmod._expandModeString(mode)
+
+    file = resolveFilePath(pathFile, GfmShell.context.currentFolder)
+    if file != null then
+        for permission in permissions
+            output = file.chmod(permission, recursive)
+            if output.len > 0 then GfmShell.println(output)
+        end for
+        return
+    end if
+
+    file = resolveFolderPath(pathFile, GfmShell.context.currentFolder)
+    if file != null then
+        for permission in permissions
+            output = file.chmod(permission, recursive)
+            if output.len > 0 then GfmShell.println(output)
+        end for
+        return
+    end if
+
+    GfmShell.println("chmod: cannot access '"+pathFile+"': No such file or directory")
+end function
+
+CommandChmod._isValidMode = function(modeStr)
+    if modeStr == null or modeStr.len < 2 then
+        return false
+    end if
+
+    validSubjects = "ugoa"
+    validPerms = "rwx"
+    validOps = "+-="
+
+    opIndex = -1
+
+    // Find operator (must be exactly one)
+    for i in range(0, modeStr.len-1)
+        ch = modeStr[i]
+        if validOps.indexOf(ch) != null then
+            if opIndex != -1 then
+                return false   // more than one operator
+            end if
+            opIndex = i
+        end if
+    end for
+
+    if opIndex <= 0 then
+        return false   // no operator or no subject
+    end if
+
+    // Split parts
+    subjects = modeStr[:opIndex]
+    operation = modeStr[opIndex]
+    permissions = modeStr[opIndex+1:]
+
+    // Validate subjects
+    for i in range(0, subjects.len-1)
+        ch = subjects[i]
+        if validSubjects.indexOf(ch) == null then
+            return false
+        end if
+    end for
+
+    // Allow empty permission ONLY if operation is "="
+    if permissions.len == 0 then
+        if operation == "=" then
+            return true
+        else
+            return false
+        end if
+    end if
+
+    // Validate permissions
+    for i in range(0, permissions.len-1)
+        ch = permissions[i]
+        if validPerms.indexOf(ch) == null then
+            return false
+        end if
+    end for
+
+    return true
+end function
+
+CommandChmod._expandModeString = function(modeStr)
+    if not CommandChmod._isValidMode(modeStr) then exit("Error in [chmod]: Mode is not valid (This is a bug).")
+
+    subjects = ""
+    operation = ""
+    permissions = ""
+    result = []
+
+    // Find operation index
+    opIndex = -1
+    for i in range(0, modeStr.len-1)
+        ch = modeStr[i]
+        if ch == "+" or ch == "-" or ch == "=" then
+            opIndex = i
+            break
+        end if
+    end for
+
+    if opIndex == -1 then
+        return []
+    end if
+
+    subjects = modeStr[:opIndex]
+    operation = modeStr[opIndex]
+    permissions = modeStr[opIndex+1:]
+
+    // Expand 'a' into 'ugo'
+    expandedSubjects = ""
+    for i in range(0, subjects.len-1)
+        ch = subjects[i]
+        if ch == "a" then
+            expandedSubjects = expandedSubjects + "ugo"
+        else
+            expandedSubjects = expandedSubjects + ch
+        end if
+    end for
+
+    // Remove duplicates (so no double u/g/o)
+    finalSubjects = ""
+    for i in range(0, expandedSubjects.len-1)
+        ch = expandedSubjects[i]
+        if finalSubjects.indexOf(ch) == null then
+            finalSubjects = finalSubjects + ch
+        end if
+    end for
+
+    // Generate result list
+    for i in range(0, finalSubjects.len-1)
+        subject = finalSubjects[i]
+
+        if operation == "=" then
+            // Simulate "=" as:
+            // remove all rwx first
+            result.push subject + "-rwx"
+
+            // then add requested permissions (if any)
+            if permissions.len > 0 then
+                result.push subject + "+" + permissions
+            end if
+
+        else
+            result.push subject + operation + permissions
+        end if
+    end for
+
+    return result
+end function
