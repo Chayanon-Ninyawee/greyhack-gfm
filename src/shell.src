@@ -16,10 +16,10 @@ GfmShell.commandList = []
 // @property {file|null} currentFolder
 GfmShell.context = {}
 GfmShell.context.currentPrivilege = "shell"
-GfmShell.context.currentUser = "HomeUser"
+GfmShell.context.currentUser = home_dir[6:]
 GfmShell.context.currentShell = get_shell
 GfmShell.context.currentComputer = get_shell.host_computer
-GfmShell.context.currentFolder = get_shell.host_computer.File("/")
+GfmShell.context.currentFolder = get_shell.host_computer.File(home_dir)
 
 // `Function` — Prints a line of text to the Terminal with an automatic newline.
 //
