@@ -94,11 +94,11 @@ CommandLs.exec = function(args)
         if longestOwner < file.owner.len then longestOwner = file.owner.len
         if longestGroup < file.group.len then longestGroup = file.group.len
         if longestFileSize < fileSize.len then longestFileSize = fileSize.len
-        files_info.push({"file": file, "size": fileSize})
+        files_info.push({"file": file, "size": fileSize, "filename": file.name})
     end for
 
     // Display files
-    for entry in files_info
+    for entry in files_info.sort("filename")
         file = entry.file
         fileSize = entry.size
 
@@ -129,7 +129,7 @@ CommandLs.exec = function(args)
                 file_type = "-"
             end if
 
-            permissions_string = file_type + file.permissions[1:-1]
+            permissions_string = file_type + file.permissions[1:]
 
             paddedOwner = file.owner + " "*(longestOwner-file.owner.len)
             paddedGroup = file.group + " "*(longestGroup-file.group.len)
