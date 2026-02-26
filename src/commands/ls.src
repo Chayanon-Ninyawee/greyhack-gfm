@@ -102,7 +102,7 @@ CommandLs.exec = function(args)
         file = entry.file
         fileSize = entry.size
 
-        fileNameWithColor = ""
+        fileNameWithColor = null
         if file.is_symlink then
             if file.is_folder then
                 fileNameWithColor = fileNameWithColor + "<color=#0d56b5>" + file.name + "</color>"
@@ -118,9 +118,10 @@ CommandLs.exec = function(args)
         else
             fileNameWithColor = fileNameWithColor + "<color=#FFFFFF>" + file.name + "</color>"
         end if
+        if fileNameWithColor == null then exit("Error in [ls]: fileNameWithColor is null (This is a bug).")
 
         if showDetails then
-            file_type = "-"
+            file_type = null
             if file.is_symlink then
                 file_type = "l"
             else if file.is_folder then
@@ -128,6 +129,7 @@ CommandLs.exec = function(args)
             else
                 file_type = "-"
             end if
+            if file_type == null then exit("Error in [ls]: file_type is null (This is a bug).")
 
             permissions_string = file_type + file.permissions[1:]
 
