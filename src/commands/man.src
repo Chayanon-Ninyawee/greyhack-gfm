@@ -3,7 +3,7 @@ import_code("/src/shell.src")
 CommandMan = {}
 CommandMan.cmd = "man"
 CommandMan.alias = ""
-CommandMan.args = "[command]"
+CommandMan.args = "CMD"
 CommandMan.desc = "Show the manual of the command"
 CommandMan.man = "No manual entry for man"
 CommandMan.usage = "Usage: "+CommandMan.cmd+" "+CommandMan.args

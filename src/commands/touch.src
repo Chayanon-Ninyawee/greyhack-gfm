@@ -4,7 +4,7 @@ import_code("/src/shell.src")
 CommandTouch = {}
 CommandTouch.cmd = "touch"
 CommandTouch.alias = ""
-CommandTouch.args = "[file]"
+CommandTouch.args = "FILE"
 CommandTouch.desc = "Create an empty file"
 CommandTouch.man = "No manual entry for touch"
 CommandTouch.usage = "Usage: "+CommandTouch.cmd+" "+CommandTouch.args

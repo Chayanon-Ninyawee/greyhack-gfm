@@ -4,7 +4,7 @@ import_code("/src/shell.src")
 CommandMkdir = {}
 CommandMkdir.cmd = "mkdir"
 CommandMkdir.alias = ""
-CommandMkdir.args = "[directory]"
+CommandMkdir.args = "DIRECTORY"
 CommandMkdir.desc = "Create a new directory"
 CommandMkdir.man = "No manual entry for mkdir"
 CommandMkdir.usage = "Usage: "+CommandMkdir.cmd+" "+CommandMkdir.args

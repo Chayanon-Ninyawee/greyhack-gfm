@@ -4,7 +4,7 @@ import_code("/src/shell.src")
 CommandCat = {}
 CommandCat.cmd = "cat"
 CommandCat.alias = ""
-CommandCat.args = "[file]"
+CommandCat.args = "FILE"
 CommandCat.desc = "Shows the contents of a text file"
 CommandCat.man = "No manual entry for cat"
 CommandCat.usage = "Usage: "+CommandCat.cmd+" "+CommandCat.args

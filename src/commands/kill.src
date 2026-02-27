@@ -3,7 +3,7 @@ import_code("/src/shell.src")
 CommandKill = {}
 CommandKill.cmd = "kill"
 CommandKill.alias = ""
-CommandKill.args = "[pid]"
+CommandKill.args = "PID"
 CommandKill.desc = "Kill the active process of the operating system"
 CommandKill.man = "No manual entry for kill"
 CommandKill.usage = "Usage: "+CommandKill.cmd+" "+CommandKill.args

@@ -4,7 +4,7 @@ import_code("/src/shell.src")
 CommandCd = {}
 CommandCd.cmd = "cd"
 CommandCd.alias = ""
-CommandCd.args = "[path]"
+CommandCd.args = "[PATH]"
 CommandCd.desc = "Move through directories"
 CommandCd.man = "No manual entry for cd"
 CommandCd.usage = "Usage: "+CommandCd.cmd+" "+CommandCd.args

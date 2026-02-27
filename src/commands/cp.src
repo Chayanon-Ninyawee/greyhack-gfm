@@ -4,7 +4,7 @@ import_code("/src/shell.src")
 CommandCp = {}
 CommandCp.cmd = "cp"
 CommandCp.alias = ""
-CommandCp.args = "[opt:-r] [source] [destination]" // TODO: Add -n option
+CommandCp.args = "[-r] SOURCE DEST" // TODO: Add -n option
 CommandCp.desc = "Copy files or directories"
 CommandCp.man = "No manual entry for cp"
 CommandCp.usage = "Usage: "+CommandCp.cmd+" "+CommandCp.args

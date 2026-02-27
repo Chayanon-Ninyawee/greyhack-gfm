@@ -4,7 +4,7 @@ import_code("/src/shell.src")
 CommandChmod = {}
 CommandChmod.cmd = "chmod"
 CommandChmod.alias = ""
-CommandChmod.args = "[opt:-R] [mode] [file/directory]"
+CommandChmod.args = "[-R] MODE FILE"
 CommandChmod.desc = "Remove files or directories"
 CommandChmod.man = "No manual entry for chmod"
 CommandChmod.usage = "Usage: "+CommandChmod.cmd+" "+CommandChmod.args

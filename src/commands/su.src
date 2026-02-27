@@ -3,10 +3,10 @@ import_code("/src/shell.src")
 CommandSu = {}
 CommandSu.cmd = "su"
 CommandSu.alias = ""
-CommandSu.args = "[user]"
+CommandSu.args = "[USER]"
 CommandSu.desc = "Switch to another user"
 CommandSu.man = "Usage:" + char(10) +
-                "  su [user]  - Switch to the specified user." + char(10) + char(10) +
+                "  su [USER]  - Switch to the specified user." + char(10) + char(10) +
                 "If no user is provided, the command will attempt to switch to the root user."
 CommandSu.usage = "Usage: "+CommandSu.cmd+" "+CommandSu.args
 
