@@ -9,6 +9,7 @@ import_code("/src/commands/man.src")
 import_code("/src/commands/exit.src")
 import_code("/src/commands/clear.src")
 import_code("/src/commands/homeInfo.src")
+import_code("/src/commands/pwd.src")
 import_code("/src/commands/ls.src")
 import_code("/src/commands/cd.src")
 import_code("/src/commands/ps.src")
@@ -20,7 +21,6 @@ import_code("/src/commands/mkdir.src")
 import_code("/src/commands/rm.src")
 import_code("/src/commands/mv.src")
 import_code("/src/commands/cp.src")
-import_code("/src/commands/pwd.src")
 import_code("/src/commands/chmod.src")
 import_code("/src/commands/chown.src")
 import_code("/src/commands/chgrp.src")
@@ -53,7 +53,7 @@ GfmShell.println("GFM Tools Initialized!")
 if GfmShell._is_running_as_root then GfmShell.println("<color=#ff0000>Running GFM Tools as root! Which is not recommended.</color>")
 
 GfmShell.commandList = [CommandHelp, CommandMan, CommandExit, CommandClear, CommandHomeInfo, CommandLs,
-    CommandCd, CommandPs, CommandKill, CommandSu, CommandCat, CommandTouch, CommandMkdir, CommandRm,
-    CommandMv, CommandCp, CommandPwd, CommandChmod, CommandChown, CommandChgrp]
+    CommandPwd, CommandCd, CommandPs, CommandKill, CommandSu, CommandCat, CommandTouch, CommandMkdir,
+    CommandRm, CommandMv, CommandCp, CommandChmod, CommandChown, CommandChgrp]
 
 GfmShell.start()
