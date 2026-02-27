@@ -5,7 +5,7 @@ CommandChown = {}
 CommandChown.cmd = "chown"
 CommandChown.alias = ""
 CommandChown.args = "[-R] OWNER[:GROUP] FILE"
-CommandChown.desc = "Remove files or directories"
+CommandChown.desc = "Changes file owner"
 CommandChown.man = "No manual entry for chown"
 CommandChown.usage = "Usage: "+CommandChown.cmd+" "+CommandChown.args
 

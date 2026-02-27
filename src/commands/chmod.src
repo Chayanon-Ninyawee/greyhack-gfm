@@ -5,7 +5,7 @@ CommandChmod = {}
 CommandChmod.cmd = "chmod"
 CommandChmod.alias = ""
 CommandChmod.args = "[-R] MODE FILE"
-CommandChmod.desc = "Remove files or directories"
+CommandChmod.desc = "Changes file permissions"
 CommandChmod.man = "No manual entry for chmod"
 CommandChmod.usage = "Usage: "+CommandChmod.cmd+" "+CommandChmod.args
 
