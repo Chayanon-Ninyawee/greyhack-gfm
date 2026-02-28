@@ -38,6 +38,7 @@ import_code("/src/commands/groups.src")
 import_code("/src/commands/ping.src")
 import_code("/src/commands/nslookup.src")
 import_code("/src/commands/whois.src")
+import_code("/src/commands/ssh.src")
 
 
 // clear_screen()
@@ -70,6 +71,6 @@ GfmShell.commandList = [CommandHelp, CommandMan, CommandExit, CommandClear, Comm
     CommandSudo, CommandLs, CommandPwd, CommandCd, CommandPs, CommandKill, CommandSu, CommandCat, CommandTouch,
     CommandMkdir, CommandRm, CommandMv, CommandCp, CommandLn, CommandLaunch, CommandChmod, CommandChown,
     CommandChgrp, CommandUseradd, CommandUserdel, CommandPasswd, CommandGroupadd, CommandGroupdel, CommandGroups,
-    CommandPing, CommandNslookup, CommandWhois]
+    CommandPing, CommandNslookup, CommandWhois, CommandSsh]
 
 GfmShell.start()

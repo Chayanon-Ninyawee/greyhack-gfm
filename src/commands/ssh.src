@@ -1,0 +1,78 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandSsh = {}
+CommandSsh.cmd = "ssh"
+CommandSsh.alias = ""
+CommandSsh.args = "USER@HOST [-p PORT]"
+CommandSsh.desc = "Connect to remote machine via SSH"
+CommandSsh.man = "No manual entry for ssh"
+CommandSsh.usage = "Usage: " + CommandSsh.cmd + " " + CommandSsh.args
+
+CommandSsh.exec = function(args)
+    if args.len < 1 or args.len > 3 then
+        GfmShell.println(CommandSsh.usage)
+        return
+    end if
+
+    target = args[0]
+    port = 22
+
+    // Parse optional -p
+    if args.len == 3 then
+        if args[1] != "-p" then
+            GfmShell.println(CommandSsh.usage)
+            return
+        end if
+
+        if not args[2].is_integer then
+            GfmShell.println("ssh: invalid port")
+            return
+        end if
+
+        port = args[2].to_int
+    end if
+
+    // Parse user@host
+    atIndex = target.indexOf("@")
+    if atIndex == null then
+        GfmShell.println(CommandSsh.usage)
+        return
+    end if
+
+    user = target[:atIndex]
+    host = target[atIndex+1:]
+
+    if user.len == 0 or host.len == 0 then
+        GfmShell.println(CommandSsh.usage)
+        return
+    end if
+
+    ip = null
+    if is_valid_ip(host) then
+        ip = host
+    else
+        ip = nslookup(host)
+        if not is_valid_ip(ip) then
+            GfmShell.println("ssh: "+host+": Name or service not known")
+            return
+        end if
+    end if
+
+    password = user_input(user + "@" + host + "'s password: ", true)
+
+
+    output = connect_service(ip, port, user, password)
+    if typeof(output) == "string" then
+        GfmShell.println(output)
+        return
+    end if
+
+    if output == null then
+        GfmShell.println("ssh: connection failed")
+        return
+    end if
+
+    // FIXME:
+    GfmShell.println("ssh: connect successfully but i have not implement this yet lol")
+end function
