@@ -1,0 +1,12 @@
+import_code("/src/shell.src")
+
+CommandWhoami = {}
+CommandWhoami.cmd = "whoami"
+CommandWhoami.alias = ""
+CommandWhoami.args = ""
+CommandWhoami.desc = "Prints current user"
+CommandWhoami.man = "No manual entry for whoami"
+
+CommandWhoami.exec = function(args)
+    GfmShell.println(GfmShell.context.currentUser)
+end function
