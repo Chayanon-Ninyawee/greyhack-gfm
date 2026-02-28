@@ -16,7 +16,10 @@ CommandLaunch.exec = function(args)
     end if
 
     pathFile = args[0]
-    exec_args = args[1:].join("")
+    exec_args = ""
+    if args.len > 1 then
+        exec_args = args[1:].join("")
+    end if
 
     file = resolveFilePath(pathFile, GfmShell.context.currentFolder)
 
