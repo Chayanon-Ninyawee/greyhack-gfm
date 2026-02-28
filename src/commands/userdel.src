@@ -1,0 +1,49 @@
+CommandUserdel = {}
+CommandUserdel.cmd = "userdel"
+CommandUserdel.alias = ""
+CommandUserdel.args = "[-r] USERNAME"
+CommandUserdel.desc = "Delete a user"
+CommandUserdel.man = "No manual entry for userdel"
+CommandUserdel.usage = "Usage: " + CommandUserdel.cmd + " " + CommandUserdel.args
+
+
+CommandUserdel.exec = function(args)
+    if args.len < 1 or args.len > 2 then
+        GfmShell.println(CommandUserdel.usage)
+        return
+    end if
+
+    // Root permission required
+    if GfmShell.context.currentUser != "root" then
+        GfmShell.println("userdel: permission denied (root required)")
+        return
+    end if
+
+    removeHome = 0
+    username = ""
+
+    // Parse optional -r
+    if args.len == 2 then
+        if args[0] != "-r" then
+            GfmShell.println(CommandUserdel.usage)
+            return
+        end if
+
+        removeHome = 1
+        username = args[1]
+    else
+        username = args[0]
+    end if
+
+    output = GfmShell.context.currentComputer.delete_user(username, removeHome)
+
+    if output == 1 then
+        GfmShell.println("userdel: user '" + username + "' deleted")
+        return
+    else if output then
+        GfmShell.println(output)
+        return
+    else
+        GfmShell.println("userdel: the user could not be deleted.")
+    end if
+end function
