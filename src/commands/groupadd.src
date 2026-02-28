@@ -2,7 +2,7 @@ CommandGroupadd = {}
 CommandGroupadd.cmd = "groupadd"
 CommandGroupadd.alias = ""
 CommandGroupadd.args = "USERNAME GROUPNAME"
-CommandGroupadd.desc = "Add user to a group"
+CommandGroupadd.desc = "Add user to group"
 CommandGroupadd.man = "No manual entry for groupadd"
 CommandGroupadd.usage = "Usage: " + CommandGroupadd.cmd + " " + CommandGroupadd.args
 

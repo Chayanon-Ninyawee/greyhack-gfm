@@ -1,0 +1,35 @@
+CommandGroupdel = {}
+CommandGroupdel.cmd = "groupdel"
+CommandGroupdel.alias = ""
+CommandGroupdel.args = "USERNAME GROUPNAME"
+CommandGroupdel.desc = "Remove user from group"
+CommandGroupdel.man = "No manual entry for groupdel"
+CommandGroupdel.usage = "Usage: " + CommandGroupdel.cmd + " " + CommandGroupdel.args
+
+
+CommandGroupdel.exec = function(args)
+    if args.len != 2 then
+        GfmShell.println(CommandGroupdel.usage)
+        return
+    end if
+
+    // Root permission required
+    if GfmShell.context.currentUser != "root" then
+        GfmShell.println("groupdel: permission denied (root required)")
+        return
+    end if
+
+    username = args[0]
+    groupname = args[1]
+
+    output = GfmShell.context.currentComputer.delete_group(username, groupname)
+    if output == true then
+        GfmShell.println("groupdel: removed '"+username+"' from '"+groupname+"'")
+        return
+    else if output then
+        GfmShell.println(output)
+        return
+    else
+        GfmShell.println("groupdel: the user could not be removed from group.")
+    end if
+end function
