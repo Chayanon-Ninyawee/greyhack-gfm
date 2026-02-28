@@ -123,15 +123,19 @@ GfmShell.start = function()
             args.push(raw_arg) 
         end for
 
-        isCommandFound = false
-        for command in GfmShell.commandList
-            if cmd == command.cmd or cmd == command.alias then
-                command.exec(args)
-                isCommandFound = true
-                break
-            end if
-        end for
-
-        if not isCommandFound then GfmShell.println(cmd + ": command not found")
+        GfmShell.execCommand(cmd, args)
     end while
+end function
+
+GfmShell.execCommand = function(cmd, args)
+    isCommandFound = false
+    for command in GfmShell.commandList
+        if cmd == command.cmd or cmd == command.alias then
+            command.exec(args)
+            isCommandFound = true
+            break
+        end if
+    end for
+
+    if not isCommandFound then GfmShell.println(cmd + ": command not found")
 end function

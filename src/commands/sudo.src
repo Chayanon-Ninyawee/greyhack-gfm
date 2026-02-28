@@ -4,8 +4,8 @@ import_code("/src/shell.src")
 CommandSudo = {}
 CommandSudo.cmd = "sudo"
 CommandSudo.alias = ""
-CommandSudo.args = "[-u USER] EXECUTABLE [ARGS]"
-CommandSudo.desc = "Run executable as other user"
+CommandSudo.args = "[-u USER] COMMAND [ARGS]"
+CommandSudo.desc = "Run command as other user"
 CommandSudo.man = "No manual entry for sudo"
 CommandSudo.usage = "Usage: "+CommandSudo.cmd+" "+CommandSudo.args
 
@@ -29,22 +29,10 @@ CommandSudo.exec = function(args)
         return
     end if
 
-    pathFile = args[argIndex]
-    exec_args = ""
+    command = args[argIndex]
+    execArgs = []
     if args.len > argIndex+1 then
-        exec_args = args[argIndex+1:].join("")
-    end if
-
-    file = resolveFilePath(pathFile, GfmShell.context.currentFolder)
-
-    if file == null then
-        GfmShell.println("sudo: file not found: " + pathFile)
-        return
-    end if
-
-    if not file.is_binary then
-        GfmShell.println("sudo: can't execute " + file.path + ". Not binary file")
-        return
+        execArgs = args[argIndex+1:]
     end if
 
     // TODO: Make it work when in other shell than the home shell as well
@@ -53,17 +41,26 @@ CommandSudo.exec = function(args)
         return
     end if
 
+    currentUser = GfmShell.context.currentUser
+    currentShell = GfmShell.context.currentShell
+    currentComputer = GfmShell.context.currentComputer
+    currentFolder = GfmShell.context.currentFolder
+
     newShell = get_shell(targetUser, user_input("Password: ", true))
     if newShell == null then
         GfmShell.println("sudo: incorrect username or password")
         return
     end if
 
-    if not file.has_permission("x") then
-        GfmShell.println("sudo: permission denied")
-        return
-    end if
+    GfmShell.context.currentUser = targetUser
+    GfmShell.context.currentShell = newShell
+    GfmShell.context.currentComputer = newShell.host_computer
+    GfmShell.context.currentFolder = newShell.host_computer.File(currentFolder.path)
 
-    output = newShell.launch(file.path, exec_args)
-    if output and output != 1 then GfmShell.println(output)
+    GfmShell.execCommand(command, execArgs)
+
+    GfmShell.context.currentUser = currentUser
+    GfmShell.context.currentShell = currentShell
+    GfmShell.context.currentComputer = currentComputer
+    GfmShell.context.currentFolder = currentFolder
 end function
