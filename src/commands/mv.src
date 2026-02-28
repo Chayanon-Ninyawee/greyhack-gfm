@@ -40,12 +40,12 @@ CommandMv.exec = function(args)
         end if
     else
         if destFile.is_folder then
-            destNewName = origFileName.split("/")[-1] // Have this to print error message
-            destFileNameParent = destFileName
+            destNewName = removeFromList(origFileName.split("/"), "")[-1] // Have this to print error message
+            destFileNameParent = removeFromList(destFileName.split("/"), "").join("")
             destFileParent = destFile
         else
-            destNewName = destFileName.split("/")[-1]
-            destFileNameParent = destFileName.split("/")[:-1].join("/") // Have this to print error message
+            destNewName = removeFromList(destFileName.split("/"), "")[-1]
+            destFileNameParent = removeFromList(destFileName.split("/"), "")[:-1].join("/") // Have this to print error message
             destFileParent = destFile.parent
         end if
     end if
