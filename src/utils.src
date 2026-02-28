@@ -121,3 +121,13 @@ resolveFilePath = function(targetPath, currentFolder)
 
     return child
 end function
+
+removeFromList = function(list, value)
+    new_list = []
+
+    for element in list
+        if element != value then new_list.push(element)
+    end for
+
+    return new_list
+end function

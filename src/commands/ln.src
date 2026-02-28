@@ -1,0 +1,114 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandLn = {}
+CommandLn.cmd = "ln"
+CommandLn.alias = ""
+CommandLn.args = "[-f] SOURCE DEST"
+CommandLn.desc = "Make symbolic link of files or directories"
+CommandLn.man = "No manual entry for ln"
+CommandLn.usage = "Usage: "+CommandLn.cmd+" "+CommandLn.args
+
+CommandLn.exec = function(args)
+    if args.len < 1 then
+        GfmShell.println(CommandLn.usage)
+        return
+    end if
+
+    forced = false  // `-f`
+
+    args_after_flag = 2
+    fileArgIndex = null
+    for argIndex in range(0, args.len-1)
+        arg = args[argIndex]
+        if arg[0] == "-" then
+            for flag in arg[1:]  // Start at index 1 to skip the '-'
+                if flag == "f" then; forced = true;
+                end if
+            end for
+        else if argIndex == args.len-args_after_flag then
+            fileArgIndex = argIndex
+            break
+        else
+            GfmShell.println(CommandLn.usage)
+            return
+        end if
+    end for
+
+    if fileArgIndex == null then
+        GfmShell.println(CommandLn.usage)
+        return
+    end if
+
+    origFileName = args[fileArgIndex+0]
+    destFileName = args[fileArgIndex+1]
+
+    origFile = resolveFilePath(origFileName, GfmShell.context.currentFolder)
+    if origFile == null then origFile = resolveFolderPath(origFileName, GfmShell.context.currentFolder)
+
+    if origFile == null then
+        // NOTE: This is not the behevior in Linux since symlink is allow even if the original file does not exist
+        GfmShell.println("ln: cannot stat '"+origFileName+"': No such file or directory")
+        return
+    end if
+
+    destFile = resolveFilePath(destFileName, GfmShell.context.currentFolder)
+    if destFile == null then destFile = resolveFolderPath(destFileName, GfmShell.context.currentFolder)
+
+    if destFile == null then
+        destNewName = destFileName.split("/")[-1]
+        destFileNameParent = destFileName.split("/")[:-1].join("/")
+        destFileParent = resolveFolderPath(destFileNameParent, GfmShell.context.currentFolder)
+
+        if destFileParent == null then
+            GfmShell.println("ln: failed to create symbolic link '"+destFileName+"': No such file or directory")
+            return
+        end if
+    else
+        if destFile.is_folder then
+            destNewName = removeFromList(origFileName.split("/"), "")[-1] // Have this to print error message
+            destFileNameParent = removeFromList(destFileName.split("/"), "").join("")
+            destFileParent = destFile
+        else
+            destNewName = removeFromList(destFileName.split("/"), "")[-1]
+            destFileNameParent = removeFromList(destFileName.split("/"), "")[:-1].join("/") // Have this to print error message
+            destFileParent = destFile.parent
+        end if
+    end if
+
+    if not forced then
+        existingDestFile = resolveFilePath(destNewName, destFileParent)
+        if existingDestFile == null then existingDestFile = resolveFolderPath(destNewName, destFileParent)
+
+        if existingDestFile != null then
+            GfmShell.println("ln: failed to create symbolic link '"+destFileName+"': File exists");
+            return
+        end if
+    else
+        existingDestFile = resolveFilePath(destNewName, destFileParent)
+        if existingDestFile != null then
+            // NOTE: This is not the same as Linux since it need to delete the file before it can force symlink
+            if not existingDestFile.has_permission("w") then
+                GfmShell.println("ln: failed to create symbolic link '"+destFileNameParent+"/"+destNewName+"': permission denied")
+                return
+            end if
+
+            output = existingDestFile.delete()
+            if output.len > 0 then GfmShell.println(output)
+
+            output = origFile.symlink(destFileParent.path, destNewName)
+            if output and output != 1 then GfmShell.println(output)
+
+            return
+        end if
+
+        existingDestFolder = resolveFolderPath(destNewName, destFileParent)
+        if existingDestFolder != null then
+            GfmShell.println("ln: '"+destFileNameParent+"/"+destNewName+"' cannot overwrite directory")
+            return
+        end if
+    end if
+    
+    output = origFile.symlink(destFileParent.path, destNewName)
+    if output and output != 1 then GfmShell.println(output)
+end function
