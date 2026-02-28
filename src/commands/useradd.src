@@ -1,0 +1,35 @@
+CommandUseradd = {}
+CommandUseradd.cmd = "useradd"
+CommandUseradd.alias = ""
+CommandUseradd.args = "USERNAME"
+CommandUseradd.desc = "Create a new user"
+CommandUseradd.man = "No manual entry for useradd"
+CommandUseradd.usage = "Usage: " + CommandUseradd.cmd + " " + CommandUseradd.args
+
+
+CommandUseradd.exec = function(args)
+    if args.len != 1 then
+        GfmShell.println(CommandUseradd.usage)
+        return
+    end if
+
+    // Root permission required
+    if GfmShell.context.currentUser != "root" then
+        GfmShell.println("useradd: permission denied (root required)")
+        return
+    end if
+
+    username = args[0]
+    password = user_input("New User Password: ", true) 
+
+    output = GfmShell.context.currentComputer.create_user(username, password)
+    if output == true then
+        GfmShell.println("useradd: user '" + username + "' created")
+        return
+    else if output then
+        GfmShell.println(output)
+        return
+    else
+        GfmShell.println("useradd: the user could not be created.")
+    end if
+end function
