@@ -1,3 +1,6 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
 CommandUseradd = {}
 CommandUseradd.cmd = "useradd"
 CommandUseradd.alias = ""

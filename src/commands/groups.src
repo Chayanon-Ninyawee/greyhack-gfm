@@ -1,0 +1,27 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandGroups = {}
+CommandGroups.cmd = "groups"
+CommandGroups.alias = ""
+CommandGroups.args = "USERNAME"
+CommandGroups.desc = "Shows groups of a user"
+CommandGroups.man = "No manual entry for groups"
+CommandGroups.usage = "Usage: "+CommandGroups.cmd+" "+CommandGroups.args
+
+CommandGroups.exec = function(args)
+    if args.len != 1 then
+        GfmShell.println(CommandGroups.usage)
+        return
+    end if
+
+    username = args[0]
+
+    output = GfmShell.context.currentComputer.groups(username)
+   if output then
+        GfmShell.println(output)
+        return
+    else
+        GfmShell.println("Error in [groups]: output is null (This is a bug).")
+    end if
+end function
