@@ -1,0 +1,21 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandNslookup = {}
+CommandNslookup.cmd = "nslookup"
+CommandNslookup.alias = ""
+CommandNslookup.args = "DOMAIN"
+CommandNslookup.desc = "DNS lookup"
+CommandNslookup.man = "No manual entry for nslookup"
+CommandNslookup.usage = "Usage: "+CommandNslookup.cmd+" "+CommandNslookup.args
+
+CommandNslookup.exec = function(args)
+    if args.len != 1 then
+        GfmShell.println(CommandNslookup.usage)
+        return
+    end if
+
+    domain = args[0]
+
+    GfmShell.println("Address: "+nslookup(domain))
+end function

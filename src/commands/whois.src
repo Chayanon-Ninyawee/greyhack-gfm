@@ -1,0 +1,32 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandWhois = {}
+CommandWhois.cmd = "whois"
+CommandWhois.alias = ""
+CommandWhois.args = "HOST"
+CommandWhois.desc = "IP registration lookup"
+CommandWhois.man = "No manual entry for whois"
+CommandWhois.usage = "Usage: "+CommandWhois.cmd+" "+CommandWhois.args
+
+CommandWhois.exec = function(args)
+    if args.len != 1 then
+        GfmShell.println(CommandWhois.usage)
+        return
+    end if
+
+    host = args[0]
+    
+    ip = null
+    if is_valid_ip(host) then
+        ip = host
+    else
+        ip = nslookup(host)
+        if not is_valid_ip(ip) then
+            GfmShell.println("whois: "+host+": Name or service not known")
+            return
+        end if
+    end if
+
+    GfmShell.println(whois(ip))
+end function

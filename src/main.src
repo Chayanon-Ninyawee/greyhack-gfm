@@ -34,6 +34,9 @@ import_code("/src/commands/passwd.src")
 import_code("/src/commands/groupadd.src")
 import_code("/src/commands/groupdel.src")
 import_code("/src/commands/groups.src")
+import_code("/src/commands/ping.src")
+import_code("/src/commands/nslookup.src")
+import_code("/src/commands/whois.src")
 
 
 // clear_screen()
@@ -65,6 +68,7 @@ if GfmShell._is_running_as_root then GfmShell.println("<color=#ff0000>Running GF
 GfmShell.commandList = [CommandHelp, CommandMan, CommandExit, CommandClear, CommandWhoami, CommandHomeinfo,
     CommandSudo, CommandLs, CommandPwd, CommandCd, CommandPs, CommandKill, CommandSu, CommandCat, CommandTouch,
     CommandMkdir, CommandRm, CommandMv, CommandCp, CommandLn, CommandLaunch, CommandChmod, CommandChown,
-    CommandChgrp, CommandUseradd, CommandUserdel, CommandPasswd, CommandGroupadd, CommandGroupdel, CommandGroups]
+    CommandChgrp, CommandUseradd, CommandUserdel, CommandPasswd, CommandGroupadd, CommandGroupdel, CommandGroups,
+    CommandPing, CommandNslookup, CommandWhois]
 
 GfmShell.start()

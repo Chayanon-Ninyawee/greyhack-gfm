@@ -1,0 +1,42 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandPing = {}
+CommandPing.cmd = "ping"
+CommandPing.alias = ""
+CommandPing.args = "HOST"
+CommandPing.desc = "Tests connectivity"
+CommandPing.man = "No manual entry for ping"
+CommandPing.usage = "Usage: "+CommandPing.cmd+" "+CommandPing.args
+
+CommandPing.exec = function(args)
+    if args.len != 1 then
+        GfmShell.println(CommandPing.usage)
+        return
+    end if
+
+    host = args[0]
+    
+    ip = null
+    if is_valid_ip(host) then
+        ip = host
+    else
+        ip = nslookup(host)
+        if not is_valid_ip(ip) then
+            GfmShell.println("ping: "+host+": Name or service not known")
+            return
+        end if
+    end if
+
+    output = GfmShell.context.currentShell.ping(ip)
+    if output then
+        if typeof(output) == "string" then
+            GfmShell.println(output)
+            return
+        end if
+
+        GfmShell.println("Ping successful")
+    else
+        GfmShell.println.print("IP unreachable");        
+    end if
+end function
