@@ -1,0 +1,35 @@
+CommandPasswd = {}
+CommandPasswd.cmd = "passwd"
+CommandPasswd.alias = ""
+CommandPasswd.args = "USERNAME"
+CommandPasswd.desc = "Change password"
+CommandPasswd.man = "No manual entry for passwd"
+CommandPasswd.usage = "Usage: " + CommandPasswd.cmd + " " + CommandPasswd.args
+
+
+CommandPasswd.exec = function(args)
+    if args.len != 1 then
+        GfmShell.println(CommandPasswd.usage)
+        return
+    end if
+
+    // Root permission required
+    if GfmShell.context.currentUser != "root" then
+        GfmShell.println("passwd: permission denied (root required)")
+        return
+    end if
+
+    username = args[0]
+    password = user_input("New Password: ", true) 
+
+    output = GfmShell.context.currentComputer.change_password(username, password)
+    if output == true then
+        GfmShell.println("passwd: password updated successfully")
+        return
+    else if output then
+        GfmShell.println(output)
+        return
+    else
+        GfmShell.println("passwd: failed to update password")
+    end if
+end function
