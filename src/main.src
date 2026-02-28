@@ -10,6 +10,7 @@ import_code("/src/commands/exit.src")
 import_code("/src/commands/clear.src")
 import_code("/src/commands/whoami.src")
 import_code("/src/commands/homeinfo.src")
+import_code("/src/commands/reboot.src")
 import_code("/src/commands/sudo.src")
 import_code("/src/commands/ls.src")
 import_code("/src/commands/pwd.src")
@@ -65,7 +66,7 @@ clear_screen()
 GfmShell.println("GFM Tools Initialized!")
 if GfmShell._is_running_as_root then GfmShell.println("<color=#ff0000>Running GFM Tools as root! Which is not recommended.</color>")
 
-GfmShell.commandList = [CommandHelp, CommandMan, CommandExit, CommandClear, CommandWhoami, CommandHomeinfo,
+GfmShell.commandList = [CommandHelp, CommandMan, CommandExit, CommandClear, CommandWhoami, CommandHomeinfo, CommandReboot,
     CommandSudo, CommandLs, CommandPwd, CommandCd, CommandPs, CommandKill, CommandSu, CommandCat, CommandTouch,
     CommandMkdir, CommandRm, CommandMv, CommandCp, CommandLn, CommandLaunch, CommandChmod, CommandChown,
     CommandChgrp, CommandUseradd, CommandUserdel, CommandPasswd, CommandGroupadd, CommandGroupdel, CommandGroups,

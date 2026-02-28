@@ -1,0 +1,29 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandReboot = {}
+CommandReboot.cmd = "reboot"
+CommandReboot.alias = ""
+CommandReboot.args = "[-s]"
+CommandReboot.desc = "Restarts system"
+CommandReboot.man = "No manual entry for reboot"
+CommandReboot.usage = "Usage: "+CommandReboot.cmd+" "+CommandReboot.args
+
+CommandReboot.exec = function(args)
+    if args.len > 1 then
+        GfmShell.println(CommandReboot.usage)
+        return
+    end if
+
+    safeMode = false  // `-s`
+    if args.len == 1 then
+        if args[0] != "-s" then
+            GfmShell.println(CommandReboot.usage)
+            return
+        end if
+
+        safeMode = true
+    end if
+
+    GfmShell.context.currentComputer.reboot(safeMode)
+end function
