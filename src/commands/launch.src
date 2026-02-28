@@ -1,0 +1,40 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandLaunch = {}
+CommandLaunch.cmd = "launch"
+CommandLaunch.alias = ""
+CommandLaunch.args = "EXECUTABLE [ARGS]"
+CommandLaunch.desc = "Run executable"
+CommandLaunch.man = "No manual entry for launch"
+CommandLaunch.usage = "Usage: "+CommandLaunch.cmd+" "+CommandLaunch.args
+
+CommandLaunch.exec = function(args)
+    if args.len < 1 then
+        GfmShell.println(CommandLaunch.usage)
+        return
+    end if
+
+    pathFile = args[0]
+    exec_args = args[1:].join("")
+
+    file = resolveFilePath(pathFile, GfmShell.context.currentFolder)
+
+    if file == null then
+        GfmShell.println("launch: file not found: "+pathFile)
+        return
+    end if
+
+    if not file.is_binary then
+        GfmShell.println("launch: can't execute " + file.path + ". Not binary file")
+        return
+    end if
+
+    if not file.has_permission("x") then
+        GfmShell.println("launch: permission denied")
+        return
+    end if
+    
+    output = GfmShell.context.currentShell.launch(file.path, exec_args)
+    if output and output != 1 then GfmShell.println(output)
+end function
