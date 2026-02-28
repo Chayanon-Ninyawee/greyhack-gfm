@@ -1,0 +1,35 @@
+CommandGroupadd = {}
+CommandGroupadd.cmd = "groupadd"
+CommandGroupadd.alias = ""
+CommandGroupadd.args = "USERNAME GROUPNAME"
+CommandGroupadd.desc = "Add user to a group"
+CommandGroupadd.man = "No manual entry for groupadd"
+CommandGroupadd.usage = "Usage: " + CommandGroupadd.cmd + " " + CommandGroupadd.args
+
+
+CommandGroupadd.exec = function(args)
+    if args.len != 2 then
+        GfmShell.println(CommandGroupadd.usage)
+        return
+    end if
+
+    // Root permission required
+    if GfmShell.context.currentUser != "root" then
+        GfmShell.println("groupadd: permission denied (root required)")
+        return
+    end if
+
+    username = args[0]
+    groupname = args[1]
+
+    output = GfmShell.context.currentComputer.create_group(username, groupname)
+    if output == true then
+        GfmShell.println("groupadd: added '"+username+"' to '"+groupname+"'")
+        return
+    else if output then
+        GfmShell.println(output)
+        return
+    else
+        GfmShell.println("groupadd: the user could not be added to group.")
+    end if
+end function
