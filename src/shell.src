@@ -10,6 +10,13 @@ GfmShell.commandList = []
 
 GfmShell._is_running_as_root = home_dir == "/root"
 
+// TODO: Change this so that it find the file better and can rename the lib for obfuscation
+GfmShell.homeMetaxploit = include_lib("/lib/metaxploit.so")
+if not GfmShell.homeMetaxploit then
+    GfmShell.homeMetaxploit = include_lib(current_path + "/metaxploit.so")
+    if not GfmShell.homeMetaxploit then GfmShell.println("cannot find metaxploit.so: some hacking capability will be limited")
+end if
+
 // @type context
 // @property {string} currentPrivilege - Can be "shell", "computer", or "file"
 // @property {string|null} currentUser
@@ -26,6 +33,7 @@ end if
 GfmShell.context.currentShell = get_shell
 GfmShell.context.currentComputer = get_shell.host_computer
 GfmShell.context.currentFolder = get_shell.host_computer.File(home_dir)
+GfmShell.context.currentMetaxploit = GfmShell.homeMetaxploit
 
 // `Function` — Prints a line of text to the Terminal with an automatic newline.
 //

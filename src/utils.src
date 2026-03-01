@@ -122,6 +122,110 @@ resolveFilePath = function(targetPath, currentFolder)
     return child
 end function
 
+resolveOrCreateFolderPath = function(targetPath, currentFolder, currentComputer)
+    if targetPath.len == 0 then return currentFolder
+    
+    if targetPath[0] == "/" then
+        // Absolute path: Start from the root
+        current = currentFolder
+        while not current.name == "/"
+            current = current.parent
+        end while
+    else
+        // Relative path: Start from the current folder
+        current = currentFolder
+    end if
+
+    for part in targetPath.split("/")
+        if part == "" then continue
+
+        if part == ".." then
+            // Move up to the parent directory
+            if current.parent != null then
+                current = current.parent
+            else
+                return null  // Can't go above the root
+            end if
+        else
+            // Move into the specified child folder
+            child = null
+            for childFolder in current.get_folders
+                if childFolder.name != part then continue
+
+                child = childFolder
+                break
+            end for
+
+            // If not found then create it
+            if child == null then
+                output = currentComputer.create_folder(current.path, part)
+
+                if typeof(output) == "string" then
+                    // Failed (permission denied, invalid name, etc.)
+                    return null
+                end if
+
+                child = null
+                for childFolder in current.get_folders
+                    if childFolder.name != part then continue
+
+                    child = childFolder
+                    break
+                end for
+
+                if child == null then return null // Give up
+            end if
+            current = child
+        end if
+    end for
+
+    return current
+end function
+
+resolveOrCreateFilePath = function(targetPath, currentFolder, currentComputer)
+    if targetPath.len == 0 then return null // Invalid path
+
+    targetFileName = targetPath.split("/")[-1]
+    targetFolderPath = targetPath.split("/")[:-1].join("/")
+
+    if targetFolderPath.len == 0 then
+        folder = currentFolder
+    else
+        folder = resolveOrCreateFolderPath(targetFolderPath, currentFolder, currentComputer)
+    end if
+
+    if folder == null then return null
+
+    child = null
+    for childFile in folder.get_files()
+        if childFile.name != targetFileName then continue
+
+        child = childFile
+        break
+    end for
+
+    if child == null then
+        output = currentComputer.touch(folder.path, targetFileName)
+
+        if typeof(output) == "string" then
+            // Failed (permission denied, invalid name, etc.)
+            return null
+        end if
+
+        child = null
+        for childFile in folder.get_files()
+            if childFile.name != targetFileName then continue
+
+            child = childFile
+            break
+        end for
+        
+        if child == null then return null // Give up
+    end if
+
+    return child
+end function
+
 removeFromList = function(list, value)
     new_list = []
 
