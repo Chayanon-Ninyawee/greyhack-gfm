@@ -13,6 +13,8 @@ GfmShell._is_running_as_root = home_dir == "/root"
 // TODO: Change this so that it find the file better and can rename the lib for obfuscation
 GfmShell.homeMetaxploit = include_lib("/lib/metaxploit.so")
 if not GfmShell.homeMetaxploit then GfmShell.homeMetaxploit = include_lib(current_path + "/metaxploit.so")
+GfmShell.homeCrypto = include_lib("/lib/crypto.so")
+if not GfmShell.homeCrypto then GfmShell.homeCrypto = include_lib(current_path + "/crypto.so")
 
 // @type context
 // @property {string} currentPrivilege - Can be "shell", "computer", or "file"
@@ -31,6 +33,7 @@ GfmShell.context.currentShell = get_shell
 GfmShell.context.currentComputer = get_shell.host_computer
 GfmShell.context.currentFolder = get_shell.host_computer.File(home_dir)
 GfmShell.context.currentMetaxploit = GfmShell.homeMetaxploit
+GfmShell.context.currentCrypto = GfmShell.homeCrypto
 
 // `Function` — Prints a line of text to the Terminal with an automatic newline.
 //
@@ -112,7 +115,18 @@ GfmShell.start = function()
         currentHost = GfmShell.context.currentComputer.get_name
         currentPath = GfmShell.context.currentFolder.path
 
-        shellPrefix = "<color=#4EE672>"+currentUser+"@"+currentHost+"</color><color=#FFFFFF>:</color><color=#b893f8>"+currentPath+"</color><color=#FFFFFF>$</color> "
+        infoStr = ""
+        if GfmShell.context.currentPrivilege == "shell" then; infoStr = infoStr+"S"
+        else if GfmShell.context.currentPrivilege == "computer" then; infoStr = infoStr+"C" 
+        else if GfmShell.context.currentPrivilege == "file" then; infoStr = infoStr+"F" 
+        else; infoStr = infoStr+"-"; end if
+        if GfmShell.context.currentMetaxploit != null then; infoStr = infoStr+"m" 
+        else; infoStr = infoStr+"-"; end if
+        if GfmShell.context.currentCrypto != null then; infoStr = infoStr+"c" 
+        else; infoStr = infoStr+"-"; end if
+
+
+        shellPrefix = "<color=#f5ec42>"+infoStr+"</color> <color=#4EE672>"+currentUser+"@"+currentHost+"</color><color=#FFFFFF>:</color><color=#b893f8>"+currentPath+"</color><color=#FFFFFF>$</color> "
         input = user_input(shellPrefix, 0, 0, 1)
         GfmShell.__printedText = GfmShell.__printedText + shellPrefix + input + char(10)
 
