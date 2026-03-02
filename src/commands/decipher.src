@@ -1,0 +1,26 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandDecipher = {}
+CommandDecipher.cmd = "decipher"
+CommandDecipher.alias = ""
+CommandDecipher.args = "HASH"
+CommandDecipher.desc = "Decipher MD5 hash (in the game)"
+CommandDecipher.man = "No manual entry for decipher"
+CommandDecipher.usage = "Usage: "+CommandDecipher.cmd+" "+CommandDecipher.args
+
+CommandDecipher.exec = function(args)
+    if args.len != 1 then
+        GfmShell.println(CommandDecipher.usage)
+        return
+    end if
+
+    hash = args[0]
+    
+    output = GfmShell.homeCrypto.decipher(hash)
+    if output then
+        GfmShell.println(output)
+    else
+        GfmShell.println.print("MD5 hash not in the game database");        
+    end if
+end function
