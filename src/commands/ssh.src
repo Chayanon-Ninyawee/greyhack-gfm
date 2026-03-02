@@ -62,7 +62,7 @@ CommandSsh.exec = function(args)
     password = user_input(user + "@" + host + "'s password: ", true)
 
 
-    output = connect_service(ip, port, user, password)
+    output = GfmShell.context.currentShell.connect_service(ip, port, user, password)
     if typeof(output) == "string" then
         GfmShell.println(output)
         return
