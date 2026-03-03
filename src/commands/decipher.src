@@ -9,6 +9,7 @@ CommandDecipher.desc = "Decipher MD5 hash (in the game)"
 CommandDecipher.man = "No manual entry for decipher"
 CommandDecipher.usage = "Usage: "+CommandDecipher.cmd+" "+CommandDecipher.args
 
+// TODO: Add rainbow table so that it decipher the hash faster
 CommandDecipher.exec = function(args)
     if args.len != 1 then
         GfmShell.println(CommandDecipher.usage)
