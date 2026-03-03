@@ -1,0 +1,34 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandIfconfig = {}
+CommandIfconfig.cmd = "ifconfig"
+CommandIfconfig.alias = ""
+CommandIfconfig.args = ""
+CommandIfconfig.desc = "Displays network interfaces"
+CommandIfconfig.man = "No manual entry for ifconfig"
+CommandIfconfig.usage = "Usage: "+CommandIfconfig.cmd+" "+CommandIfconfig.args
+CommandIfconfig.requiredPrivilege = "computer"
+CommandIfconfig.requiredUser = null
+
+CommandIfconfig.exec = function(args)
+	if GfmShell.context.currentComputer.is_network_active then
+	    lanIpAddress = GfmShell.context.currentComputer.local_ip
+    	ipAddress = GfmShell.context.currentComputer.public_ip
+    	gateway = GfmShell.context.currentComputer.network_gateway
+        
+	    if GfmShell.context.currentComputer.active_net_card == "WIFI" then
+		    output = "\nConnected to Wi-Fi:"
+            // FIXME: Make getting router possible
+		    // output = "\nConnected to Wi-Fi:\nEssid: " + router.essid_name + "\nBssid: " + router.bssid_name
+		else
+		    output = "\nEthernet connection:"    
+		end if
+	else
+		lanIpAddress = "0.0.0.0"
+		ipAddress = "0.0.0.0"
+		gateway = "0.0.0.0"
+		output = "\nNot connected to the network."
+	end if
+	GfmShell.println( output + "\n----------------\nPublic IP: " + ipAddress + "\nLocal IP: " + lanIpAddress + "\nGateway: " + gateway + "\n")
+end function
