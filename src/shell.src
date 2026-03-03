@@ -83,11 +83,7 @@ GfmShell.context.setComputer = function(computer, user)
     GfmShell.context.currentCrypto = null
 end function
 
-GfmShell.context.setFile = function(file)
-    // FIXME: Test this
-    // All file exploit are guest (I think)
-    user = "guest"
-
+GfmShell.context.setFile = function(file, user)
     GfmShell.context.currentUser = user
 
     // FIXME: Test this
