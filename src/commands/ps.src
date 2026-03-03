@@ -6,6 +6,8 @@ CommandPs.alias = ""
 CommandPs.args = ""
 CommandPs.desc = "Shows the active processes of the operating system"
 CommandPs.man = "No manual entry for ps"
+CommandPs.requiredPrivilege = "computer"
+CommandPs.requiredUser = null
 
 CommandPs.exec = function(args)
     output = GfmShell.context.currentComputer.show_procs

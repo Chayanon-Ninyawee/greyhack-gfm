@@ -23,12 +23,12 @@ if not GfmShell.homeCrypto then GfmShell.homeCrypto = include_lib(current_path +
 // @property {computer|null} currentComputer
 // @property {file|null} currentFolder
 GfmShell.context = {}
-GfmShell.context.currentPrivilege = "shell"
 if GfmShell._is_running_as_root then
     GfmShell.context.currentUser = "root"
 else
     GfmShell.context.currentUser = home_dir[6:]
 end if
+GfmShell.context.currentPrivilege = "shell"
 GfmShell.context.currentShell = get_shell
 GfmShell.context.currentComputer = get_shell.host_computer
 GfmShell.context.currentFolder = get_shell.host_computer.File(home_dir)

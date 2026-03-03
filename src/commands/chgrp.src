@@ -8,6 +8,8 @@ CommandChgrp.args = "[-R] GROUP FILE"
 CommandChgrp.desc = "Changes file group"
 CommandChgrp.man = "No manual entry for chgrp"
 CommandChgrp.usage = "Usage: "+CommandChgrp.cmd+" "+CommandChgrp.args
+CommandChgrp.requiredPrivilege = "file"
+CommandChgrp.requiredUser = null
 
 CommandChgrp.exec = function(args)
     if args.len < 1 then

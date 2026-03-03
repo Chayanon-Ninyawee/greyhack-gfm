@@ -8,6 +8,8 @@ CommandCat.args = "FILE"
 CommandCat.desc = "Shows the contents of a text file"
 CommandCat.man = "No manual entry for cat"
 CommandCat.usage = "Usage: "+CommandCat.cmd+" "+CommandCat.args
+CommandCat.requiredPrivilege = "file"
+CommandCat.requiredUser = null
 
 CommandCat.exec = function(args)
     if args.len != 1 then

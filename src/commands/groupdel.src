@@ -8,6 +8,8 @@ CommandGroupdel.args = "USERNAME GROUPNAME"
 CommandGroupdel.desc = "Remove user from group"
 CommandGroupdel.man = "No manual entry for groupdel"
 CommandGroupdel.usage = "Usage: " + CommandGroupdel.cmd + " " + CommandGroupdel.args
+CommandGroupdel.requiredPrivilege = "computer"
+CommandGroupdel.requiredUser = "root"
 
 
 CommandGroupdel.exec = function(args)

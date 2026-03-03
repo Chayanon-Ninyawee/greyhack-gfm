@@ -8,6 +8,8 @@ CommandTouch.args = "FILE"
 CommandTouch.desc = "Create an empty file"
 CommandTouch.man = "No manual entry for touch"
 CommandTouch.usage = "Usage: "+CommandTouch.cmd+" "+CommandTouch.args
+CommandTouch.requiredPrivilege = "computer"
+CommandTouch.requiredUser = null
 
 CommandTouch.exec = function(args)
     //command: touch

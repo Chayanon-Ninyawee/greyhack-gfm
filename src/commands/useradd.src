@@ -8,6 +8,8 @@ CommandUseradd.args = "USERNAME"
 CommandUseradd.desc = "Create a new user"
 CommandUseradd.man = "No manual entry for useradd"
 CommandUseradd.usage = "Usage: " + CommandUseradd.cmd + " " + CommandUseradd.args
+CommandUseradd.requiredPrivilege = "computer"
+CommandUseradd.requiredUser = "root"
 
 
 CommandUseradd.exec = function(args)

@@ -8,6 +8,8 @@ CommandSsh.args = "USER@HOST [-p PORT]"
 CommandSsh.desc = "Connect to remote machine via SSH"
 CommandSsh.man = "No manual entry for ssh"
 CommandSsh.usage = "Usage: " + CommandSsh.cmd + " " + CommandSsh.args
+CommandSsh.requiredPrivilege = "shell"
+CommandSsh.requiredUser = null
 
 CommandSsh.exec = function(args)
     if args.len < 1 or args.len > 3 then

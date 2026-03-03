@@ -7,6 +7,8 @@ CommandMan.args = "CMD"
 CommandMan.desc = "Show the manual of the command"
 CommandMan.man = "No manual entry for man"
 CommandMan.usage = "Usage: "+CommandMan.cmd+" "+CommandMan.args
+CommandMan.requiredPrivilege = "none"
+CommandMan.requiredUser = null
 
 CommandMan.exec = function(args)
     if args.len != 1 then

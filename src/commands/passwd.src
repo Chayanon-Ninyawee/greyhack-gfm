@@ -5,6 +5,8 @@ CommandPasswd.args = "USERNAME"
 CommandPasswd.desc = "Change password"
 CommandPasswd.man = "No manual entry for passwd"
 CommandPasswd.usage = "Usage: " + CommandPasswd.cmd + " " + CommandPasswd.args
+CommandPasswd.requiredPrivilege = "computer"
+CommandPasswd.requiredUser = "root"
 
 
 CommandPasswd.exec = function(args)

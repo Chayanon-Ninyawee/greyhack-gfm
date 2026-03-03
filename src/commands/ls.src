@@ -15,6 +15,8 @@ CommandLs.man = "Usage:" + char(10) +
                 "Arguments:" + char(10) +
                 "  [DIRECTORY]: Optionally, specify a directory to list. If no directory is provided, it lists the current directory."
 CommandLs.usage = "Usage: "+CommandLs.cmd+" "+CommandLs.args
+CommandLs.requiredPrivilege = "file"
+CommandLs.requiredUser = null
 
 CommandLs.exec = function(args)
     showAll = false  // `-a`: Include hidden files

@@ -7,6 +7,8 @@ CommandKill.args = "PID"
 CommandKill.desc = "Kill the active process of the operating system"
 CommandKill.man = "No manual entry for kill"
 CommandKill.usage = "Usage: "+CommandKill.cmd+" "+CommandKill.args
+CommandKill.requiredPrivilege = "computer"
+CommandKill.requiredUser = null
 
 CommandKill.exec = function(args)
     if args.len != 1 then

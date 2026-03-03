@@ -8,6 +8,8 @@ CommandMkdir.args = "DIRECTORY"
 CommandMkdir.desc = "Create a new directory"
 CommandMkdir.man = "No manual entry for mkdir"
 CommandMkdir.usage = "Usage: "+CommandMkdir.cmd+" "+CommandMkdir.args
+CommandMkdir.requiredPrivilege = "computer"
+CommandMkdir.requiredUser = null
 
 CommandMkdir.exec = function(args)
     if args.len != 1 then

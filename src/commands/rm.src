@@ -8,6 +8,8 @@ CommandRm.args = "[-r] FILE"
 CommandRm.desc = "Remove files or directories"
 CommandRm.man = "No manual entry for rm"
 CommandRm.usage = "Usage: "+CommandRm.cmd+" "+CommandRm.args
+CommandRm.requiredPrivilege = "file"
+CommandRm.requiredUser = null
 
 CommandRm.exec = function(args)
     if args.len < 1 then

@@ -8,6 +8,8 @@ CommandUserdel.args = "[-r] USERNAME"
 CommandUserdel.desc = "Delete a user"
 CommandUserdel.man = "No manual entry for userdel"
 CommandUserdel.usage = "Usage: " + CommandUserdel.cmd + " " + CommandUserdel.args
+CommandUserdel.requiredPrivilege = "computer"
+CommandUserdel.requiredUser = "root"
 
 
 CommandUserdel.exec = function(args)

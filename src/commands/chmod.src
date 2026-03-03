@@ -8,6 +8,8 @@ CommandChmod.args = "[-R] MODE FILE"
 CommandChmod.desc = "Changes file permissions"
 CommandChmod.man = "No manual entry for chmod"
 CommandChmod.usage = "Usage: "+CommandChmod.cmd+" "+CommandChmod.args
+CommandChmod.requiredPrivilege = "file"
+CommandChmod.requiredUser = null
 
 CommandChmod.exec = function(args)
     if args.len < 1 then

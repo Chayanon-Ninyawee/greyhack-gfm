@@ -8,6 +8,8 @@ CommandNslookup.args = "DOMAIN"
 CommandNslookup.desc = "DNS lookup"
 CommandNslookup.man = "No manual entry for nslookup"
 CommandNslookup.usage = "Usage: "+CommandNslookup.cmd+" "+CommandNslookup.args
+CommandNslookup.requiredPrivilege = "none"
+CommandNslookup.requiredUser = null
 
 CommandNslookup.exec = function(args)
     if args.len != 1 then

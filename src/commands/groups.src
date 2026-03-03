@@ -8,6 +8,8 @@ CommandGroups.args = "USERNAME"
 CommandGroups.desc = "Shows groups of a user"
 CommandGroups.man = "No manual entry for groups"
 CommandGroups.usage = "Usage: "+CommandGroups.cmd+" "+CommandGroups.args
+CommandGroups.requiredPrivilege = "computer"
+CommandGroups.requiredUser = null
 
 CommandGroups.exec = function(args)
     if args.len != 1 then

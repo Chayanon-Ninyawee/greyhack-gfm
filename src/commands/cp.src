@@ -8,6 +8,8 @@ CommandCp.args = "[-r] SOURCE DEST" // TODO: Add -n option
 CommandCp.desc = "Copy files or directories"
 CommandCp.man = "No manual entry for cp"
 CommandCp.usage = "Usage: "+CommandCp.cmd+" "+CommandCp.args
+CommandCp.requiredPrivilege = "file"
+CommandCp.requiredUser = null
 
 CommandCp.exec = function(args)
     if args.len < 1 then

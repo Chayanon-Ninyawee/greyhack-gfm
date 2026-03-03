@@ -8,6 +8,8 @@ CommandCd.args = "[PATH]"
 CommandCd.desc = "Move through directories"
 CommandCd.man = "No manual entry for cd"
 CommandCd.usage = "Usage: "+CommandCd.cmd+" "+CommandCd.args
+CommandCd.requiredPrivilege = "file"
+CommandCd.requiredUser = null
 
 CommandCd.exec = function(args)
     if args.len > 1 then
@@ -19,8 +21,11 @@ CommandCd.exec = function(args)
     if args.len == 0 then
         if GfmShell.context.currentUser == "root" then
             targetPath = "/"
-        else
+        else if GfmShell.context.currentUser != null then
             targetPath = "/home/" + GfmShell.context.currentUser
+        else
+            // currentUser is null assumed root
+            targetPath = "/"
         end if
     else
         targetPath = args[0]

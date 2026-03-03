@@ -9,8 +9,14 @@ CommandSu.man = "Usage:" + char(10) +
                 "  su [USER]  - Switch to the specified user." + char(10) + char(10) +
                 "If no user is provided, the command will attempt to switch to the root user."
 CommandSu.usage = "Usage: "+CommandSu.cmd+" "+CommandSu.args
+CommandSu.requiredPrivilege = "shell"
+CommandSu.requiredUser = null
 
 CommandSu.exec = function(args)
+    // TODO: Make it work when in other shell than the home shell as well
+    GfmShell.println("Will support su soon")
+    return
+
     // Check if a username is provided
     if args.len == 0 then
         targetUser = "root"  // Default to root if no user specified

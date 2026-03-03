@@ -6,6 +6,8 @@ CommandPwd.alias = ""
 CommandPwd.args = ""
 CommandPwd.desc = "Prints current working directory"
 CommandPwd.man = "No manual entry for pwd"
+CommandPwd.requiredPrivilege = "file"
+CommandPwd.requiredUser = null
 
 CommandPwd.exec = function(args)
     GfmShell.println(GfmShell.context.currentFolder.path)

@@ -6,6 +6,8 @@ CommandClear.alias = ""
 CommandClear.args = ""
 CommandClear.desc = "Clear the Terminal"
 CommandClear.man = "No manual entry for clear"
+CommandClear.requiredPrivilege = "none"
+CommandClear.requiredUser = null
 
 CommandClear.exec = function(args)
     GfmShell.clearScreen()

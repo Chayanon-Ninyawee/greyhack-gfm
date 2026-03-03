@@ -8,6 +8,8 @@ CommandReboot.args = "[-s]"
 CommandReboot.desc = "Restarts system"
 CommandReboot.man = "No manual entry for reboot"
 CommandReboot.usage = "Usage: "+CommandReboot.cmd+" "+CommandReboot.args
+CommandReboot.requiredPrivilege = "computer"
+CommandReboot.requiredUser = null
 
 CommandReboot.exec = function(args)
     if args.len > 1 then

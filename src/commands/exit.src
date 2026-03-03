@@ -4,6 +4,8 @@ CommandExit.alias = ""
 CommandExit.args = ""
 CommandExit.desc = "Exit GFM Tools"
 CommandExit.man = "No manual entry for exit"
+CommandExit.requiredPrivilege = "none"
+CommandExit.requiredUser = null
 
 CommandExit.exec = function(args)
     exit("Exiting GFM Tools...")

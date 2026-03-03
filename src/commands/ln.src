@@ -8,6 +8,8 @@ CommandLn.args = "[-f] SOURCE DEST"
 CommandLn.desc = "Make symbolic link of files or directories"
 CommandLn.man = "No manual entry for ln"
 CommandLn.usage = "Usage: "+CommandLn.cmd+" "+CommandLn.args
+CommandLn.requiredPrivilege = "file"
+CommandLn.requiredUser = null
 
 CommandLn.exec = function(args)
     if args.len < 1 then

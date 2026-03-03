@@ -8,6 +8,8 @@ CommandDecipher.args = "HASH"
 CommandDecipher.desc = "Decipher MD5 hash (in the game)"
 CommandDecipher.man = "No manual entry for decipher"
 CommandDecipher.usage = "Usage: "+CommandDecipher.cmd+" "+CommandDecipher.args
+CommandDecipher.requiredPrivilege = "none"
+CommandDecipher.requiredUser = null
 
 // TODO: Add rainbow table so that it decipher the hash faster
 CommandDecipher.exec = function(args)

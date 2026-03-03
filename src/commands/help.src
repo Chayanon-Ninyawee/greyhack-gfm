@@ -6,18 +6,82 @@ CommandHelp.alias = ""
 CommandHelp.args = ""
 CommandHelp.desc = "List all of the commands"
 CommandHelp.man = "No manual entry for help"
+CommandHelp.requiredPrivilege = "none"
+CommandHelp.requiredUser = null
 
 CommandHelp.exec = function(args)
     longestUsage = 0
+    longestDesc = 0
+    longestPriv = 9      // length of "Privilege"
+    longestUser = 4      // length of "User"
+
+    // First pass: calculate max widths
     for command in GfmShell.commandList
-        usage = command.cmd + " " + command.args
-        if longestUsage < usage.len then longestUsage = usage.len
+
+        usage = command.cmd
+        if command.args != null and command.args != "" then
+            usage = usage + " " + command.args
+        end if
+
+        if longestUsage < usage.len then
+            longestUsage = usage.len
+        end if
+
+        if longestDesc < command.desc.len then
+            longestDesc = command.desc.len
+        end if
+
+        priv = command.requiredPrivilege
+        if priv == null or priv == "" then priv = "-" end if
+        if longestPriv < priv.len then
+            longestPriv = priv.len
+        end if
+
+        usr = command.requiredUser
+        if usr == null or usr == "" then usr = "-" end if
+        if longestUser < usr.len then
+            longestUser = usr.len
+        end if
+
     end for
 
-    for command in GfmShell.commandList
-        usage = command.cmd + " " + command.args
-        paddedDesc = " "*(longestUsage-usage.len) + "   - " + command.desc
+    // Print header
+    header = "Usage" + " "*(longestUsage - 5) + "   " + "Description" + " "*(longestDesc - 11) + "   " + "Privilege" + " "*(longestPriv - 9) + "   " + "User"
 
-        GfmShell.println(usage + paddedDesc)
+    GfmShell.println("")
+    GfmShell.println(header)
+    GfmShell.println("-" * header.len)
+
+    // Print rows
+    for command in GfmShell.commandList
+
+        usage = command.cmd
+        if command.args != null and command.args != "" then
+            usage = usage + " " + command.args
+        end if
+
+        desc = command.desc
+
+        priv = command.requiredPrivilege
+        if priv == null or priv == "" then priv = "-" end if
+
+        usr = command.requiredUser
+        if usr == null or usr == "" then usr = "-" end if
+
+        line = usage + " "*(longestUsage - usage.len) + "   " + desc + " "*(longestDesc - desc.len) + "   " + priv + " "*(longestPriv - priv.len) + "   " + usr
+        currentLevel = getPrivilegeLevel(GfmShell.context.currentPrivilege)
+        requiredLevel = getPrivilegeLevel(command.requiredPrivilege)
+
+        if command.requiredPrivilege == "depend" then
+            colored_line = "<color=#ebae34>" + line + "</color>"
+        else if requiredLevel <= currentLevel then
+            colored_line = "<color=#4ee672>" + line + "</color>"
+        else
+            colored_line = "<color=#e03a3a>" + line + "</color>"
+        end if
+
+        GfmShell.println(colored_line)
     end for
+
+    GfmShell.println("")
 end function

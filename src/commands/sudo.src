@@ -8,8 +8,14 @@ CommandSudo.args = "[-u USER] COMMAND [ARGS]"
 CommandSudo.desc = "Run command as other user"
 CommandSudo.man = "No manual entry for sudo"
 CommandSudo.usage = "Usage: "+CommandSudo.cmd+" "+CommandSudo.args
+CommandSudo.requiredPrivilege = "shell"
+CommandSudo.requiredUser = null
 
 CommandSudo.exec = function(args)
+    // TODO: Make it work when in other shell than the home shell as well
+    GfmShell.println("Will support sudo soon")
+    return
+
     if args.len < 1 then
         GfmShell.println(CommandSudo.usage)
         return

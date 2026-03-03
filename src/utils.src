@@ -235,3 +235,12 @@ removeFromList = function(list, value)
 
     return new_list
 end function
+
+getPrivilegeLevel = function(priv)
+    if priv == "none" then return 0 end if
+    if priv == "file" then return 1 end if
+    if priv == "computer" then return 2 end if
+    if priv == "shell" then return 3 end if
+
+    return -1
+end function

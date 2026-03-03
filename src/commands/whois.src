@@ -8,6 +8,8 @@ CommandWhois.args = "HOST"
 CommandWhois.desc = "IP registration lookup"
 CommandWhois.man = "No manual entry for whois"
 CommandWhois.usage = "Usage: "+CommandWhois.cmd+" "+CommandWhois.args
+CommandWhois.requiredPrivilege = "none"
+CommandWhois.requiredUser = null
 
 CommandWhois.exec = function(args)
     if args.len != 1 then

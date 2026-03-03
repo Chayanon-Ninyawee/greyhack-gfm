@@ -8,6 +8,8 @@ CommandPing.args = "HOST"
 CommandPing.desc = "Tests connectivity"
 CommandPing.man = "No manual entry for ping"
 CommandPing.usage = "Usage: "+CommandPing.cmd+" "+CommandPing.args
+CommandPing.requiredPrivilege = "shell"
+CommandPing.requiredUser = null
 
 CommandPing.exec = function(args)
     if args.len != 1 then

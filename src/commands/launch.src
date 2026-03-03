@@ -8,6 +8,8 @@ CommandLaunch.args = "EXECUTABLE [ARGS]"
 CommandLaunch.desc = "Run executable"
 CommandLaunch.man = "No manual entry for launch"
 CommandLaunch.usage = "Usage: "+CommandLaunch.cmd+" "+CommandLaunch.args
+CommandLaunch.requiredPrivilege = "shell"
+CommandLaunch.requiredUser = null
 
 CommandLaunch.exec = function(args)
     if args.len < 1 then

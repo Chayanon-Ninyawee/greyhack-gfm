@@ -8,6 +8,8 @@ CommandGroupadd.args = "USERNAME GROUPNAME"
 CommandGroupadd.desc = "Add user to group"
 CommandGroupadd.man = "No manual entry for groupadd"
 CommandGroupadd.usage = "Usage: " + CommandGroupadd.cmd + " " + CommandGroupadd.args
+CommandGroupadd.requiredPrivilege = "computer"
+CommandGroupadd.requiredUser = "root"
 
 
 CommandGroupadd.exec = function(args)
