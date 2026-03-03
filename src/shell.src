@@ -40,6 +40,7 @@ GfmShell.context.currentMetaxploit = GfmShell.homeMetaxploit
 GfmShell.context.currentCrypto = GfmShell.homeCrypto
 
 GfmShell.context.setShell = function(shell, user)
+    // TODO: Make it get user automatically
     GfmShell.context.currentUser = user
 
     if GfmShell.context.currentUser == "root" then
