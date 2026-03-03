@@ -148,6 +148,6 @@ CommandLs.exec = function(args)
         end if
     end for
     if not showDetails then
-        GfmShell.print("", true)
+        GfmShell.print(char(10), true)
     end if
 end function
