@@ -50,21 +50,16 @@ CommandSsh.exec = function(args)
         return
     end if
 
-    ip = null
-    if is_valid_ip(host) then
-        ip = host
-    else
-        ip = nslookup(host)
-        if not is_valid_ip(ip) then
-            GfmShell.println("ssh: "+host+": Name or service not known")
-            return
-        end if
+    ip = lookUpHost(host)
+    if ip == null then
+        GfmShell.println("ssh: "+host+": Name or service not known")
+        return
     end if
 
     password = user_input(user + "@" + host + "'s password: ", true)
 
 
-    output = GfmShell.context.currentShell.connect_service(ip, port, user, password)
+    output = GfmShell.context.currentShell.connect_service(ip, port, user, password, "ssh")
     if typeof(output) == "string" then
         GfmShell.println(output)
         return
@@ -75,6 +70,5 @@ CommandSsh.exec = function(args)
         return
     end if
 
-    // FIXME:
-    GfmShell.println("ssh: connect successfully but i have not implement this yet lol")
+    GfmShell.context.setShell(output)
 end function

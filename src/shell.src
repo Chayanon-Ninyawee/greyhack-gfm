@@ -1,3 +1,5 @@
+import_code("/src/utils.src")
+
 // @type GfmShell
 // @property {string} __printedText - Stores the accumulated text that has been printed or queued for printing.
 // @property {string} __stashedPrintedText - Temporarily stores text that has been stashed for restoration.
@@ -9,6 +11,8 @@ GfmShell.__stashedPrintedText = ""
 GfmShell.commandList = []
 
 GfmShell._is_running_as_root = home_dir == "/root"
+
+GfmShell.homeShell = get_shell
 
 // TODO: Change this so that it find the file better and can rename the lib for obfuscation
 GfmShell.homeMetaxploit = include_lib("/lib/metaxploit.so")
@@ -34,6 +38,72 @@ GfmShell.context.currentComputer = get_shell.host_computer
 GfmShell.context.currentFolder = get_shell.host_computer.File(home_dir)
 GfmShell.context.currentMetaxploit = GfmShell.homeMetaxploit
 GfmShell.context.currentCrypto = GfmShell.homeCrypto
+
+GfmShell.context.setShell = function(shell, user)
+    GfmShell.context.currentUser = user
+
+    if GfmShell.context.currentUser == "root" then
+        targetPath = "/root"
+    else if GfmShell.context.currentUser != null then
+        targetPath = "/home/" + GfmShell.context.currentUser
+    else
+        // currentUser is null then go to root
+        targetPath = "/"
+    end if
+
+    rootFolder = shell.host_computer.File("/")
+
+    GfmShell.context.currentPrivilege = "shell"
+    GfmShell.context.currentShell = shell
+    GfmShell.context.currentComputer = shell.host_computer
+    GfmShell.context.currentFolder = resolveFolderPath(targetPath, rootFolder)
+    GfmShell.context.currentMetaxploit = null
+    GfmShell.context.currentCrypto = null
+end function
+
+GfmShell.context.setComputer = function(computer, user)
+    GfmShell.context.currentUser = user
+
+    if GfmShell.context.currentUser == "root" then
+        targetPath = "/root"
+    else if GfmShell.context.currentUser != null then
+        targetPath = "/home/" + GfmShell.context.currentUser
+    else
+        // currentUser is null then go to root
+        targetPath = "/"
+    end if
+
+    rootFolder = computer.File("/")
+
+    GfmShell.context.currentPrivilege = "computer"
+    GfmShell.context.currentShell = null
+    GfmShell.context.currentComputer = computer
+    GfmShell.context.currentFolder = resolveFolderPath(targetPath, rootFolder)
+    GfmShell.context.currentMetaxploit = null
+    GfmShell.context.currentCrypto = null
+end function
+
+GfmShell.context.setFile = function(file)
+    // FIXME: Test this
+    // All file exploit are guest (I think)
+    user = "guest"
+
+    GfmShell.context.currentUser = user
+
+    // FIXME: Test this
+    if file.is_folder then
+        folder = file
+    else
+        folder = file.parent
+    end if
+
+    GfmShell.context.currentPrivilege = "file"
+    GfmShell.context.currentShell = null
+    GfmShell.context.currentComputer = null
+    GfmShell.context.currentFolder = folder
+    GfmShell.context.currentMetaxploit = null
+    GfmShell.context.currentCrypto = null
+end function
 
 // `Function` — Prints a line of text to the Terminal with an automatic newline.
 //
