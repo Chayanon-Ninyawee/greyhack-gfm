@@ -19,15 +19,10 @@ CommandWhois.exec = function(args)
 
     host = args[0]
     
-    ip = null
-    if is_valid_ip(host) then
-        ip = host
-    else
-        ip = nslookup(host)
-        if not is_valid_ip(ip) then
-            GfmShell.println("whois: "+host+": Name or service not known")
-            return
-        end if
+    ip = lookUpHost(host)
+    if ip == null then
+        GfmShell.println("whois: "+host+": Name or service not known")
+        return
     end if
 
     GfmShell.println(whois(ip))

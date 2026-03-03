@@ -10,9 +10,9 @@ CommandHomeinfo.requiredPrivilege = "none"
 CommandHomeinfo.requiredUser = null
 
 CommandHomeinfo.exec = function(args)
-    hostname = get_shell.host_computer.get_name
-    ipAddress = get_shell.host_computer.public_ip
-    lanIpAddress = get_shell.host_computer.local_ip
+    hostname = GfmShell.homeShell.host_computer.get_name
+    ipAddress = GfmShell.homeShell.host_computer.public_ip
+    lanIpAddress = GfmShell.homeShell.host_computer.local_ip
 
     GfmShell.println("Hostname: " + hostname)
     GfmShell.println("IP Address: " + ipAddress)

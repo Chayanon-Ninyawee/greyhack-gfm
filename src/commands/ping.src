@@ -19,15 +19,10 @@ CommandPing.exec = function(args)
 
     host = args[0]
     
-    ip = null
-    if is_valid_ip(host) then
-        ip = host
-    else
-        ip = nslookup(host)
-        if not is_valid_ip(ip) then
-            GfmShell.println("ping: "+host+": Name or service not known")
-            return
-        end if
+    ip = lookUpHost(host)
+    if ip == null then
+        GfmShell.println("ping: "+host+": Name or service not known")
+        return
     end if
 
     output = GfmShell.context.currentShell.ping(ip)
@@ -39,6 +34,6 @@ CommandPing.exec = function(args)
 
         GfmShell.println("Ping successful")
     else
-        GfmShell.println.print("IP unreachable");        
+        GfmShell.println("IP unreachable");        
     end if
 end function

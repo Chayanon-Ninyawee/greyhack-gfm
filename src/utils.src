@@ -244,3 +244,18 @@ getPrivilegeLevel = function(priv)
 
     return -1
 end function
+
+lookUpHost = function(host)
+    ip = null
+    if is_valid_ip(host) then
+        ip = host
+    else
+        ip = nslookup(host)
+        if not is_valid_ip(ip) then
+            ip = null
+            return
+        end if
+    end if
+
+    return ip
+end function

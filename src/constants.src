@@ -20,6 +20,8 @@ ROUTER_LIB_NAME_LIST = ["kernel_router.so"]
 
 ALL_LIB_NAME_LIST = LOCAL_LIB_NAME_LIST + REMOTE_LIB_NAME_LIST + ROUTER_LIB_NAME_LIST
 
+COMMON_PORTS = [0, 21, 22, 25, 80, 141, 8080, 1222, 1542, 3306, 3307, 3308, 6667, 37777]
+
 // libsmartappliance.so
 // libtrafficnet.so
 // libadb.so
