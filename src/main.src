@@ -38,6 +38,9 @@ import_code("/src/commands/groups.src")
 import_code("/src/commands/ifconfig.src")
 import_code("/src/commands/iwlist.src")
 import_code("/src/commands/iwconfig.src")
+import_code("/src/commands/airmon.src")
+import_code("/src/commands/aireplay.src")
+import_code("/src/commands/aircrack.src")
 import_code("/src/commands/ping.src")
 import_code("/src/commands/nslookup.src")
 import_code("/src/commands/whois.src")
@@ -77,6 +80,7 @@ GfmShell.commandList = [CommandHelp, CommandMan, CommandExit, CommandClear, Comm
     CommandSudo, CommandLs, CommandPwd, CommandCd, CommandPs, CommandKill, CommandSu, CommandCat, CommandTouch,
     CommandMkdir, CommandRm, CommandMv, CommandCp, CommandLn, CommandLaunch, CommandChmod, CommandChown,
     CommandChgrp, CommandUseradd, CommandUserdel, CommandPasswd, CommandGroupadd, CommandGroupdel, CommandGroups,
-    CommandIfconfig, CommandIwlist, CommandIwconfig, CommandPing, CommandNslookup, CommandWhois, CommandSsh, CommandDecipher, CommandScanexploit]
+    CommandIfconfig, CommandIwlist, CommandIwconfig, CommandAirmon, CommandAireplay, CommandAircrack, CommandPing,
+    CommandNslookup, CommandWhois, CommandSsh, CommandDecipher, CommandScanexploit]
 
 GfmShell.start()

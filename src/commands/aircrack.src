@@ -1,0 +1,50 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandAircrack = {}
+CommandAircrack.cmd = "aircrack"
+CommandAircrack.alias = ""
+CommandAircrack.args = "FILE"
+CommandAircrack.desc = "Cracks captured wireless handshake"
+CommandAircrack.man = "No manual entry for aircrack"
+CommandAircrack.usage = "Usage: "+CommandAircrack.cmd+" "+CommandAircrack.args
+CommandAircrack.requiredPrivilege = "file"
+CommandAircrack.requiredUser = null
+
+CommandAircrack.exec = function(args)
+    if not GfmShell.context.currentCrypto then
+        // TODO: Prompt to move crypto.so here
+        GfmShell.println("airmon: missing crypto library")
+        return
+    end if
+
+    if args.len != 1 then
+        GfmShell.println(CommandAircrack.usage)
+        return
+    end if
+
+    pathFile = args[0]
+    file = resolveFilePath(pathFile, GfmShell.context.currentFolder)
+
+    if file == null then
+        GfmShell.println("aircrack: file not found: "+pathFile)
+        return
+    end if
+
+    if not file.is_binary then
+        GfmShell.println("aircrack: can't open " + file.path + ". Wrong format")
+        return
+    end if
+
+    if not file.has_permission("r") then
+        GfmShell.println("aircrack: permission denied")
+        return
+    end if
+
+    key = GfmShell.context.currentCrypto.aircrack(file.path)
+    if key then 
+    	GfmShell.println("KEY FOUND! [" + key + "]" )
+    else 
+    	GfmShell.println("aircrack: Unable to get the key" )
+    end if
+end function
