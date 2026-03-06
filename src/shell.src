@@ -1,11 +1,14 @@
 import_code("/src/utils.src")
 
+terminalObject = get_custom_object
+terminalObject.GfmShell = {}
+
 // @type GfmShell
 // @property {string} __printedText - Stores the accumulated text that has been printed or queued for printing.
 // @property {string} __stashedPrintedText - Temporarily stores text that has been stashed for restoration.
 // @property {list<any>} commandList - A list of commands that can be run.
 // @property {map<string,any>} context - Current context of the shell.
-GfmShell = {}
+GfmShell = terminalObject.GfmShell
 GfmShell.__printedText = ""
 GfmShell.__stashedPrintedText = ""
 GfmShell.commandList = []
