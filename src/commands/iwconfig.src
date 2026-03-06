@@ -1,0 +1,59 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandIwconfig = {}
+CommandIwconfig.cmd = "iwconfig"
+CommandIwconfig.alias = ""
+CommandIwconfig.args = "INTERFACE essid [ESSID]"
+CommandIwconfig.desc = "Lists wireless networks"
+CommandIwconfig.man = "No manual entry for iwlist"
+CommandIwconfig.usage = "Usage: "+CommandIwconfig.cmd+" "+CommandIwconfig.args
+CommandIwconfig.requiredPrivilege = "computer"
+CommandIwconfig.requiredUser = null
+
+CommandIwconfig.exec = function(args)
+    if args.len != 3 or args[1] != "essid" then
+        GfmShell.println(CommandIwconfig.usage)	
+        return
+    end if
+
+    devices = GfmShell.context.currentComputer.network_devices
+    if devices == null or devices.indexOf(args[0]) == null then
+        GfmShell.println("iwconfig: network device not found")
+        return
+    end if
+
+    networks = GfmShell.context.currentComputer.wifi_networks(args[0])
+    if networks == null then
+        GfmShell.println("iwconfig: networks is null (This is a bug).")
+        return
+    end if
+
+    essid = args[2]
+    bssid = null
+    for network in networks
+        parsedItem = network.split(" ")
+        item = {}
+        item.BSSID = parsedItem[0]
+        item.PWR = parsedItem[1]
+        item.ESSID = parsedItem[2]
+    
+        if item.ESSID == essid then
+            bssid = item.BSSID
+            break
+        end if
+    end for
+
+    if bssid == null then
+        GfmShell.println("iwconfig: there is no essid of that name")
+        return
+    end if
+
+    password = user_input("Password: ", true)
+
+    status = GfmShell.context.currentComputer.connect_wifi(args[0], bssid, essid, password)
+    if typeof(status) == "string" then
+        GfmShell.println(status)
+        return
+    end if
+end function

@@ -12,6 +12,8 @@ CommandIfconfig.requiredPrivilege = "computer"
 CommandIfconfig.requiredUser = null
 
 CommandIfconfig.exec = function(args)
+    devices = GfmShell.context.currentComputer.network_devices
+
 	if GfmShell.context.currentComputer.is_network_active then
 	    lanIpAddress = GfmShell.context.currentComputer.local_ip
     	ipAddress = GfmShell.context.currentComputer.public_ip
@@ -31,4 +33,5 @@ CommandIfconfig.exec = function(args)
 		output = "\nNot connected to the network."
 	end if
 	GfmShell.println( output + "\n----------------\nPublic IP: " + ipAddress + "\nLocal IP: " + lanIpAddress + "\nGateway: " + gateway + "\n")
+    GfmShell.println(format_columns("Interface Chipset Monitor_Mode\n" + devices))
 end function
