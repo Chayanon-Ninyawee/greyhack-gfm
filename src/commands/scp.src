@@ -1,0 +1,112 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandScp = {}
+CommandScp.cmd = "scp"
+CommandScp.alias = ""
+CommandScp.args = "SOURCE DEST [-p PORT]"
+CommandScp.desc = "Secure file copy"
+CommandScp.man = "No manual entry for scp"
+CommandScp.usage = "Usage: " + CommandScp.cmd + " " + CommandScp.args
+CommandScp.requiredPrivilege = "shell"
+CommandScp.requiredUser = null
+
+CommandScp.exec = function(args)
+    if args.len < 2 or args.len > 4 then
+        GfmShell.println(CommandScp.usage)
+        return
+    end if
+
+    source = args[0]
+    dest = args[1]
+
+    port = 22
+
+    // Parse optional -p
+    if args.len == 4 then
+        if args[2] != "-p" then
+            GfmShell.println(CommandScp.usage)
+            return
+        end if
+
+        if not args[3].is_integer then
+            GfmShell.println("ssh: invalid port")
+            return
+        end if
+
+        port = args[3].to_int
+    end if
+
+    sourceAt = source.indexOf("@")
+    sourceColon = source.indexOf(":")
+
+    destAt = dest.indexOf("@")
+    destColon = dest.indexOf(":")
+
+    shell = GfmShell.context.currentShell
+
+    // local -> remote
+    if sourceAt == null and destAt != null and destColon != null then
+        user = dest[:destAt]
+        host = dest[destAt+1:destColon]
+        remotePath = dest[destColon+1:]
+
+        ip = lookUpHost(host)
+        if ip == null then
+            GfmShell.println("scp: " + host + ": Name or service not known")
+            return
+        end if
+
+        password = user_input(user + "@" + host + "'s password: ", true)
+
+        remoteShell = shell.connect_service(ip, port, user, password, "ssh")
+
+        if typeof(remoteShell) == "string" then
+            GfmShell.println(remoteShell)
+            return
+        end if
+
+        if remoteShell == null then
+            GfmShell.println("scp: connection failed")
+            return
+        end if
+
+        shell.scp(source, remotePath, remoteShell, true)
+        GfmShell.println("file copied")
+        return
+    end if
+
+
+    // remote -> local
+    if sourceAt != null and sourceColon != null and destAt == null then
+        user = source[:sourceAt]
+        host = source[sourceAt+1:sourceColon]
+        remotePath = source[sourceColon+1:]
+
+        ip = lookUpHost(host)
+        if ip == null then
+            GfmShell.println("scp: " + host + ": Name or service not known")
+            return
+        end if
+
+        password = user_input(user + "@" + host + "'s password: ", true)
+
+        remoteShell = shell.connect_service(ip, port, user, password, "ssh")
+
+        if typeof(remoteShell) == "string" then
+            GfmShell.println(remoteShell)
+            return
+        end if
+
+        if remoteShell == null then
+            GfmShell.println("scp: connection failed")
+            return
+        end if
+
+        shell.scp(remotePath, dest, remoteShell, false)
+        GfmShell.println("file copied")
+        return
+    end if
+
+    GfmShell.println("scp: unsupported source/destination combination")
+end function
