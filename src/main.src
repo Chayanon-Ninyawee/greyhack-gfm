@@ -71,7 +71,7 @@ import_code("/src/commands/scanexploit.src")
 //     exit("Invalid Password!")
 // end if
 
-clear_screen()
+// clear_screen()
 GfmShell.println("GFM Tools Initialized!")
 if GfmShell._is_running_as_root then GfmShell.println("<color=#ff0000>Running GFM Tools as root! Which is not recommended.</color>")
 if not GfmShell.homeMetaxploit then GfmShell.println("cannot find metaxploit.so: some hacking capability will be limited")

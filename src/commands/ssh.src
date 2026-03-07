@@ -70,5 +70,5 @@ CommandSsh.exec = function(args)
         return
     end if
 
-    GfmShell.context.setShell(output)
+    GfmShell.setShell(output)
 end function

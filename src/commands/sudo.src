@@ -12,10 +12,6 @@ CommandSudo.requiredPrivilege = "shell"
 CommandSudo.requiredUser = null
 
 CommandSudo.exec = function(args)
-    // TODO: Make it work when in other shell than the home shell as well
-    GfmShell.println("Will support sudo soon")
-    return
-
     if args.len < 1 then
         GfmShell.println(CommandSudo.usage)
         return
@@ -41,32 +37,21 @@ CommandSudo.exec = function(args)
         execArgs = args[argIndex+1:]
     end if
 
-    // TODO: Make it work when in other shell than the home shell as well
-    if GfmShell.context.currentShell != get_shell then
-        GfmShell.println("Currently not supporting sudo in other shell except home.")
-        return
-    end if
-
     currentUser = GfmShell.context.currentUser
     currentShell = GfmShell.context.currentShell
-    currentComputer = GfmShell.context.currentComputer
-    currentFolder = GfmShell.context.currentFolder
 
-    newShell = get_shell(targetUser, user_input("Password: ", true))
+    newShell = shellEscalate(currentShell, targetUser, user_input("Password: ", true))
     if newShell == null then
         GfmShell.println("sudo: incorrect username or password")
         return
+    else if typeof(newShell) == "string" then
+        GfmShell.println("sudo: " + newShell)
+        return
     end if
 
-    GfmShell.context.currentUser = targetUser
-    GfmShell.context.currentShell = newShell
-    GfmShell.context.currentComputer = newShell.host_computer
-    GfmShell.context.currentFolder = newShell.host_computer.File(currentFolder.path)
+    GfmShell.setShell(newShell, targetUser)
 
     GfmShell.execCommand(command, execArgs)
 
-    GfmShell.context.currentUser = currentUser
-    GfmShell.context.currentShell = currentShell
-    GfmShell.context.currentComputer = currentComputer
-    GfmShell.context.currentFolder = currentFolder
+    GfmShell.setShell(currentShell, currentUser)
 end function

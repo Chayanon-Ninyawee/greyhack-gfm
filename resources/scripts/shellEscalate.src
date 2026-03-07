@@ -1,0 +1,4 @@
+user = get_custom_object.shellEscalate.user
+password = get_custom_object.shellEscalate.password
+
+get_custom_object.shellEscalate.newShell = get_shell(user, password)

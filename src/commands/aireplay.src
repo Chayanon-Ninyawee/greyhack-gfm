@@ -18,7 +18,11 @@ CommandAireplay.exec = function(args)
         return
     end if
 
-    if args.len != 2 and args[0] != "-e" then
+    if args.len != 2 then
+        GfmShell.println(CommandAireplay.usage)	
+        return
+    end if
+    if args[0] != "-e" then
         GfmShell.println(CommandAireplay.usage)	
         return
     end if
@@ -49,7 +53,7 @@ CommandAireplay.exec = function(args)
         return
     end if
 
-    result = GfmShell.context.currentCrypto.aireplay(bssid, essid)
+    result = GfmShell.context.currentCrypto.aireplay(bssid, essid, 7200)
     if typeof(result) == "string" then
         GfmShell.println(result)
         return

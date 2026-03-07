@@ -1,9 +1,11 @@
-import re
 import os
+import re
+
 
 def read_file(filepath):
-    with open(filepath, 'r') as file:
+    with open(filepath, "r") as file:
         return file.read()
+
 
 def replace_import_code(content, base_path, seen_imports=None):
     if seen_imports is None:
@@ -14,9 +16,9 @@ def replace_import_code(content, base_path, seen_imports=None):
 
     for match in matches:
         import_path_raw = match.group(1)
-        
+
         # Remove leading slash if present
-        if import_path_raw.startswith('/'):
+        if import_path_raw.startswith("/"):
             import_path_raw = import_path_raw[1:]
 
         import_path = os.path.join(base_path, import_path_raw)
@@ -31,7 +33,9 @@ def replace_import_code(content, base_path, seen_imports=None):
         if os.path.exists(import_path):
             seen_imports.add(normalized_path)
             imported_content = read_file(import_path)
-            imported_content = replace_import_code(imported_content, base_path, seen_imports)
+            imported_content = replace_import_code(
+                imported_content, base_path, seen_imports
+            )
             imported_content = replace_import_script(imported_content, base_path)
             content = content.replace(match.group(0), imported_content)
         else:
@@ -39,19 +43,25 @@ def replace_import_code(content, base_path, seen_imports=None):
 
     return content
 
+
 def replace_import_script(content, base_path):
     pattern = r'"@import_script\(([^"]+)\)"'
     matches = re.finditer(pattern, content)
 
     for match in matches:
         import_path = os.path.join(base_path, match.group(1))
+
+        # Remove leading slash if present
+        if import_path.startswith("/"):
+            import_path = import_path[1:]
+
         if os.path.exists(import_path):
             imported_content = read_file(import_path)
             imported_content = replace_import_code(imported_content, base_path)
             imported_content = replace_import_script(imported_content, base_path)
             imported_content = remove_comments_and_whitespace(imported_content)
             imported_content = imported_content.replace('"', '""')
-            imported_content = imported_content.replace('\n', ';')
+            imported_content = imported_content.replace("\n", ";")
             imported_content = f'"{imported_content}"'
             content = content.replace(match.group(0), imported_content)
         else:
@@ -59,15 +69,16 @@ def replace_import_script(content, base_path):
 
     return content
 
+
 def remove_comments_and_whitespace(content):
     # Remove comments
-    content = re.sub(r'//.*', '', content)
+    content = re.sub(r"//.*", "", content)
 
     # Remove leading/trailing whitespace and lines with no content
     lines = content.splitlines()
     lines = [line.strip() for line in lines if line.strip()]
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 def process_file(main_filepath, output_filepath, shortened_output_filepath):
@@ -79,12 +90,12 @@ def process_file(main_filepath, output_filepath, shortened_output_filepath):
         os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
 
         # Write the full version of the file
-        with open(output_filepath, 'w') as output_file:
+        with open(output_filepath, "w") as output_file:
             output_file.write(new_content)
 
         # Generate and write the shortened version of the file
         shortened_content = remove_comments_and_whitespace(new_content)
-        with open(shortened_output_filepath, 'w') as shortened_output_file:
+        with open(shortened_output_filepath, "w") as shortened_output_file:
             shortened_output_file.write(shortened_content)
 
         print(f"Output written to {output_filepath}")
@@ -93,5 +104,9 @@ def process_file(main_filepath, output_filepath, shortened_output_filepath):
         print(f"Error: {main_filepath} does not exist.")
 
 
-process_file('src/main.src', 'build/gfmTools.src', 'build/gfmTools_shortened.src')
-process_file('generateEncryptedString.src', 'build/generateEncryptedString.src', 'build/generateEncryptedString_shortened.src')
+process_file("src/main.src", "build/gfmTools.src", "build/gfmTools_shortened.src")
+process_file(
+    "generateEncryptedString.src",
+    "build/generateEncryptedString.src",
+    "build/generateEncryptedString_shortened.src",
+)

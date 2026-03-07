@@ -1,20 +1,17 @@
 import_code("/src/utils.src")
 
-terminalObject = get_custom_object
-terminalObject.GfmShell = {}
-
-// @type GfmShell
-// @property {string} __printedText - Stores the accumulated text that has been printed or queued for printing.
-// @property {string} __stashedPrintedText - Temporarily stores text that has been stashed for restoration.
-// @property {list<any>} commandList - A list of commands that can be run.
-// @property {map<string,any>} context - Current context of the shell.
-GfmShell = terminalObject.GfmShell
+GfmShell = {}
 GfmShell.__printedText = ""
 GfmShell.__stashedPrintedText = ""
 GfmShell.commandList = []
 
 GfmShell._is_running_as_root = home_dir == "/root"
 
+if GfmShell._is_running_as_root then
+    GfmShell.homeUser = "root"
+else
+    GfmShell.homeUser = home_dir[6:]
+end if
 GfmShell.homeShell = get_shell
 
 // TODO: Change this so that it find the file better and can rename the lib for obfuscation
@@ -23,26 +20,22 @@ if not GfmShell.homeMetaxploit then GfmShell.homeMetaxploit = include_lib(curren
 GfmShell.homeCrypto = include_lib("/lib/crypto.so")
 if not GfmShell.homeCrypto then GfmShell.homeCrypto = include_lib(current_path + "/crypto.so")
 
-// @type context
-// @property {string} currentPrivilege - Can be "shell", "computer", or "file"
-// @property {string|null} currentUser
-// @property {shell|null} currentShell
-// @property {computer|null} currentComputer
-// @property {file|null} currentFolder
-GfmShell.context = {}
-if GfmShell._is_running_as_root then
-    GfmShell.context.currentUser = "root"
+if get_custom_object.hasIndex("GfmShellContext") then
+    GfmShell.context = get_custom_object.GfmShellContext
 else
-    GfmShell.context.currentUser = home_dir[6:]
-end if
-GfmShell.context.currentPrivilege = "shell"
-GfmShell.context.currentShell = get_shell
-GfmShell.context.currentComputer = get_shell.host_computer
-GfmShell.context.currentFolder = get_shell.host_computer.File(home_dir)
-GfmShell.context.currentMetaxploit = GfmShell.homeMetaxploit
-GfmShell.context.currentCrypto = GfmShell.homeCrypto
+    get_custom_object.GfmShellContext = {}
+    GfmShell.context = get_custom_object.GfmShellContext
 
-GfmShell.context.setShell = function(shell, user)
+    GfmShell.context.currentUser = GfmShell.homeUser
+    GfmShell.context.currentPrivilege = "shell"
+    GfmShell.context.currentShell = GfmShell.homeShell
+    GfmShell.context.currentComputer = GfmShell.context.currentShell.host_computer
+    GfmShell.context.currentFolder = GfmShell.context.currentComputer.File(home_dir)
+    GfmShell.context.currentMetaxploit = GfmShell.homeMetaxploit
+    GfmShell.context.currentCrypto = GfmShell.homeCrypto
+end if
+
+GfmShell.setShell = function(shell, user)
     // TODO: Make it get user automatically
     GfmShell.context.currentUser = user
 
@@ -65,7 +58,7 @@ GfmShell.context.setShell = function(shell, user)
     GfmShell.context.currentCrypto = null
 end function
 
-GfmShell.context.setComputer = function(computer, user)
+GfmShell.setComputer = function(computer, user)
     GfmShell.context.currentUser = user
 
     if GfmShell.context.currentUser == "root" then
@@ -87,7 +80,7 @@ GfmShell.context.setComputer = function(computer, user)
     GfmShell.context.currentCrypto = null
 end function
 
-GfmShell.context.setFile = function(file, user)
+GfmShell.setFile = function(file, user)
     GfmShell.context.currentUser = user
 
     // FIXME: Test this
