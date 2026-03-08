@@ -1,0 +1,14 @@
+import_code("/src/shell.src")
+
+CommandHomeshell = {}
+CommandHomeshell.cmd = "homeshell"
+CommandHomeshell.alias = ""
+CommandHomeshell.args = ""
+CommandHomeshell.desc = "Go to home shell"
+CommandHomeshell.man = "No manual entry for homeshell"
+CommandHomeshell.requiredPrivilege = "none"
+CommandHomeshell.requiredUser = null
+
+CommandHomeshell.exec = function(args)
+    GfmShell.setShell(GfmShell.homeShell)
+end function
