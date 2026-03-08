@@ -1,0 +1,15 @@
+import_code("/src/shell.src")
+
+CommandReloadlib = {}
+CommandReloadlib.cmd = "reloadlib"
+CommandReloadlib.alias = ""
+CommandReloadlib.args = ""
+CommandReloadlib.desc = "Reload the current lib"
+CommandReloadlib.man = "No manual entry for reloadlib"
+CommandReloadlib.requiredPrivilege = "shell"
+CommandReloadlib.requiredUser = null
+
+CommandReloadlib.exec = function(args)
+    GfmShell.context.currentMetaxploit = getShellLib(GfmShell.context.currentShell, "MetaxploitLib")
+    GfmShell.context.currentCrypto = getShellLib(GfmShell.context.currentShell, "cryptoLib")
+end function

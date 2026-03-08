@@ -275,6 +275,24 @@ findWritableFolder = function(folder)
     return null
 end function
 
+findAndIncludeLib = function(folder, libType)
+    for file in folder.get_files
+        lib = include_lib(file.path)
+        if typeof(lib) == libType then
+            return lib
+        end if
+    end for
+
+    for child in folder.get_folders
+        result = findAndIncludeLib(child, libType)
+        if result != null then
+            return result
+        end if
+    end for
+
+    return null
+end function
+
 callOtherShellScript = function(shell, script, tempName)
     rootFolder = shell.host_computer.File("/")
     writableFolder = findWritableFolder(rootFolder)
@@ -326,9 +344,9 @@ getHomeDir = function(shell)
     return get_custom_object.getHomeDir.home_dir
 end function
 
-getShellLib = function(shell, libPath)
+getShellLib = function(shell, libType)
     get_custom_object.getShellLib = {}
-    get_custom_object.getShellLib.shellLibPath = libPath
+    get_custom_object.getShellLib.shellLibType = libType
 
     result = callOtherShellScript(shell, "@import_script(/resources/scripts/getShellLib.src)", "gfmTempGetShellLib")
 

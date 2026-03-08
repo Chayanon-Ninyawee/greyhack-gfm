@@ -27,5 +27,11 @@ CommandReboot.exec = function(args)
         safeMode = true
     end if
 
-    GfmShell.context.currentComputer.reboot(safeMode)
+    result = GfmShell.context.currentComputer.reboot(safeMode)
+
+    if result == 1 then
+       print("reboot: reboot successfully")
+    else
+       print("reboot: " + result)
+    end if
 end function

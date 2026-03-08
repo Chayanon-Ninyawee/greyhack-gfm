@@ -1,0 +1,61 @@
+import_code("/src/utils.src")
+import_code("/src/shell.src")
+
+CommandHomecp = {}
+CommandHomecp.cmd = "homecp"
+CommandHomecp.alias = ""
+CommandHomecp.args = "SOURCE DEST"
+CommandHomecp.desc = "Secure file copy between home shell and current shell"
+CommandHomecp.man = "No manual entry for homecp"
+CommandHomecp.usage = "Usage: " + CommandHomecp.cmd + " " + CommandHomecp.args
+CommandHomecp.requiredPrivilege = "shell"
+CommandHomecp.requiredUser = null
+
+CommandHomecp.exec = function(args)
+    if args.len != 2 then
+        GfmShell.println(CommandHomecp.usage)
+        return
+    end if
+
+    source = args[0]
+    dest = args[1]
+
+    homeShell = GfmShell.homeShell
+    currentShell = GfmShell.context.currentShell
+
+
+    // determine source shell
+    if source.indexOf(":") == 0 then
+        srcShell = homeShell
+        source = source[1:]
+        srcStr = "home"
+    else
+        srcShell = currentShell
+        srcStr = "current"
+    end if
+
+
+    // determine destination shell
+    if dest.indexOf(":") == 0 then
+        dstShell = homeShell
+        dest = dest[1:]
+        dstStr = "home"
+    else
+        dstShell = currentShell
+        dstStr = "current"
+    end if
+
+
+    if srcStr == dstStr then
+        GfmShell.println("scp: source and destination are on the same shell")
+        return
+    end if
+
+
+    result = srcShell.scp(source, dest, dstShell, false)
+    if typeof(result) == "string" then
+        GfmShell.println("scp: " + result)
+    else
+        GfmShell.println("file copied")
+    end if
+end function

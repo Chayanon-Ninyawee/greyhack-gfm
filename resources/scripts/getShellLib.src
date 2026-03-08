@@ -1,1 +1,19 @@
-get_custom_object.getShellLib.shellLib = include_lib(get_custom_object.getShellLib.shellLibPath)
+findAndIncludeLib = function(folder, libType)
+    for file in folder.get_files
+        lib = include_lib(file.path)
+        if typeof(lib) == libType then
+            return lib
+        end if
+    end for
+
+    for child in folder.get_folders
+        result = findAndIncludeLib(child, libType)
+        if result != null then
+            return result
+        end if
+    end for
+
+    return null
+end function
+
+get_custom_object.getShellLib.shellLib = findAndIncludeLib(get_shell.host_computer.File("/"), get_custom_object.getShellLib.shellLibType)

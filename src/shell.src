@@ -13,12 +13,10 @@ else
     GfmShell.homeUser = home_dir[6:]
 end if
 GfmShell.homeShell = get_shell
+GfmShell.homeRootFolder = GfmShell.homeShell.host_computer.File("/")
 
-// TODO: Change this so that it find the file better and can rename the lib for obfuscation
-GfmShell.homeMetaxploit = include_lib("/lib/metaxploit.so")
-if not GfmShell.homeMetaxploit then GfmShell.homeMetaxploit = include_lib(current_path + "/metaxploit.so")
-GfmShell.homeCrypto = include_lib("/lib/crypto.so")
-if not GfmShell.homeCrypto then GfmShell.homeCrypto = include_lib(current_path + "/crypto.so")
+GfmShell.homeMetaxploit = findAndIncludeLib(GfmShell.homeRootFolder, "MetaxploitLib")
+GfmShell.homeCrypto = findAndIncludeLib(GfmShell.homeRootFolder, "cryptoLib")
 
 if get_custom_object.hasIndex("GfmShellContext") then
     GfmShell.context = get_custom_object.GfmShellContext
@@ -51,10 +49,8 @@ GfmShell.setShell = function(shell)
     GfmShell.context.currentComputer = shell.host_computer
     GfmShell.context.currentFolder = resolveFolderPath(targetPath, rootFolder)
 
-    GfmShell.context.currentMetaxploit = getShellLib(shell, "/lib/metaxploit.so")
-    if not GfmShell.context.currentMetaxploit then GfmShell.context.currentMetaxploit = getShellLib(shell, GfmShell.context.currentFolder.path + "/metaxploit.so")
-    GfmShell.context.currentCrypto = getShellLib(shell, "/lib/crypto.so")
-    if not GfmShell.context.currentCrypto then GfmShell.context.currentCrypto = getShellLib(shell, GfmShell.context.currentFolder.path + "/crypto.so")
+    GfmShell.context.currentMetaxploit = getShellLib(shell, "MetaxploitLib")
+    GfmShell.context.currentCrypto = getShellLib(shell, "cryptoLib")
 end function
 
 GfmShell.setComputer = function(computer, user)
@@ -174,7 +170,11 @@ end function
 GfmShell.start = function()
     while true
         currentUser = GfmShell.context.currentUser
-        currentHost = GfmShell.context.currentComputer.get_name
+        if GfmShell.context.currentComputer != null then
+            currentHost = GfmShell.context.currentComputer.get_name
+        else
+            currentHost = "?"
+        end if
         currentPath = GfmShell.context.currentFolder.path
 
         infoStr = ""
@@ -216,7 +216,7 @@ GfmShell.execCommand = function(cmd, args)
             requiredLevel = getPrivilegeLevel(command.requiredPrivilege)
     
             if requiredLevel > currentLevel and requiredLevel != -1 then
-                GfmShell.println("Current Privilege: '"+GfmShell.context.currentPrivilege+"' but required '"+cmd.requiredPrivilege+"'")
+                GfmShell.println("Current Privilege: '"+GfmShell.context.currentPrivilege+"' but required '"+command.requiredPrivilege+"'")
                 return
             end if
 

@@ -71,8 +71,12 @@ CommandScp.exec = function(args)
             return
         end if
 
-        shell.scp(source, remotePath, remoteShell, true)
-        GfmShell.println("file copied")
+        result = shell.scp(source, remotePath, remoteShell, false)
+        if typeof(result) == "string" then
+            GfmShell.println("scp: " + result)
+        else
+            GfmShell.println("file copied")
+        end if
         return
     end if
 
@@ -103,8 +107,12 @@ CommandScp.exec = function(args)
             return
         end if
 
-        shell.scp(remotePath, dest, remoteShell, false)
-        GfmShell.println("file copied")
+        result = shell.scp(remotePath, dest, remoteShell, true)
+        if typeof(result) == "string" then
+            GfmShell.println("scp: " + result)
+        else
+            GfmShell.println("file copied")
+        end if
         return
     end if
 
