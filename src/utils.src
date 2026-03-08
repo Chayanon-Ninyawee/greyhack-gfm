@@ -275,31 +275,66 @@ findWritableFolder = function(folder)
     return null
 end function
 
-
-shellEscalate = function(shell, user, password)
+callOtherShellScript = function(shell, script, tempName)
     rootFolder = shell.host_computer.File("/")
-
     writableFolder = findWritableFolder(rootFolder)
 
     if writableFolder == null then
-        return "shellEscalate: cannot find folder with write permission"
+        return false
     end if
 
+    shell.host_computer.touch(writableFolder.path, tempName + ".txt")
+
+    codeFile = shell.host_computer.File(writableFolder.path + "/" + tempName + ".txt")
+    codeFile.set_content(script)
+
+    shell.build(codeFile.path, writableFolder.path)
+
+    binFile = shell.host_computer.File(writableFolder.path + "/" + tempName)
+
+    shell.launch(binFile.path)
+
+    codeFile.delete()
+    binFile.delete()
+
+    return true
+end function
+
+shellEscalate = function(shell, user, password)
     get_custom_object.shellEscalate = {}
     get_custom_object.shellEscalate.user = user
     get_custom_object.shellEscalate.password = password
 
-    shell.host_computer.touch(writableFolder.path, "gfmTempShellEscalate.txt")
-    shellEscalateCodeFile = shell.host_computer.File(writableFolder.path + "/gfmTempShellEscalate.txt")
-    shellEscalateCodeFile.set_content("@import_script(/resources/scripts/shellEscalate.src)")
+    result = callOtherShellScript(shell, "@import_script(/resources/scripts/shellEscalate.src)", "gfmTempShellEscalate")
 
-    shell.build(shellEscalateCodeFile.path, writableFolder.path)
-    shellEscalateBin = shell.host_computer.File(writableFolder.path + "/gfmTempShellEscalate")
-
-    shell.launch(shellEscalateBin.path)
-
-    shellEscalateCodeFile.delete()
-    shellEscalateBin.delete()
+    if not result then
+        return "shellEscalate: cannot find folder with write permission"
+    end if
 
     return get_custom_object.shellEscalate.newShell
+end function
+
+getHomeDir = function(shell)
+    get_custom_object.getHomeDir = {}
+
+    result = callOtherShellScript(shell, "@import_script(/resources/scripts/getHomeDir.src)", "gfmTempGetHomeDir")
+
+    if result == null then
+        return "getHomeDir: cannot find folder with write permission"
+    end if
+
+    return get_custom_object.getHomeDir.home_dir
+end function
+
+getShellLib = function(shell, libPath)
+    get_custom_object.getShellLib = {}
+    get_custom_object.getShellLib.shellLibPath = libPath
+
+    result = callOtherShellScript(shell, "@import_script(/resources/scripts/getShellLib.src)", "gfmTempGetShellLib")
+
+    if result == null then
+        return "getShellLib: cannot find folder with write permission"
+    end if
+
+    return get_custom_object.getShellLib.shellLib
 end function

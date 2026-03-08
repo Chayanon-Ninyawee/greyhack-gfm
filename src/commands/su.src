@@ -23,7 +23,7 @@ CommandSu.exec = function(args)
         return
     end if
 
-    newShell = shellEscalate(currentShell, targetUser, user_input("Password: ", true))
+    newShell = shellEscalate(GfmShell.context.currentShell, targetUser, user_input("Password: ", true))
     if newShell == null then
         GfmShell.println("sudo: incorrect username or password")
         return
@@ -32,5 +32,5 @@ CommandSu.exec = function(args)
         return
     end if
 
-    GfmShell.setShell(newShell, targetUser)
+    GfmShell.setShell(newShell)
 end function

@@ -1,0 +1,1 @@
+get_custom_object.getShellLib.shellLib = include_lib(get_custom_object.getShellLib.shellLibPath)

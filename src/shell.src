@@ -35,17 +35,13 @@ else
     GfmShell.context.currentCrypto = GfmShell.homeCrypto
 end if
 
-GfmShell.setShell = function(shell, user)
-    // TODO: Make it get user automatically
-    GfmShell.context.currentUser = user
+GfmShell.setShell = function(shell)
+    targetPath = getHomeDir(shell)
 
-    if GfmShell.context.currentUser == "root" then
-        targetPath = "/root"
-    else if GfmShell.context.currentUser != null then
-        targetPath = "/home/" + GfmShell.context.currentUser
+    if targetPath == "/root" then
+        GfmShell.context.currentUser = "root"
     else
-        // currentUser is null then go to root
-        targetPath = "/"
+        GfmShell.context.currentUser = targetPath[6:]
     end if
 
     rootFolder = shell.host_computer.File("/")
@@ -54,8 +50,11 @@ GfmShell.setShell = function(shell, user)
     GfmShell.context.currentShell = shell
     GfmShell.context.currentComputer = shell.host_computer
     GfmShell.context.currentFolder = resolveFolderPath(targetPath, rootFolder)
-    GfmShell.context.currentMetaxploit = null
-    GfmShell.context.currentCrypto = null
+
+    GfmShell.context.currentMetaxploit = getShellLib(shell, "/lib/metaxploit.so")
+    if not GfmShell.context.currentMetaxploit then GfmShell.context.currentMetaxploit = getShellLib(shell, GfmShell.context.currentFolder.path + "/metaxploit.so")
+    GfmShell.context.currentCrypto = getShellLib(shell, "/lib/crypto.so")
+    if not GfmShell.context.currentCrypto then GfmShell.context.currentCrypto = getShellLib(shell, GfmShell.context.currentFolder.path + "/crypto.so")
 end function
 
 GfmShell.setComputer = function(computer, user)

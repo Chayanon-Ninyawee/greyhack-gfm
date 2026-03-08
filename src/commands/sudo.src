@@ -49,9 +49,9 @@ CommandSudo.exec = function(args)
         return
     end if
 
-    GfmShell.setShell(newShell, targetUser)
+    GfmShell.setShell(newShell)
 
     GfmShell.execCommand(command, execArgs)
 
-    GfmShell.setShell(currentShell, currentUser)
+    GfmShell.setShell(currentShell)
 end function
